@@ -14,7 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 public class MidTableTest extends BaseTest {
 
-	/*@Autowired
+	@Autowired
 	private ArcBuildInfoMapper arcBuildInfoDao;
 
 
@@ -23,9 +23,9 @@ public class MidTableTest extends BaseTest {
 		String ss = arcBuildInfoDao.queryArcBuildInfoById();
 		System.out.println("ss:" + ss);
 	}
-*/
 
-	@Autowired
+
+	/*@Autowired
 	private SysUserDao sysUserDao;
 
 
@@ -33,5 +33,5 @@ public class MidTableTest extends BaseTest {
 	public void test10() {
 		String ss = sysUserDao.selectId();
 		System.out.println("ss:" + ss);
-	}
+	}*/
 }

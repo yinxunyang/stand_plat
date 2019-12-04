@@ -3,6 +3,6 @@
 <mapper namespace="com.bestvike.pub.dao.ArcBuildInfoMapper">
     <!--分页查询用户列表-->
     <select id="queryArcBuildInfoById" resultType="java.lang.String">
-            select bldname from Arc_BuildInfo where bldno = '602609053'
+       select t.bldname from arc_buildinfo t where t.bldno = '602609053'
     </select>
 </mapper>
