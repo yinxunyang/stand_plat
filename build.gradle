@@ -1,0 +1,119 @@
+group 'com.bestvike'
+version '1.0.0'
+
+apply plugin: 'java'
+
+ext {
+    snippetsDir = file("$buildDir/generated-snippets")
+}
+configurations.all {
+    //默认情况下包才上传后24小时更新一次，这个配置自动更新为10s
+    //10秒钟，可自定义，如10,'minutes'10分钟，10,'hours'10小时
+    resolutionStrategy.cacheChangingModulesFor 10, 'seconds'
+}
+
+buildscript {
+    ext {
+        springBootVersion = '2.1.5.RELEASE'
+        // gralde -Prelease
+        if (project.hasProperty('release')) {
+            releasePublish = true
+        } else {
+            releasePublish = false
+        }
+    }
+    repositories {
+        mavenLocal()
+        maven { url 'https://maven.bestvike.com/repository/maven-snapshots/' }
+        maven { url 'https://maven.bestvike.com/repository/maven-public/' }
+        maven { url 'https://maven.bestvike.com/repository/third-party/' }
+        flatDir {
+            dirs 'lib'
+        }
+    }
+    dependencies {
+        classpath "io.spring.gradle:dependency-management-plugin:1.0.6.RELEASE"
+        classpath "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}"
+    }
+}
+
+subprojects {
+    group 'com.bestvike'
+
+    apply plugin: 'java'
+    apply plugin: 'org.springframework.boot'
+    apply plugin: 'io.spring.dependency-management'
+
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
+
+    repositories {
+        mavenLocal()
+        maven { url 'https://maven.bestvike.com/repository/maven-snapshots/' }
+        maven { url 'https://maven.bestvike.com/repository/maven-public/' }
+        maven { url 'https://maven.bestvike.com/repository/third-party/' }
+        flatDir {
+            dirs 'lib'
+        }
+    }
+
+    dependencyManagement {
+        imports {
+            mavenBom 'org.springframework.boot:spring-boot-starter-parent:' + springBootVersion
+            mavenBom 'org.springframework.cloud:spring-cloud-dependencies:Finchley.SR1'
+        }
+    }
+
+    sourceSets {
+        main {
+            java {
+                srcDir 'src/main/java'
+            }
+            resources {
+                srcDirs 'src/main/java'
+            }
+        }
+    }
+
+    dependencies {
+        compile("com.bestvike:commons:0.0.4-SNAPSHOT")
+        
+        // spring boot
+        compile("org.springframework.boot:spring-boot-configuration-processor")
+        compile("org.springframework.boot:spring-boot-starter")
+        compile("org.springframework.boot:spring-boot-starter-web")
+        compile("org.springframework.boot:spring-boot-starter-data-mongodb")
+        // compile("org.springframework.boot:spring-boot-starter-security")
+        compile("org.springframework.boot:spring-boot-starter-data-redis")
+        compile("org.springframework.boot:spring-boot-starter-jdbc")
+        compile("org.springframework.boot:spring-boot-starter-aop")
+
+        // compile('org.springframework.boot:spring-boot-starter-actuator')
+
+        compile("org.springframework.boot:spring-boot-starter-mail")
+        //toSecret 加密
+        compile("com.github.ulisesbocchio:jasypt-spring-boot-starter:1.14")
+        compile("org.springframework.boot:spring-boot-starter-amqp")
+
+        // spring security
+        // compile("org.springframework.security.oauth:spring-security-oauth2:2.3.3.RELEASE")
+        // compile("org.springframework.security.oauth.boot:spring-security-oauth2-autoconfigure")
+        // spring
+        compile("org.springframework:spring-web")
+        compile("org.springframework:spring-test:5.1.7.RELEASE")
+        // compile("org.springframework:spring-webmvc")
+        // compile("org.springframework.batch:spring-batch-core")
+        // compile("org.springframework:spring-context-support")
+
+        // swagger2
+        compile("io.springfox:springfox-swagger2:2.8.0")
+        compile("io.springfox:springfox-swagger-ui:2.8.0")
+        testCompile("org.springframework.boot:spring-boot-starter-test")
+        //上传
+        compile("com.github.tobato:fastdfs-client:1.26.5")
+        compile("cn.hutool:hutool-all:4.4.3")
+        compile("org.springframework:spring-test:5.1.7.RELEASE")
+
+    }
+}
+[compileJava, compileTestJava]*.options*.encoding = 'UTF-8'

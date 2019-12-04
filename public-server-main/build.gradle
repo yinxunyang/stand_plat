@@ -1,0 +1,68 @@
+group 'com.bestvike'
+version '1.0.0'
+
+dependencies {
+    compile project(':public-server-common')
+    // compile("com.bestvike:bv-util-commons:1.2.5-SNAPSHOT")
+    compile("org.jxls:jxls:2.4.6")
+    compile("org.jxls:jxls-reader:2.0.2")
+    compile("org.jxls:jxls-poi:1.0.9")
+    // spring cloud
+     compile ("org.springframework.cloud:spring-cloud-starter-sleuth")
+
+    // spring boot
+    compile("org.mybatis.spring.boot:mybatis-spring-boot-starter:2.0.1")
+
+    // mybatis and db
+    compile("com.oracle:ojdbc6:11g")
+    //compile("org.mariadb.jdbc:mariadb-java-client:2.4.1")
+    compile("org.mybatis:mybatis:3.5.0")
+    compile("tk.mybatis:mapper:4.1.5")
+    compile("com.github.pagehelper:pagehelper:5.1.8")
+    // compile("org.springframework.session:spring-session-data-redis")
+
+    compile("org.apache.commons:commons-pool2")
+    // logback
+    compile("net.logstash.logback:logstash-logback-encoder:5.2")
+    
+    compile("org.apache.commons:commons-lang3:3.7")
+    // compile("com.bestvike:bv-util-mvc:1.1.5-SNAPSHOT")
+    compile("dom4j:dom4j:1.6.1")
+    compile group: 'xerces', name: 'xercesImpl', version: '2.12.0'
+    compile("com.belerweb:pinyin4j:2.5.0")
+}
+
+ext {
+    snippetsDir = file("$buildDir/generated-snippets")
+    // gralde -Prelease
+    if (project.hasProperty('release')) {
+        releasePublish = true
+    } else {
+        releasePublish = false
+    }
+}
+
+jar {
+    enabled = false
+}
+
+bootJar{
+    baseName = project.name
+    version = project.version
+    if (!project.releasePublish) {
+        classifier='SNAPSHOT'
+    } else {
+        classifier='exec'
+    }
+}
+
+sourceSets {
+    main {
+        java {
+            srcDir 'src/main/java'
+        }
+        resources {
+            srcDirs 'src/main/java'
+        }
+    }
+}

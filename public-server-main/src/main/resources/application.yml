@@ -1,0 +1,67 @@
+app:
+  instance:
+    code: bv-public
+    profile: dev
+  error:
+    prefix: hmis
+  authority:
+    # 设置为true时，项目启动会覆盖redis内容(authority.json)，设置为false，只要redis有就不覆盖，默认为true
+    clear-config: true
+    # 设置为true时，项目启动会覆盖redis角色权限，默认为false
+    clear-role-permissions: true
+    # 是否校验url权限
+    check-url: true
+  redis:
+    prefix: hmis
+  file:
+    uploadPath: ./file/upload
+    template-path: classpath:template
+    exportPath: ./file/export
+server:
+  port: 2000
+  tomcat:
+    max-threads: 500
+logging:
+  config: classpath:logback-config.xml
+  file: ${app.instance.code}
+  path: ./log
+  level:
+    root: info
+    com.bestvike: debug
+    org.springframework.security: warn
+spring:
+  application:
+    name: ${app.instance.code}-${app.instance.profile}
+  http:
+    converters:
+      preferred-json-mapper: fastjson # json 转换器, 接收数据和请求数据时使用
+      preferred-xml-mapper: jackson # xml 转换器, 请求数据时使用
+    encoding:
+      force: true
+  servlet:
+    multipart:
+      max-file-size: 20MB # 最大文件大小
+      max-request-size: 20MB # 最大请求大小
+  redis:
+    host: 10.10.12.1
+    port: 6379
+    timeout: 10s
+    lettuce:
+      pool:
+        min-idle: 10
+        max-idle: 20
+        max-active: 100
+  data:
+    mongodb:
+      uri: mongodb://website:website@10.10.12.1:27017/website
+datasources:
+  pub:
+    #jdbc-url: jdbc:mariadb://192.168.2.21:3306/hmis
+    jdbc-url: jdbc:oracle:thin:@10.5.10.19:1521/orcl
+    driver-class-name: oracle.jdbc.driver.OracleDriver
+    username: hmis
+    password: hmis
+    hikari:
+      minimum-idle: 2
+      maximum-pool-size: 5
+      connection-test-query: select 1
