@@ -65,9 +65,3 @@ datasources:
       minimum-idle: 2
       maximum-pool-size: 5
       connection-test-query: select 1
-  mybatis:
-    dialect: org.apache.ibatis.dialect.OracleDialect
-    basePackage: com.bestvike.pub.dao
-    aliasesPackage: com.bestvike.pub.data
-    mapperLocations: classpath*:com/bestvike/pub/mapping/*.xml
-    underscoreToCamelCase: true
