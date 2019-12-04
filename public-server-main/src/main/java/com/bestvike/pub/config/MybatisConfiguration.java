@@ -47,7 +47,7 @@ public class MybatisConfiguration implements ApplicationContextAware {
 		SqlSessionFactoryBean sqlSessionFactoryBean = new SqlSessionFactoryBean();
 		sqlSessionFactoryBean.setDataSource(dataSource());
 		sqlSessionFactoryBean.setTypeAliasesPackage("com.bestvike.pub.data");
-		sqlSessionFactoryBean.setMapperLocations(new PathMatchingResourcePatternResolver().getResources("classpath*:mapping/pub/*.xml"));
+		sqlSessionFactoryBean.setMapperLocations(new PathMatchingResourcePatternResolver().getResources("classpath*:mapping/*.xml"));
 		tk.mybatis.mapper.session.Configuration configuration = new tk.mybatis.mapper.session.Configuration();
 		configuration.setMapUnderscoreToCamelCase(true);
 //		// 设置驼峰不自动转下划线
