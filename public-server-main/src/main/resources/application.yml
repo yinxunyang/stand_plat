@@ -57,10 +57,10 @@ spring:
 datasources:
   pub:
     #jdbc-url: jdbc:mariadb://192.168.2.21:3306/hmis
-    jdbc-url: jdbc:oracle:thin:@10.5.10.19:1521/orcl
+    jdbc-url: jdbc:oracle:thin:@127.0.0.1:1521/orcl
     driver-class-name: oracle.jdbc.driver.OracleDriver
-    username: hmis
-    password: hmis
+    username: bvdf_aks
+    password: bvdf_aks
     hikari:
       minimum-idle: 2
       maximum-pool-size: 5
