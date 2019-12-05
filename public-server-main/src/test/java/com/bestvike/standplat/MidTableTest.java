@@ -4,9 +4,12 @@ import com.bestvike.pub.dao.ArcBuildInfoMapper;
 import com.bestvike.pub.dao.BvdfHouseDao;
 import com.bestvike.pub.param.BvdfHouseParam;
 import org.elasticsearch.action.get.GetResponse;
+import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.TransportAddress;
+import org.elasticsearch.common.xcontent.XContentBuilder;
+import org.elasticsearch.common.xcontent.XContentFactory;
 import org.elasticsearch.transport.client.PreBuiltTransportClient;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,4 +57,30 @@ public class MidTableTest extends BaseTest {
 		System.out.println(response.getSourceAsString());
 		client.close();
 	}
+
+	@Test
+	public void esAddTest() throws Exception {
+		String index = "fangwu_index";
+		String type = "fangwu_type";
+		// 唯一编号
+		String id = "10";
+		System.setProperty("es.set.netty.runtime.available.processors", "false");
+		Settings settings = Settings.builder().put("cluster.name", "docker-cluster").build();
+		TransportClient client = new PreBuiltTransportClient(settings)
+				.addTransportAddress(new TransportAddress(InetAddress.getByName("192.168.237.131"), 9300));
+		XContentBuilder doc = XContentFactory.jsonBuilder()
+				.startObject()
+				.field("roomname", "801室")
+				.field("certno", "370102199805210012")
+				.field("address", "工业南路61号")
+				.field("bldname", "5#楼")
+				.field("cellname", "1单元")
+				.field("regionname", "海信慧园")
+				.field("name", "李四")
+				.endObject();
+		IndexResponse response = client.prepareIndex(index, type, id).setSource(doc).get();
+		System.out.println("=============" + response.status());
+	}
+
+
 }
