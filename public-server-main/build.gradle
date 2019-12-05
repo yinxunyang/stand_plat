@@ -30,6 +30,8 @@ dependencies {
     compile("dom4j:dom4j:1.6.1")
     compile group: 'xerces', name: 'xercesImpl', version: '2.12.0'
     compile("com.belerweb:pinyin4j:2.5.0")
+    // elasticsearch包
+    implementation 'org.springframework.boot:spring-boot-starter-data-elasticsearch'
 }
 
 ext {

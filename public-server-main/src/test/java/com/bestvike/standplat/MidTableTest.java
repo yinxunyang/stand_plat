@@ -3,9 +3,15 @@ package com.bestvike.standplat;
 import com.bestvike.pub.dao.ArcBuildInfoMapper;
 import com.bestvike.pub.dao.BvdfHouseDao;
 import com.bestvike.pub.param.BvdfHouseParam;
+import org.elasticsearch.action.get.GetResponse;
+import org.elasticsearch.client.transport.TransportClient;
+import org.elasticsearch.common.settings.Settings;
+import org.elasticsearch.common.transport.TransportAddress;
+import org.elasticsearch.transport.client.PreBuiltTransportClient;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.net.InetAddress;
 import java.util.List;
 
 /**
@@ -33,5 +39,19 @@ public class MidTableTest extends BaseTest {
 	public void test2() {
 		List<BvdfHouseParam> bvdfHouseParamList = bvdfHouseDao.queryBvdfHouseInfo();
 		System.out.println("bvdfHouseParamList:" + bvdfHouseParamList);
+	}
+	@Test
+	public void esSearchTest() throws Exception {
+		String index = "fangwu_index";
+		String type = "fangwu_type";
+		// 唯一编号
+		String id = "2";
+		System.setProperty("es.set.netty.runtime.available.processors", "false");
+		Settings settings=Settings.builder().put("cluster.name", "docker-cluster").build();
+		TransportClient client=new PreBuiltTransportClient(settings)
+				.addTransportAddress(new TransportAddress(InetAddress.getByName("192.168.237.131"), 9300));
+		GetResponse response=client.prepareGet(index, type,id).execute().actionGet();
+		System.out.println(response.getSourceAsString());
+		client.close();
 	}
 }
