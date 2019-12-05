@@ -113,6 +113,9 @@ subprojects {
         compile("com.github.tobato:fastdfs-client:1.26.5")
         compile("cn.hutool:hutool-all:4.4.3")
         compile("org.springframework:spring-test:5.1.7.RELEASE")
+        //==编译时==
+        compileOnly('org.projectlombok:lombok')
+        testCompile('org.projectlombok:lombok')
 
     }
 }

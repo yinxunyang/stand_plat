@@ -1,9 +1,12 @@
 package com.bestvike.pub.service;
 
-import com.bestvike.pub.param.BvdfHouseParam;
-
-import java.util.List;
-
 public interface BvdfService {
-	List<BvdfHouseParam> queryBvdfHouseInfo();
+	/**
+	 * @Author: yinxunyang
+	 * @Description: 将bvdf房屋信息迁移至elasticsearch
+	 * @Date: 2019/12/5 18:12
+	 * @param:
+	 * @return:
+	 */
+	void bvdfHouseToEs();
 }
