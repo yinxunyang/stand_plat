@@ -40,6 +40,7 @@ public class MidTableTest extends BaseTest {
 
 	@Test
 	public void test2() {
+		System.setProperty("es.set.netty.runtime.available.processors", "false");
 		List<BvdfHouseParam> bvdfHouseParamList = bvdfHouseDao.queryBvdfHouseInfo();
 		System.out.println("bvdfHouseParamList:" + bvdfHouseParamList);
 	}
