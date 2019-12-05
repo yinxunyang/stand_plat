@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bestvike.pub.dao.BvdfHouseDao">
+	<!--分页查询用户列表-->
+	<select id="queryBvdfHouseInfo" resultType="com.bestvike.pub.param.BvdfHouseParam">
+        select distinct t1.buycertnos,
+                t4.projectname as regionname,
+                t3.bldname,
+                t2.cellname,
+                t1.floorname,
+                t1.roomno,
+                t1.buynames,
+                t1.address     as houseAddress
+        from arc_houseinfo t1
+        left join arc_cellinfo t2
+        on t1.cellno = t2.cellno
+        left join arc_buildinfo t3
+        on t1.bldno = t3.bldno
+        left join arc_projectinfo t4
+        on t3.projectno = t4.projectno
+        <![CDATA[
+			where t1.buycertnos is not null and rownum <= 200 order by t1.buycertnos
+		]]>
+	</select>
+</mapper>
