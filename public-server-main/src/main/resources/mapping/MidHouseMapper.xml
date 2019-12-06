@@ -17,14 +17,14 @@
         values
         (
         SYS_GUID(),
-        #{param.buycertnos},
-        #{param.regionname},
-        #{param.bldname},
-        #{param.cellname},
-        #{param.floorname},
-        #{param.roomno},
-        #{param.buynames},
-        #{param.houseAddress}
+        #{param.buycertnos,jdbcType=VARCHAR},
+        #{param.regionname,jdbcType=VARCHAR},
+        #{param.bldname,jdbcType=VARCHAR},
+        #{param.cellname,jdbcType=VARCHAR},
+        #{param.floorname,jdbcType=VARCHAR},
+        #{param.roomno,jdbcType=VARCHAR},
+        #{param.buynames,jdbcType=VARCHAR},
+        #{param.houseAddress,jdbcType=VARCHAR}
         )
     </insert>
     <!--分页查询用户列表-->
