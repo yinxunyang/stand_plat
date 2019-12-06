@@ -15,7 +15,9 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.net.InetAddress;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Author: yinxunyang
@@ -41,7 +43,9 @@ public class MidTableTest extends BaseTest {
 	@Test
 	public void test2() {
 		System.setProperty("es.set.netty.runtime.available.processors", "false");
-		List<BvdfHouseParam> bvdfHouseParamList = bvdfHouseDao.queryBvdfHouseInfo();
+		Map<String, Object> parameterMap = new HashMap<>();
+		parameterMap.put("houseMaxNum", 20);
+		List<BvdfHouseParam> bvdfHouseParamList = bvdfHouseDao.queryBvdfHouseInfo(parameterMap);
 		System.out.println("bvdfHouseParamList:" + bvdfHouseParamList);
 	}
 	@Test

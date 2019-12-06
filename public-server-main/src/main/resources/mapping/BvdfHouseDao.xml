@@ -3,23 +3,30 @@
 <mapper namespace="com.bestvike.pub.dao.BvdfHouseDao">
 	<!--分页查询用户列表-->
 	<select id="queryBvdfHouseInfo" resultType="com.bestvike.pub.param.BvdfHouseParam">
-        select distinct t1.buycertnos,
-                t4.projectname as regionname,
-                t3.bldname,
-                t2.cellname,
+			select * from (select  t1.sysguid,
+		        t1.buycertnos,
+                t1.projectno as regionno,
+                t1.bldno,
+                t1.cellno,
                 t1.floorname,
                 t1.roomno,
                 t1.buynames,
-                t1.address     as houseAddress
-        from arc_houseinfo t1
-        left join arc_cellinfo t2
-        on t1.cellno = t2.cellno
-        left join arc_buildinfo t3
-        on t1.bldno = t3.bldno
-        left join arc_projectinfo t4
-        on t3.projectno = t4.projectno
-        <![CDATA[
-			where t1.buycertnos is not null and rownum <= 200 order by t1.buycertnos
+                t1.address as houseAddress
+		from arc_houseinfo t1
+		minus
+		select  t2.sysguid,
+		        t2.buycertnos,
+                t2.projectno,
+                t2.bldno,
+                t2.cellno,
+                t2.floorname,
+                t2.roomno,
+                t2.buynames,
+                t2.address as houseAddress
+		from mid_aks.copy_houseinfo t2
+		)
+		<![CDATA[
+		where rownum <= #{houseMaxNum}
 		]]>
 	</select>
 </mapper>

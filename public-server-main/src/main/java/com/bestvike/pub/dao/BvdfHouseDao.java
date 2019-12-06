@@ -4,6 +4,7 @@ import com.bestvike.pub.param.BvdfHouseParam;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Author: yinxunyang
@@ -21,5 +22,5 @@ public interface BvdfHouseDao {
 	 * @param:
 	 * @return:
 	 */
-	List<BvdfHouseParam> queryBvdfHouseInfo();
+	List<BvdfHouseParam> queryBvdfHouseInfo(Map<String, Object> parameterMap);
 }

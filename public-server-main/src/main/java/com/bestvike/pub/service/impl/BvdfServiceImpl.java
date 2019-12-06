@@ -20,12 +20,17 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.HashMap;
 import java.util.List;
-import java.util.UUID;
+import java.util.Map;
 
 @Service
 @Slf4j
 public class BvdfServiceImpl extends BaseService implements BvdfService {
+	/**
+	 * 房屋信息表(arc_houseinfo)最大查询条数
+	 */
+	public static final Integer HOUSE_MAX_NUM = 20;
 	@Autowired
 	private BvdfHouseDao bvdfHouseDao;
 	private final TransportClient client = new PreBuiltTransportClient(Settings.builder().put("cluster.name", "docker-cluster").build())
@@ -46,7 +51,9 @@ public class BvdfServiceImpl extends BaseService implements BvdfService {
 	@Override
 	@Scheduled(fixedRate = 1000 * 60 * 5)
 	public void bvdfHouseToEs() {
-		List<BvdfHouseParam> bvdfHouseParamList = bvdfHouseDao.queryBvdfHouseInfo();
+		Map<String, Object> parameterMap = new HashMap<>();
+		parameterMap.put("houseMaxNum", HOUSE_MAX_NUM);
+		List<BvdfHouseParam> bvdfHouseParamList = bvdfHouseDao.queryBvdfHouseInfo(parameterMap);
 		if (bvdfHouseParamList.isEmpty()) {
 			log.info("bvdf没有需要往elasticsearch迁移的数据");
 			return;
@@ -55,16 +62,16 @@ public class BvdfServiceImpl extends BaseService implements BvdfService {
 		String index = "house_index";
 		String type = "house_type";
 		bvdfHouseParamList.stream().forEach(bvdfHouseParam -> {
-			// 唯一编号 todo 改成序列
-			String id = UUID.randomUUID().toString();
+			// 唯一编号
+			String id = bvdfHouseParam.getSysguid();
 			XContentBuilder doc = null;
 			try {
 				doc = XContentFactory.jsonBuilder()
 						.startObject()
 						.field("buycertnos", bvdfHouseParam.getBuycertnos())
-						.field("regionname", bvdfHouseParam.getRegionname())
-						.field("bldname", bvdfHouseParam.getBldname())
-						.field("cellname", bvdfHouseParam.getCellname())
+						.field("regionno", bvdfHouseParam.getRegionno())
+						.field("bldno", bvdfHouseParam.getBldno())
+						.field("cellno", bvdfHouseParam.getCellno())
 						.field("floorname", bvdfHouseParam.getFloorname())
 						.field("roomno", bvdfHouseParam.getRoomno())
 						.field("buynames", bvdfHouseParam.getBuynames())

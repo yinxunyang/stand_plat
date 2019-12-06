@@ -12,21 +12,25 @@ import lombok.Setter;
 @Setter
 public class BvdfHouseParam {
 	/**
+	 * 主键
+	 */
+	private String sysguid;
+	/**
 	 * 买受人身份证号
 	 */
 	private String buycertnos;
 	/**
-	 * 小区名称
+	 * 小区编号
 	 */
-	private String regionname;
+	private String regionno;
 	/**
-	 * 楼幢名称
+	 * 楼幢编号
 	 */
-	private String bldname;
+	private String bldno;
 	/**
-	 * 单元名称
+	 * 单元编号
 	 */
-	private String cellname;
+	private String cellno;
 	/**
 	 * 楼层名称
 	 */
