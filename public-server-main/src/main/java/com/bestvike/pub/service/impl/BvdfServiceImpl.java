@@ -1,45 +1,29 @@
 package com.bestvike.pub.service.impl;
 
-import com.bestvike.mid.dao.MidHouseDao;
-import com.bestvike.portal.service.BaseService;
 import com.bestvike.pub.dao.BvdfHouseDao;
 import com.bestvike.pub.param.BvdfHouseParam;
+import com.bestvike.pub.service.BvdfHouseService;
 import com.bestvike.pub.service.BvdfService;
 import lombok.extern.slf4j.Slf4j;
-import org.elasticsearch.action.index.IndexResponse;
-import org.elasticsearch.client.transport.TransportClient;
-import org.elasticsearch.common.settings.Settings;
-import org.elasticsearch.common.transport.TransportAddress;
-import org.elasticsearch.common.xcontent.XContentBuilder;
-import org.elasticsearch.common.xcontent.XContentFactory;
-import org.elasticsearch.transport.client.PreBuiltTransportClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 @Service
 @Slf4j
-public class BvdfServiceImpl extends BaseService implements BvdfService {
+public class BvdfServiceImpl implements BvdfService {
 	/**
-	 * 房屋信息表(arc_houseinfo)最大查询条数
+	 * 房屋信息表(arc_houseinfo)最大查询条数,防止内存溢出
 	 */
-	public static final Integer HOUSE_MAX_NUM = 20;
+	private static final Integer HOUSE_MAX_NUM = 20000;
 	@Autowired
 	private BvdfHouseDao bvdfHouseDao;
-	private final TransportClient client = new PreBuiltTransportClient(Settings.builder().put("cluster.name", "docker-cluster").build())
-			.addTransportAddress(new TransportAddress(InetAddress.getByName("192.168.237.131"), 9300));
-
-	public BvdfServiceImpl() throws UnknownHostException {
-	}
 	@Autowired
-	private MidHouseDao midHouseDao;
+	private BvdfHouseService bvdfHouseService;
 	/**
 	 * @Author: yinxunyang
 	 * @Description: 将bvdf房屋信息迁移至elasticsearch
@@ -58,30 +42,14 @@ public class BvdfServiceImpl extends BaseService implements BvdfService {
 			log.info("bvdf没有需要往elasticsearch迁移的数据");
 			return;
 		}
-		// todo 往es数据库迁移数据和其他用户传数据
-		String index = "house_index";
-		String type = "house_type";
+		// 新增房屋信息和elasticsearch
 		bvdfHouseParamList.stream().forEach(bvdfHouseParam -> {
-			// 唯一编号
-			String id = bvdfHouseParam.getSysguid();
-			XContentBuilder doc = null;
+			// 新增房屋信息和迁移elasticsearch
 			try {
-				doc = XContentFactory.jsonBuilder()
-						.startObject()
-						.field("buycertnos", bvdfHouseParam.getBuycertnos())
-						.field("regionno", bvdfHouseParam.getRegionno())
-						.field("bldno", bvdfHouseParam.getBldno())
-						.field("cellno", bvdfHouseParam.getCellno())
-						.field("floorname", bvdfHouseParam.getFloorname())
-						.field("roomno", bvdfHouseParam.getRoomno())
-						.field("buynames", bvdfHouseParam.getBuynames())
-						.field("houseAddress", bvdfHouseParam.getHouseAddress())
-						.endObject();
-			} catch (IOException e) {
-				log.error("拼装elasticsearch的新增数据失败" + e);
+				bvdfHouseService.insertCopyHouseAndEs(bvdfHouseParam);
+			} catch (Exception e) {
+				log.error(" 新增房屋信息和elasticsearch失败" + bvdfHouseParam);
 			}
-			IndexResponse response = client.prepareIndex(index, type, id).setSource(doc).get();
-			log.info("=============" + response.status());
 		});
 	}
 }

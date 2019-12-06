@@ -3,6 +3,7 @@ package com.bestvike.mid.entity;
 import com.bestvike.portal.data.BaseData;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.boot.configurationprocessor.json.JSONObject;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
@@ -12,7 +13,7 @@ import java.io.Serializable;
 @Table(name = "mid_houseinfo")
 @Getter
 @Setter
-public class MidHouseInfo extends BaseData implements Serializable {
+public class MidHouseInfo implements Serializable {
 
 	private static final long serialVersionUID = 7324602608457006679L;
 	/**
