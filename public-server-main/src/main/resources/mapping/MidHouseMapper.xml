@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.bestvike.mid.dao.MidHouseDao">
     <insert id="insertBvdfHouseInfo">
-        insert into mid_houseinfo
+        insert into mid_aks.mid_houseinfo
         (
         sysguid,
         buycertnos,
