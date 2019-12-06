@@ -47,4 +47,5 @@ public class BvdfHouseParam {
 	 * 房屋地址
 	 */
 	private String houseAddress;
+
 }

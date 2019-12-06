@@ -2,27 +2,25 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.bestvike.mid.dao.MidHouseDao">
     <insert id="insertBvdfHouseInfo">
-        insert into mid_aks.mid_houseinfo
+        insert into mid_aks.copy_houseinfo
         (
         sysguid,
-        bvdfhouseid,
         buycertnos,
-        regionname,
-        bldname,
-        cellname,
+        projectno,
+        bldno,
+        cellno,
         floorname,
         roomno,
         buynames,
-        houseAddress
+        address
         )
         values
         (
-        SYS_GUID(),
-        #{param.bvdfhouseid,jdbcType=VARCHAR},
+        #{param.sysguid,jdbcType=VARCHAR},
         #{param.buycertnos,jdbcType=VARCHAR},
-        #{param.regionname,jdbcType=VARCHAR},
-        #{param.bldname,jdbcType=VARCHAR},
-        #{param.cellname,jdbcType=VARCHAR},
+        #{param.regionno,jdbcType=VARCHAR},
+        #{param.bldno,jdbcType=VARCHAR},
+        #{param.cellno,jdbcType=VARCHAR},
         #{param.floorname,jdbcType=VARCHAR},
         #{param.roomno,jdbcType=VARCHAR},
         #{param.buynames,jdbcType=VARCHAR},

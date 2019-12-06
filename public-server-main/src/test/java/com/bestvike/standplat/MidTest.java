@@ -3,6 +3,7 @@ package com.bestvike.standplat;
 import com.bestvike.mid.dao.MidHouseDao;
 import com.bestvike.mid.entity.MidHouseInfo;
 import com.bestvike.pub.dao.ArcBuildInfoMapper;
+import com.bestvike.pub.param.BvdfHouseParam;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -20,9 +21,15 @@ public class MidTest extends BaseTest {
 
 	@Test
 	public void test12() {
-		MidHouseInfo midHouseInfo = new MidHouseInfo();
-		midHouseInfo.setBvdfhouseid("602628467");
-		midHouseInfo.setBldname("123");
+		BvdfHouseParam midHouseInfo = new BvdfHouseParam();
+		midHouseInfo.setSysguid("602628467");
+		midHouseInfo.setBldno("123");
+		midHouseInfo.setCellno("12");
+		midHouseInfo.setFloorname("123");
+		midHouseInfo.setBuycertnos("456");
+		midHouseInfo.setRegionno("123");
+		midHouseInfo.setRoomno("77");
+				midHouseInfo.setHouseAddress("123");
 		midHouseDao.insertBvdfHouseInfo(midHouseInfo);
 	}
 	@Test
