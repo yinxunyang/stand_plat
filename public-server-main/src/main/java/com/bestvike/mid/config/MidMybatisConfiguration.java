@@ -1,4 +1,4 @@
-package com.bestvike.es.config;
+package com.bestvike.mid.config;
 
 import com.github.pagehelper.PageInterceptor;
 import org.apache.commons.logging.Log;
@@ -23,7 +23,7 @@ import javax.sql.DataSource;
 import java.util.Properties;
 
 @Configuration
-@MapperScan(value = "com.bestvike.es.dao")
+@MapperScan(value = "com.bestvike.mid.dao")
 public class MidMybatisConfiguration implements ApplicationContextAware {
 
 	protected Log logger = LogFactory.getLog(this.getClass());
@@ -42,8 +42,8 @@ public class MidMybatisConfiguration implements ApplicationContextAware {
 	public SqlSessionFactory sqlSessionFactoryBean() throws Exception {
 		SqlSessionFactoryBean sqlSessionFactoryBean = new SqlSessionFactoryBean();
 		sqlSessionFactoryBean.setDataSource(dataSource());
-		sqlSessionFactoryBean.setTypeAliasesPackage("com.bestvike.pub.data");
-		sqlSessionFactoryBean.setMapperLocations(new PathMatchingResourcePatternResolver().getResources("classpath*:mapping/mid/*.xml"));
+		sqlSessionFactoryBean.setTypeAliasesPackage("com.bestvike.mid.entity");
+		sqlSessionFactoryBean.setMapperLocations(new PathMatchingResourcePatternResolver().getResources("classpath*:mapping/*.xml"));
 		tk.mybatis.mapper.session.Configuration configuration = new tk.mybatis.mapper.session.Configuration();
 		configuration.setMapUnderscoreToCamelCase(true);
 //		// 设置驼峰不自动转下划线

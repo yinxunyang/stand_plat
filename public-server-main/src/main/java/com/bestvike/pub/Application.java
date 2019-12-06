@@ -11,8 +11,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
-@SpringBootApplication(scanBasePackages = "com.bestvike.pub")
-@ServletComponentScan(basePackages = {"com.bestvike.maintenance"})
+@SpringBootApplication(scanBasePackages = "com.bestvike")
+@ServletComponentScan(basePackages = {"com.bestvike"})
 @EnableScheduling
 @EnableEncryptableProperties
 public class Application {

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bestvike.mid.dao.MidHouseDao">
+    <insert id="insertBvdfHouseInfo">
+        insert into mid_houseinfo
+        (
+        sysguid,
+        buycertnos,
+        regionname,
+        bldname,
+        cellname,
+        floorname,
+        roomno,
+        buynames,
+        houseAddress
+        )
+        values
+        (
+        SYS_GUID(),
+        #{param.buycertnos},
+        #{param.regionname},
+        #{param.bldname},
+        #{param.cellname},
+        #{param.floorname},
+        #{param.roomno},
+        #{param.buynames},
+        #{param.houseAddress}
+        )
+    </insert>
+    <!--分页查询用户列表-->
+    <select id="queryArcBuildInfoById" resultType="java.lang.String">
+        select t.bldname from arc_buildinfo t where t.bldno = '602609053'
+    </select>
+</mapper>

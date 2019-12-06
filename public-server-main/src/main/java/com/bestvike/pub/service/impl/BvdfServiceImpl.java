@@ -1,5 +1,6 @@
 package com.bestvike.pub.service.impl;
 
+import com.bestvike.mid.dao.MidHouseDao;
 import com.bestvike.portal.service.BaseService;
 import com.bestvike.pub.dao.BvdfHouseDao;
 import com.bestvike.pub.param.BvdfHouseParam;
@@ -32,6 +33,8 @@ public class BvdfServiceImpl extends BaseService implements BvdfService {
 
 	public BvdfServiceImpl() throws UnknownHostException {
 	}
+	@Autowired
+	private MidHouseDao midHouseDao;
 	/**
 	 * @Author: yinxunyang
 	 * @Description: 将bvdf房屋信息迁移至elasticsearch
