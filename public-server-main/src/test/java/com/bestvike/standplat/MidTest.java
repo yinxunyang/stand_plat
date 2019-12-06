@@ -21,6 +21,7 @@ public class MidTest extends BaseTest {
 	@Test
 	public void test12() {
 		MidHouseInfo midHouseInfo = new MidHouseInfo();
+		midHouseInfo.setBvdfhouseid("602628467");
 		midHouseInfo.setBldname("123");
 		midHouseDao.insertBvdfHouseInfo(midHouseInfo);
 	}

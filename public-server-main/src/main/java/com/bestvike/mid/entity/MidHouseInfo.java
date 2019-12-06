@@ -16,6 +16,14 @@ public class MidHouseInfo extends BaseData implements Serializable {
 
 	private static final long serialVersionUID = 7324602608457006679L;
 	/**
+	 * 主键
+	 */
+	private String sysguid;
+	/**
+	 * bvdfhouse的主键
+	 */
+	private String bvdfhouseid;
+	/**
 	 * 买受人身份证号
 	 */
 	private String buycertnos;

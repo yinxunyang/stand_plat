@@ -5,6 +5,7 @@
         insert into mid_aks.mid_houseinfo
         (
         sysguid,
+        bvdfhouseid,
         buycertnos,
         regionname,
         bldname,
@@ -17,6 +18,7 @@
         values
         (
         SYS_GUID(),
+        #{param.bvdfhouseid,jdbcType=VARCHAR},
         #{param.buycertnos,jdbcType=VARCHAR},
         #{param.regionname,jdbcType=VARCHAR},
         #{param.bldname,jdbcType=VARCHAR},
