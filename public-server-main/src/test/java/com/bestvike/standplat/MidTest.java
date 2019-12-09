@@ -2,6 +2,7 @@ package com.bestvike.standplat;
 
 import com.bestvike.mid.dao.MidHouseDao;
 import com.bestvike.pub.param.BvdfHouseParam;
+import com.bestvike.pub.service.impl.BvdfServiceImpl;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -15,6 +16,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class MidTest extends BaseTest {
 	@Autowired
 	private MidHouseDao midHouseDao;
+	@Autowired
+	private BvdfServiceImpl bvdfServiceImpl;
 
 
 	@Test
@@ -34,5 +37,10 @@ public class MidTest extends BaseTest {
 	public void test13() {
 
 		String ss = midHouseDao.queryArcBuildInfoById();
+	}
+	@Test
+	public void test14(){
+		// 定时任务
+		bvdfServiceImpl.bvdfHouseToEs();
 	}
 }
