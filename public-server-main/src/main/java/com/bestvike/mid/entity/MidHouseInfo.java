@@ -1,9 +1,7 @@
 package com.bestvike.mid.entity;
 
-import com.bestvike.portal.data.BaseData;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.boot.configurationprocessor.json.JSONObject;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;

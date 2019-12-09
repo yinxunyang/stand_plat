@@ -30,13 +30,13 @@
     <update id="updateBvdfHouseInfoById">
         update mid_aks.copy_houseinfo t
         set t.buycertnos = #{param.buycertnos,jdbcType=VARCHAR},
-        t.regionno = #{param.regionno,jdbcType=VARCHAR},
+        t.projectno = #{param.regionno,jdbcType=VARCHAR},
         t.bldno=#{param.bldno,jdbcType=VARCHAR},
         t.cellno=#{param.cellno,jdbcType=VARCHAR},
         t.floorname =  #{param.floorname,jdbcType=VARCHAR},
         t.roomno = #{param.roomno,jdbcType=VARCHAR},
         t.buynames=#{param.buynames,jdbcType=VARCHAR},
-        t.houseAddress= #{param.houseAddress,jdbcType=VARCHAR}
+        t.address= #{param.houseAddress,jdbcType=VARCHAR}
         where t.sysguid = #{param.sysguid,jdbcType=VARCHAR}
     </update>
     <!--根据主键查询中间库房屋信息-->

@@ -49,10 +49,10 @@ public class MidTest extends BaseTest {
 		BvdfHouseParam bvdfHouseParam = new BvdfHouseParam();
 		bvdfHouseParam.setSysguid("42f089a6-18dd-4756-9c31-7aa6ed7210b6");
 		bvdfHouseParam.setFloorname("测试");
-		bvdfHouseParam.setRoomno("测试");
-		bvdfHouseParam.setRegionno("测试");
-		bvdfHouseParam.setBldno("测试");
-		bvdfHouseParam.setCellno("测试");
+		bvdfHouseParam.setRoomno("1");
+		bvdfHouseParam.setRegionno("2");
+		bvdfHouseParam.setBldno("2");
+		bvdfHouseParam.setCellno("2");
 		bvdfHouseParam.setBuynames("测试");
 		bvdfHouseParam.setBuycertnos("测试");
 		bvdfHouseParam.setHouseAddress("测试");
