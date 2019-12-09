@@ -1,5 +1,6 @@
 package com.bestvike.mid.dao;
 
+import com.bestvike.mid.entity.MidHouseInfo;
 import com.bestvike.pub.param.BvdfHouseParam;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
@@ -22,5 +23,21 @@ public interface MidHouseDao {
 	 */
 	int insertBvdfHouseInfo(@Param("param") BvdfHouseParam bvdfHouseParam);
 
-	String queryArcBuildInfoById();
+	/**
+	 * @Author: yinxunyang
+	 * @Description: 根据主键往中间库更新房屋信息
+	 * @Date: 2019/12/5 11:34
+	 * @param:
+	 * @return:
+	 */
+	int updateBvdfHouseInfoById(@Param("param") BvdfHouseParam bvdfHouseParam);
+
+	/**
+	 * @Author: yinxunyang
+	 * @Description: 根据主键查询中间库房屋信息
+	 * @Date: 2019/12/9 17:05
+	 * @param:
+	 * @return:
+	 */
+	MidHouseInfo queryMidHouseInfoById(@Param("param") BvdfHouseParam bvdfHouseParam);
 }

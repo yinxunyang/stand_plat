@@ -1,5 +1,7 @@
 package com.bestvike.pub.service.impl;
 
+import com.bestvike.mid.entity.MidHouseInfo;
+import com.bestvike.mid.service.MidHouseService;
 import com.bestvike.pub.enums.ReturnCode;
 import com.bestvike.pub.exception.MsgException;
 import com.bestvike.pub.param.BvdfHouseParam;
@@ -45,6 +47,8 @@ public class BvdfServiceImpl implements BvdfService {
 	private static final Integer HOUSE_MAX_NUM = 20000;
 	@Autowired
 	private BvdfHouseService bvdfHouseService;
+	@Autowired
+	private MidHouseService midHouseService;
 	/**
 	 * @Author: yinxunyang
 	 * @Description: 将bvdf房屋信息迁移至elasticsearch
@@ -86,7 +90,9 @@ public class BvdfServiceImpl implements BvdfService {
 			bvdfHouseParamList.forEach(bvdfHouseParam -> {
 				// 新增房屋信息和迁移elasticsearch
 				try {
-					bvdfHouseService.insertCopyHouseAndEs(bvdfHouseParam, client);
+					// 根据主键查询中间库房屋信息
+					MidHouseInfo midHouseInfo = midHouseService.queryMidHouseInfoById(bvdfHouseParam);
+					bvdfHouseService.insertCopyHouseAndEs(bvdfHouseParam, client, midHouseInfo);
 				} catch (MsgException e) {
 					log.error(e + "bvdfHouseParam参数为：{}", bvdfHouseParam);
 				}

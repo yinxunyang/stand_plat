@@ -1,5 +1,6 @@
 package com.bestvike.pub.service.impl;
 
+import com.bestvike.mid.entity.MidHouseInfo;
 import com.bestvike.mid.service.MidHouseService;
 import com.bestvike.pub.dao.BvdfHouseDao;
 import com.bestvike.pub.enums.ReturnCode;
@@ -36,13 +37,22 @@ public class BvdfHouseServiceImpl implements BvdfHouseService {
 	 */
 	@Override
 	@Transactional(rollbackFor = Exception.class)
-	public void insertCopyHouseAndEs(BvdfHouseParam bvdfHouseParam, TransportClient client) throws MsgException {
-		// 新增房屋信息
-		int inNum = midHouseService.insertBvdfHouseInfo(bvdfHouseParam);
-		if (1 != inNum) {
-			throw new MsgException(ReturnCode.sdp_insert_fail, "新增中间库房屋信息失败");
+	public void insertCopyHouseAndEs(BvdfHouseParam bvdfHouseParam, TransportClient client, MidHouseInfo midHouseInfo) throws MsgException {
+		// midHouseInfo为空的话新增一条midHouseInfo，否则更新
+		if (null == midHouseInfo) {
+			// 新增房屋信息
+			int inNum = midHouseService.insertBvdfHouseInfo(bvdfHouseParam);
+			if (1 != inNum) {
+				throw new MsgException(ReturnCode.sdp_insert_fail, "新增中间库房屋信息失败");
+			}
+		} else {
+			// 更新房屋信息
+			int upNum = midHouseService.updateBvdfHouseInfoById(bvdfHouseParam);
+			if (1 != upNum) {
+				throw new MsgException(ReturnCode.sdp_update_fail, "更新中间库房屋信息失败");
+			}
 		}
-		// 往elasticsearch迁移一条数据
+		// 往elasticsearch迁移一条数据，elasticsearch主键相同会覆盖原数据，改处不用判断
 		elasticSearchService.insertElasticSearch(bvdfHouseParam, client);
 	}
 

@@ -1,6 +1,8 @@
 package com.bestvike.standplat;
 
 import com.bestvike.mid.dao.MidHouseDao;
+import com.bestvike.mid.entity.MidHouseInfo;
+import com.bestvike.mid.service.MidHouseService;
 import com.bestvike.pub.param.BvdfHouseParam;
 import com.bestvike.pub.service.impl.BvdfServiceImpl;
 import org.junit.Test;
@@ -18,6 +20,8 @@ public class MidTest extends BaseTest {
 	private MidHouseDao midHouseDao;
 	@Autowired
 	private BvdfServiceImpl bvdfServiceImpl;
+	@Autowired
+	private MidHouseService midHouseService;
 
 
 	@Test
@@ -35,8 +39,25 @@ public class MidTest extends BaseTest {
 	}
 	@Test
 	public void test13() {
-
-		String ss = midHouseDao.queryArcBuildInfoById();
+		BvdfHouseParam bvdfHouseParam = new BvdfHouseParam();
+		bvdfHouseParam.setSysguid("42f089a6-18dd-4756-9c31-7aa6ed7210b6");
+		MidHouseInfo midHouseInfo = midHouseService.queryMidHouseInfoById(bvdfHouseParam);
+		int i = 0;
+	}
+	@Test
+	public void test15() {
+		BvdfHouseParam bvdfHouseParam = new BvdfHouseParam();
+		bvdfHouseParam.setSysguid("42f089a6-18dd-4756-9c31-7aa6ed7210b6");
+		bvdfHouseParam.setFloorname("测试");
+		bvdfHouseParam.setRoomno("测试");
+		bvdfHouseParam.setRegionno("测试");
+		bvdfHouseParam.setBldno("测试");
+		bvdfHouseParam.setCellno("测试");
+		bvdfHouseParam.setBuynames("测试");
+		bvdfHouseParam.setBuycertnos("测试");
+		bvdfHouseParam.setHouseAddress("测试");
+		int ss  = midHouseService.updateBvdfHouseInfoById(bvdfHouseParam);
+		int i = 0;
 	}
 	@Test
 	public void test14(){
