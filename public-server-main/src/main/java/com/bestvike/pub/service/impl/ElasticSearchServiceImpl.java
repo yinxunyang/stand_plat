@@ -9,6 +9,7 @@ import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.common.xcontent.XContentFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -21,10 +22,26 @@ import java.io.IOException;
 @Slf4j
 @Service
 public class ElasticSearchServiceImpl implements ElasticSearchService {
+	/**
+	 * es房屋的索引
+	 */
+	@Value("${esConfig.index}")
+	private String index;
+	/**
+	 * es房屋的映射
+	 */
+	@Value("${esConfig.type}")
+	private String type;
+
+	/**
+	 * @Author: yinxunyang
+	 * @Description: 往elasticsearch迁移一条数据
+	 * @Date: 2019/12/9 15:26
+	 * @param:
+	 * @return:
+	 */
 	@Override
 	public void insertElasticSearch(BvdfHouseParam bvdfHouseParam, TransportClient client) throws MsgException {
-		String index = "house_index";
-		String type = "house_type";
 		// 唯一编号
 		String id = bvdfHouseParam.getSysguid();
 		// 拼装新增es的数据

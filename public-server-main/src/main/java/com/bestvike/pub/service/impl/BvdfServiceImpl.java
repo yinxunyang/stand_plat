@@ -11,6 +11,7 @@ import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.TransportAddress;
 import org.elasticsearch.transport.client.PreBuiltTransportClient;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +24,21 @@ import java.util.Map;
 @Service
 @Slf4j
 public class BvdfServiceImpl implements BvdfService {
+	/**
+	 * es集群的名称
+	 */
+	@Value("${esConfig.esClusterName}")
+	private String esClusterName;
+	/**
+	 * es的IP
+	 */
+	@Value("${esConfig.esIP}")
+	private String esIP;
+	/**
+	 * es的esPort
+	 */
+	@Value("${esConfig.esPort}")
+	private String esPort;
 	/**
 	 * 房屋信息表(arc_houseinfo)最大查询条数,防止内存溢出
 	 */
@@ -64,8 +80,8 @@ public class BvdfServiceImpl implements BvdfService {
 	 * @return:
 	 */
 	private void addCopyHouseAndEs(List<BvdfHouseParam> bvdfHouseParamList) {
-		try (TransportClient client = new PreBuiltTransportClient(Settings.builder().put("cluster.name", "docker-cluster").build())
-				.addTransportAddress(new TransportAddress(InetAddress.getByName("192.168.237.132"), 9300))) {
+		try (TransportClient client = new PreBuiltTransportClient(Settings.builder().put("cluster.name", esClusterName).build())
+				.addTransportAddress(new TransportAddress(InetAddress.getByName(esIP), Integer.parseInt(esPort)))) {
 			// 遍历新增房屋信息和elasticsearch
 			bvdfHouseParamList.forEach(bvdfHouseParam -> {
 				// 新增房屋信息和迁移elasticsearch

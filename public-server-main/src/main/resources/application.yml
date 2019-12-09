@@ -74,3 +74,14 @@ datasources:
       minimum-idle: 2
       maximum-pool-size: 5
       connection-test-query: select 1
+esConfig:
+  # es数据库房屋的索引
+  index: house_index
+  # es数据库房屋的映射
+  type: house_type
+  # es集群的名称
+  esClusterName: docker-cluster
+  # es的IP
+  esIP: 192.168.237.132
+  # es的port
+  esPort: 9300
