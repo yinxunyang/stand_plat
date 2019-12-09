@@ -51,7 +51,7 @@ public class BvdfServiceImpl implements BvdfService {
 		try (TransportClient client = new PreBuiltTransportClient(Settings.builder().put("cluster.name", "docker-cluster").build())
 				.addTransportAddress(new TransportAddress(InetAddress.getByName("192.168.237.132"), 9300))) {
 			// 新增房屋信息和elasticsearch
-			bvdfHouseParamList.stream().forEach(bvdfHouseParam -> {
+			bvdfHouseParamList.forEach(bvdfHouseParam -> {
 				// 新增房屋信息和迁移elasticsearch
 				try {
 					bvdfHouseService.insertCopyHouseAndEs(bvdfHouseParam, client);
@@ -59,7 +59,6 @@ public class BvdfServiceImpl implements BvdfService {
 					log.error(" 新增房屋信息和elasticsearch失败" + bvdfHouseParam);
 				}
 			});
-			client.close();
 		} catch (UnknownHostException e) {
 			log.error("连接ES失败," + e);
 		}
