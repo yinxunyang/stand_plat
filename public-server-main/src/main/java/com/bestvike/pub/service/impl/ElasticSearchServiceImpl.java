@@ -1,7 +1,7 @@
 package com.bestvike.pub.service.impl;
 
 import com.bestvike.pub.enums.ReturnCode;
-import com.bestvike.pub.exception.BusinessException;
+import com.bestvike.pub.exception.MsgException;
 import com.bestvike.pub.param.BvdfHouseParam;
 import com.bestvike.pub.service.ElasticSearchService;
 import lombok.extern.slf4j.Slf4j;
@@ -22,7 +22,7 @@ import java.io.IOException;
 @Service
 public class ElasticSearchServiceImpl implements ElasticSearchService {
 	@Override
-	public void insertElasticSearch(BvdfHouseParam bvdfHouseParam, TransportClient client) throws BusinessException {
+	public void insertElasticSearch(BvdfHouseParam bvdfHouseParam, TransportClient client) throws MsgException {
 		String index = "house_index";
 		String type = "house_type";
 		// 唯一编号
@@ -38,7 +38,7 @@ public class ElasticSearchServiceImpl implements ElasticSearchService {
 			esStatus = response.status().toString();
 		} catch (Exception e) {
 			log.error("往ElasticSearch迁移失败" + e);
-			throw new BusinessException(ReturnCode.sdp_es_insert_fail.toCode(), "往ElasticSearch迁移失败");
+			throw new MsgException(ReturnCode.sdp_es_insert_fail.toCode(), "往ElasticSearch迁移失败");
 		}
 		if ("CREATED".equals(esStatus)) {
 			log.info("往ElasticSearch新增成功一条数据");
@@ -46,7 +46,7 @@ public class ElasticSearchServiceImpl implements ElasticSearchService {
 			log.info("往ElasticSearch更新成功一条数据");
 		} else {
 			log.error("往ElasticSearch迁移失败，返回状态不是CREATED或OK，response：" + response);
-			throw new BusinessException(ReturnCode.sdp_es_insert_fail.toCode(), "往ElasticSearch迁移失败，返回状态不是CREATED或OK");
+			throw new MsgException(ReturnCode.sdp_es_insert_fail.toCode(), "往ElasticSearch迁移失败，返回状态不是CREATED或OK");
 		}
 	}
 
@@ -73,7 +73,7 @@ public class ElasticSearchServiceImpl implements ElasticSearchService {
 					.endObject();
 		} catch (IOException e) {
 			log.error("拼装ElasticSearch的数据失败" + e);
-			throw new BusinessException(ReturnCode.fail.toCode(), "拼装ElasticSearch的数据失败");
+			throw new MsgException(ReturnCode.fail.toCode(), "拼装ElasticSearch的数据失败");
 		}
 		return doc;
 	}

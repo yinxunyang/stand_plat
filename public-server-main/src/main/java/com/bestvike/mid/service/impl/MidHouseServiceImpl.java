@@ -3,7 +3,7 @@ package com.bestvike.mid.service.impl;
 import com.bestvike.mid.dao.MidHouseDao;
 import com.bestvike.mid.service.MidHouseService;
 import com.bestvike.pub.enums.ReturnCode;
-import com.bestvike.pub.exception.BusinessException;
+import com.bestvike.pub.exception.MsgException;
 import com.bestvike.pub.param.BvdfHouseParam;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +31,7 @@ public class MidHouseServiceImpl implements MidHouseService {
 			inNum = midHouseDao.insertBvdfHouseInfo(bvdfHouseParam);
 		} catch (Exception e) {
 			log.error("往中间库新增房屋信息失败" + e);
-			throw new BusinessException(ReturnCode.sdp_insert_fail.toCode(), "往中间库新增房屋信息失败");
+			throw new MsgException(ReturnCode.sdp_insert_fail.toCode(), "往中间库新增房屋信息失败");
 		}
 		return inNum;
 	}

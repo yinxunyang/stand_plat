@@ -1,7 +1,7 @@
 package com.bestvike.pub.service.impl;
 
 import com.bestvike.pub.enums.ReturnCode;
-import com.bestvike.pub.exception.BusinessException;
+import com.bestvike.pub.exception.MsgException;
 import com.bestvike.pub.param.BvdfHouseParam;
 import com.bestvike.pub.service.BvdfHouseService;
 import com.bestvike.pub.service.BvdfService;
@@ -71,13 +71,13 @@ public class BvdfServiceImpl implements BvdfService {
 				// 新增房屋信息和迁移elasticsearch
 				try {
 					bvdfHouseService.insertCopyHouseAndEs(bvdfHouseParam, client);
-				} catch (BusinessException e) {
+				} catch (MsgException e) {
 					log.error("bvdfHouseParam：" + bvdfHouseParam + e);
 				}
 			});
 		} catch (UnknownHostException e) {
 			log.error("创建elasticsearch客户端连接失败" + e);
-			throw new BusinessException(ReturnCode.sdp_sys_error.toCode(), "创建elasticsearch客户端连接失败");
+			throw new MsgException(ReturnCode.sdp_sys_error.toCode(), "创建elasticsearch客户端连接失败");
 		}
 	}
 }

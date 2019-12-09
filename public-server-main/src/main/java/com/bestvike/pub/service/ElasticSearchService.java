@@ -1,6 +1,6 @@
 package com.bestvike.pub.service;
 
-import com.bestvike.pub.exception.BusinessException;
+import com.bestvike.pub.exception.MsgException;
 import com.bestvike.pub.param.BvdfHouseParam;
 import org.elasticsearch.client.transport.TransportClient;
 
@@ -17,5 +17,5 @@ public interface ElasticSearchService {
 	 * @param:
 	 * @return:
 	 */
-	void insertElasticSearch(BvdfHouseParam bvdfHouseParam, TransportClient client) throws BusinessException;
+	void insertElasticSearch(BvdfHouseParam bvdfHouseParam, TransportClient client) throws MsgException;
 }

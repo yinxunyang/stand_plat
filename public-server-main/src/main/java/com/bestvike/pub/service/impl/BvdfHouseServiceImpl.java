@@ -3,7 +3,7 @@ package com.bestvike.pub.service.impl;
 import com.bestvike.mid.service.MidHouseService;
 import com.bestvike.pub.dao.BvdfHouseDao;
 import com.bestvike.pub.enums.ReturnCode;
-import com.bestvike.pub.exception.BusinessException;
+import com.bestvike.pub.exception.MsgException;
 import com.bestvike.pub.param.BvdfHouseParam;
 import com.bestvike.pub.service.BvdfHouseService;
 import com.bestvike.pub.service.ElasticSearchService;
@@ -36,11 +36,11 @@ public class BvdfHouseServiceImpl implements BvdfHouseService {
 	 */
 	@Override
 	@Transactional(rollbackFor = Exception.class)
-	public void insertCopyHouseAndEs(BvdfHouseParam bvdfHouseParam, TransportClient client) throws BusinessException {
+	public void insertCopyHouseAndEs(BvdfHouseParam bvdfHouseParam, TransportClient client) throws MsgException {
 		// 新增房屋信息
 		int inNum = midHouseService.insertBvdfHouseInfo(bvdfHouseParam);
 		if (1 != inNum) {
-			throw new BusinessException("新增中间库房屋信息失败");
+			throw new MsgException("新增中间库房屋信息失败");
 		}
 		// 往elasticsearch迁移一条数据
 		elasticSearchService.insertElasticSearch(bvdfHouseParam, client);
@@ -54,13 +54,13 @@ public class BvdfHouseServiceImpl implements BvdfHouseService {
 	 * @return:
 	 */
 	@Override
-	public List<BvdfHouseParam> queryBvdfHouseInfo(Map<String, Object> parameterMap) throws BusinessException {
+	public List<BvdfHouseParam> queryBvdfHouseInfo(Map<String, Object> parameterMap) throws MsgException {
 		List<BvdfHouseParam> bvdfHouseParamList;
 		try {
 			bvdfHouseParamList = bvdfHouseDao.queryBvdfHouseInfo(parameterMap);
 		} catch (Exception e) {
 			log.error("查询bvdf房屋的数据失败");
-			throw new BusinessException(ReturnCode.sdp_select_fail.toCode(), "查询bvdf房屋的数据失败");
+			throw new MsgException(ReturnCode.sdp_select_fail.toCode(), "查询bvdf房屋的数据失败");
 		}
 		return bvdfHouseParamList;
 	}
