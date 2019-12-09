@@ -5,10 +5,16 @@ import com.bestvike.pub.param.BvdfHouseParam;
 import com.bestvike.pub.service.BvdfHouseService;
 import com.bestvike.pub.service.BvdfService;
 import lombok.extern.slf4j.Slf4j;
+import org.elasticsearch.client.transport.TransportClient;
+import org.elasticsearch.common.settings.Settings;
+import org.elasticsearch.common.transport.TransportAddress;
+import org.elasticsearch.transport.client.PreBuiltTransportClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -42,14 +48,21 @@ public class BvdfServiceImpl implements BvdfService {
 			log.info("bvdf没有需要往elasticsearch迁移的数据");
 			return;
 		}
-		// 新增房屋信息和elasticsearch
-		bvdfHouseParamList.stream().forEach(bvdfHouseParam -> {
-			// 新增房屋信息和迁移elasticsearch
-			try {
-				bvdfHouseService.insertCopyHouseAndEs(bvdfHouseParam);
-			} catch (Exception e) {
-				log.error(" 新增房屋信息和elasticsearch失败" + bvdfHouseParam);
-			}
-		});
+		try (TransportClient client = new PreBuiltTransportClient(Settings.builder().put("cluster.name", "docker-cluster").build())
+				.addTransportAddress(new TransportAddress(InetAddress.getByName("192.168.237.132"), 9300))) {
+			// 新增房屋信息和elasticsearch
+			bvdfHouseParamList.stream().forEach(bvdfHouseParam -> {
+				// 新增房屋信息和迁移elasticsearch
+				try {
+					bvdfHouseService.insertCopyHouseAndEs(bvdfHouseParam, client);
+				} catch (Exception e) {
+					log.error(" 新增房屋信息和elasticsearch失败" + bvdfHouseParam);
+				}
+			});
+			client.close();
+		} catch (UnknownHostException e) {
+			log.error("连接ES失败," + e);
+		}
+
 	}
 }

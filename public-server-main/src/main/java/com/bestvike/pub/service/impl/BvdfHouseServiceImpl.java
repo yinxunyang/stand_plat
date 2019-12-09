@@ -5,6 +5,7 @@ import com.bestvike.pub.param.BvdfHouseParam;
 import com.bestvike.pub.service.BvdfHouseService;
 import com.bestvike.pub.service.ElasticSearchService;
 import lombok.extern.slf4j.Slf4j;
+import org.elasticsearch.client.transport.TransportClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,7 +28,7 @@ public class BvdfHouseServiceImpl implements BvdfHouseService {
 	 */
 	@Override
 	@Transactional(rollbackFor = Exception.class)
-	public void insertCopyHouseAndEs(BvdfHouseParam bvdfHouseParam) throws Exception {
+	public void insertCopyHouseAndEs(BvdfHouseParam bvdfHouseParam, TransportClient client) throws Exception {
 		// 新增房屋信息
 		int inNum = midHouseService.insertBvdfHouseInfo(bvdfHouseParam);
 		if (1 != inNum) {
@@ -36,6 +37,6 @@ public class BvdfHouseServiceImpl implements BvdfHouseService {
 			return;
 		}
 		// 往elasticsearch迁移一条数据
-		elasticSearchService.insertElasticSearch(bvdfHouseParam);
+		elasticSearchService.insertElasticSearch(bvdfHouseParam, client);
 	}
 }
