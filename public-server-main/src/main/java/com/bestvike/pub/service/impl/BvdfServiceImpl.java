@@ -1,6 +1,7 @@
 package com.bestvike.pub.service.impl;
 
-import com.bestvike.pub.dao.BvdfHouseDao;
+import com.bestvike.pub.enums.ReturnCode;
+import com.bestvike.pub.exception.BusinessException;
 import com.bestvike.pub.param.BvdfHouseParam;
 import com.bestvike.pub.service.BvdfHouseService;
 import com.bestvike.pub.service.BvdfService;
@@ -27,8 +28,6 @@ public class BvdfServiceImpl implements BvdfService {
 	 */
 	private static final Integer HOUSE_MAX_NUM = 20000;
 	@Autowired
-	private BvdfHouseDao bvdfHouseDao;
-	@Autowired
 	private BvdfHouseService bvdfHouseService;
 	/**
 	 * @Author: yinxunyang
@@ -41,27 +40,44 @@ public class BvdfServiceImpl implements BvdfService {
 	@Override
 	@Scheduled(fixedRate = 1000 * 60 * 5)
 	public void bvdfHouseToEs() {
-		Map<String, Object> parameterMap = new HashMap<>();
-		parameterMap.put("houseMaxNum", HOUSE_MAX_NUM);
-		List<BvdfHouseParam> bvdfHouseParamList = bvdfHouseDao.queryBvdfHouseInfo(parameterMap);
-		if (bvdfHouseParamList.isEmpty()) {
-			log.info("bvdf没有需要往elasticsearch迁移的数据");
-			return;
+		try {
+			Map<String, Object> parameterMap = new HashMap<>();
+			parameterMap.put("houseMaxNum", HOUSE_MAX_NUM);
+			// 查询bvdf房屋的数据
+			List<BvdfHouseParam> bvdfHouseParamList = bvdfHouseService.queryBvdfHouseInfo(parameterMap);
+			if (bvdfHouseParamList.isEmpty()) {
+				log.info("bvdf没有需要往elasticsearch迁移的房屋数据");
+				return;
+			}
+			// 遍历新增房屋信息和迁移elasticsearch
+			addCopyHouseAndEs(bvdfHouseParamList);
+		} catch (Exception e) {
+			log.error("定时任务：往ES迁移bvdf数据失败！" + e);
 		}
+	}
+
+	/**
+	 * @Author: yinxunyang
+	 * @Description: 遍历新增房屋信息和迁移elasticsearch
+	 * @Date: 2019/12/9 13:26
+	 * @param:
+	 * @return:
+	 */
+	private void addCopyHouseAndEs(List<BvdfHouseParam> bvdfHouseParamList) {
 		try (TransportClient client = new PreBuiltTransportClient(Settings.builder().put("cluster.name", "docker-cluster").build())
 				.addTransportAddress(new TransportAddress(InetAddress.getByName("192.168.237.132"), 9300))) {
-			// 新增房屋信息和elasticsearch
+			// 遍历新增房屋信息和elasticsearch
 			bvdfHouseParamList.forEach(bvdfHouseParam -> {
 				// 新增房屋信息和迁移elasticsearch
 				try {
 					bvdfHouseService.insertCopyHouseAndEs(bvdfHouseParam, client);
-				} catch (Exception e) {
-					log.error(" 新增房屋信息和elasticsearch失败" + bvdfHouseParam);
+				} catch (BusinessException e) {
+					log.error("bvdfHouseParam：" + bvdfHouseParam + e);
 				}
 			});
 		} catch (UnknownHostException e) {
-			log.error("连接ES失败," + e);
+			log.error("创建elasticsearch客户端连接失败" + e);
+			throw new BusinessException(ReturnCode.sdp_sys_error.toCode(), "创建elasticsearch客户端连接失败");
 		}
-
 	}
 }

@@ -4,6 +4,9 @@ import com.bestvike.pub.exception.BusinessException;
 import com.bestvike.pub.param.BvdfHouseParam;
 import org.elasticsearch.client.transport.TransportClient;
 
+import java.util.List;
+import java.util.Map;
+
 public interface BvdfHouseService {
 	/**
 	 * @Author: yinxunyang
@@ -13,4 +16,13 @@ public interface BvdfHouseService {
 	 * @return:
 	 */
 	void insertCopyHouseAndEs(BvdfHouseParam bvdfHouseParam, TransportClient client) throws BusinessException;
+
+	/**
+	 * @Author: yinxunyang
+	 * @Description: 查询bvdf房屋的数据
+	 * @Date: 2019/12/9 13:14
+	 * @param:
+	 * @return:
+	 */
+	List<BvdfHouseParam> queryBvdfHouseInfo(Map<String, Object> parameterMap);
 }

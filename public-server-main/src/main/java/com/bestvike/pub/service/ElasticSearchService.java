@@ -6,11 +6,16 @@ import org.elasticsearch.client.transport.TransportClient;
 
 /**
  * @Author: yinxunyang
- * @Description:
+ * @Description: elasticsearch
  * @Date: 2019/12/6 16:57
- * @param:
- * @return:
  */
 public interface ElasticSearchService {
+	/**
+	 * @Author: yinxunyang
+	 * @Description: 往elasticsearch迁移一条数据
+	 * @Date: 2019/12/9 13:42
+	 * @param:
+	 * @return:
+	 */
 	void insertElasticSearch(BvdfHouseParam bvdfHouseParam, TransportClient client) throws BusinessException;
 }

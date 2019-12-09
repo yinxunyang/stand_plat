@@ -15,10 +15,8 @@ import java.io.IOException;
 
 /**
  * @Author: yinxunyang
- * @Description:
+ * @Description: elasticSearch实现类
  * @Date: 2019/12/6 16:57
- * @param:
- * @return:
  */
 @Slf4j
 @Service
@@ -43,7 +41,8 @@ public class ElasticSearchServiceImpl implements ElasticSearchService {
 					.field("houseAddress", bvdfHouseParam.getHouseAddress())
 					.endObject();
 		} catch (IOException e) {
-			throw new BusinessException(ReturnCode.fail.toCode(), "拼装ElasticSearch的数据失败，bvdfHouseParam：" + bvdfHouseParam);
+			log.error("拼装ElasticSearch的数据失败" + e);
+			throw new BusinessException(ReturnCode.fail.toCode(), "拼装ElasticSearch的数据失败");
 		}
 		IndexResponse response = client.prepareIndex(index, type, id).setSource(doc).get();
 			String esStatus = response.status().toString();
@@ -52,8 +51,8 @@ public class ElasticSearchServiceImpl implements ElasticSearchService {
 			} else if ("OK".equals(esStatus)) {
 				log.info("往ElasticSearch更新成功一条数据");
 			} else {
-				throw new BusinessException("往ElasticSearch迁移失败response:" + response);
+				log.error("往ElasticSearch迁移失败，response：" + response);
+				throw new BusinessException(ReturnCode.sdp_es_insert_fail.toCode(), "往ElasticSearch迁移失败");
 			}
-
 	}
 }
