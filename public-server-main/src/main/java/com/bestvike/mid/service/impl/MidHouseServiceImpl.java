@@ -31,7 +31,7 @@ public class MidHouseServiceImpl implements MidHouseService {
 			inNum = midHouseDao.insertBvdfHouseInfo(bvdfHouseParam);
 		} catch (Exception e) {
 			log.error("往中间库新增房屋信息失败" + e);
-			throw new MsgException(ReturnCode.sdp_insert_fail.toCode(), "往中间库新增房屋信息失败");
+			throw new MsgException(ReturnCode.sdp_insert_fail, "往中间库新增房屋信息失败");
 		}
 		return inNum;
 	}

@@ -88,7 +88,7 @@ public class BvdfServiceImpl implements BvdfService {
 				try {
 					bvdfHouseService.insertCopyHouseAndEs(bvdfHouseParam, client);
 				} catch (MsgException e) {
-					log.error(e + "bvdfHouseParam参数为：" + bvdfHouseParam);
+					log.error(e + "bvdfHouseParam参数为：{}", bvdfHouseParam);
 				}
 			});
 		} catch (UnknownHostException e) {

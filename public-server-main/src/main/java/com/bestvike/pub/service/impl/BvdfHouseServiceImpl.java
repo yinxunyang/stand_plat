@@ -60,7 +60,7 @@ public class BvdfHouseServiceImpl implements BvdfHouseService {
 			bvdfHouseParamList = bvdfHouseDao.queryBvdfHouseInfo(parameterMap);
 		} catch (Exception e) {
 			log.error("查询bvdf房屋的数据失败");
-			throw new MsgException(ReturnCode.sdp_select_fail.toCode(), "查询bvdf房屋的数据失败");
+			throw new MsgException(ReturnCode.sdp_select_fail, "查询bvdf房屋的数据失败");
 		}
 		return bvdfHouseParamList;
 	}

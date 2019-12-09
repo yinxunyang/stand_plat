@@ -1,5 +1,6 @@
 package com.bestvike.pub.service.impl;
 
+import com.bestvike.pub.enums.EsStatusEnum;
 import com.bestvike.pub.enums.ReturnCode;
 import com.bestvike.pub.exception.MsgException;
 import com.bestvike.pub.param.BvdfHouseParam;
@@ -53,17 +54,18 @@ public class ElasticSearchServiceImpl implements ElasticSearchService {
 			// 往es新增数据及获取返回报文
 			response = client.prepareIndex(index, type, id).setSource(doc).get();
 			esStatus = response.status().toString();
+			log.info("esStatus状态为：{}", esStatus);
 		} catch (Exception e) {
 			log.error("往ElasticSearch迁移失败" + e);
-			throw new MsgException(ReturnCode.sdp_es_insert_fail.toCode(), "往ElasticSearch迁移失败");
+			throw new MsgException(ReturnCode.sdp_es_insert_fail, "往ElasticSearch迁移失败");
 		}
-		if ("CREATED".equals(esStatus)) {
+		if (EsStatusEnum.ES_INSERTED.getCode().equals(esStatus)) {
 			log.info("往ElasticSearch新增成功一条数据");
-		} else if ("OK".equals(esStatus)) {
+		} else if (EsStatusEnum.ES_UPDATED.getCode().equals(esStatus)) {
 			log.info("往ElasticSearch更新成功一条数据");
 		} else {
-			log.error("往ElasticSearch迁移失败，返回状态不是CREATED或OK，response：" + response);
-			throw new MsgException(ReturnCode.sdp_es_insert_fail.toCode(), "往ElasticSearch迁移失败，返回状态不是CREATED或OK");
+			log.error("往ElasticSearch迁移失败，返回状态不是CREATED或OK，response为：{}", response);
+			throw new MsgException(ReturnCode.sdp_es_insert_fail, "往ElasticSearch迁移失败，返回状态不是CREATED或OK");
 		}
 	}
 
@@ -90,7 +92,7 @@ public class ElasticSearchServiceImpl implements ElasticSearchService {
 					.endObject();
 		} catch (IOException e) {
 			log.error("拼装ElasticSearch的数据失败" + e);
-			throw new MsgException(ReturnCode.fail.toCode(), "拼装ElasticSearch的数据失败");
+			throw new MsgException(ReturnCode.fail, "拼装ElasticSearch的数据失败");
 		}
 		return doc;
 	}
