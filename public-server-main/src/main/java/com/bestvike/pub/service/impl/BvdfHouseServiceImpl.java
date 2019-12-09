@@ -40,7 +40,7 @@ public class BvdfHouseServiceImpl implements BvdfHouseService {
 		// 新增房屋信息
 		int inNum = midHouseService.insertBvdfHouseInfo(bvdfHouseParam);
 		if (1 != inNum) {
-			throw new MsgException("新增中间库房屋信息失败");
+			throw new MsgException(ReturnCode.sdp_insert_fail, "新增中间库房屋信息失败");
 		}
 		// 往elasticsearch迁移一条数据
 		elasticSearchService.insertElasticSearch(bvdfHouseParam, client);

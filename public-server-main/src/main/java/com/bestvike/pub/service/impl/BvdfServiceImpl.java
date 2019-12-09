@@ -77,7 +77,7 @@ public class BvdfServiceImpl implements BvdfService {
 			});
 		} catch (UnknownHostException e) {
 			log.error("创建elasticsearch客户端连接失败" + e);
-			throw new MsgException(ReturnCode.sdp_sys_error.toCode(), "创建elasticsearch客户端连接失败");
+			throw new MsgException(ReturnCode.sdp_sys_error, "创建elasticsearch客户端连接失败");
 		}
 	}
 }
