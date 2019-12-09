@@ -1,6 +1,7 @@
 package com.bestvike.pub.service.impl;
 
 import com.bestvike.mid.service.MidHouseService;
+import com.bestvike.pub.exception.BusinessException;
 import com.bestvike.pub.param.BvdfHouseParam;
 import com.bestvike.pub.service.BvdfHouseService;
 import com.bestvike.pub.service.ElasticSearchService;
@@ -28,7 +29,7 @@ public class BvdfHouseServiceImpl implements BvdfHouseService {
 	 */
 	@Override
 	@Transactional(rollbackFor = Exception.class)
-	public void insertCopyHouseAndEs(BvdfHouseParam bvdfHouseParam, TransportClient client) throws Exception {
+	public void insertCopyHouseAndEs(BvdfHouseParam bvdfHouseParam, TransportClient client) throws BusinessException {
 		// 新增房屋信息
 		int inNum = midHouseService.insertBvdfHouseInfo(bvdfHouseParam);
 		if (1 != inNum) {

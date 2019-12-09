@@ -1,8 +1,6 @@
 package com.bestvike.standplat;
 
 import com.bestvike.mid.dao.MidHouseDao;
-import com.bestvike.mid.entity.MidHouseInfo;
-import com.bestvike.pub.dao.ArcBuildInfoMapper;
 import com.bestvike.pub.param.BvdfHouseParam;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;

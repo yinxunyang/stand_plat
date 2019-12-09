@@ -1,5 +1,6 @@
 package com.bestvike.pub.service;
 
+import com.bestvike.pub.exception.BusinessException;
 import com.bestvike.pub.param.BvdfHouseParam;
 import org.elasticsearch.client.transport.TransportClient;
 
@@ -11,5 +12,5 @@ public interface BvdfHouseService {
 	 * @param:
 	 * @return:
 	 */
-	void insertCopyHouseAndEs(BvdfHouseParam bvdfHouseParam, TransportClient client) throws Exception;
+	void insertCopyHouseAndEs(BvdfHouseParam bvdfHouseParam, TransportClient client) throws BusinessException;
 }
