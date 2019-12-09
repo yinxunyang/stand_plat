@@ -1,5 +1,6 @@
 package com.bestvike.pub.param;
 
+import com.alibaba.fastjson.JSONObject;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -47,5 +48,10 @@ public class BvdfHouseParam {
 	 * 房屋地址
 	 */
 	private String houseAddress;
+
+	@Override
+	public String toString() {
+		return JSONObject.toJSONString(this);
+	}
 
 }
