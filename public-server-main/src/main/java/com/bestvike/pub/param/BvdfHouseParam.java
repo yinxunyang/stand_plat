@@ -21,6 +21,10 @@ public class BvdfHouseParam {
 	 */
 	private String buycertnos;
 	/**
+	 * 企业编号
+	 */
+	private String corpno;
+	/**
 	 * 小区编号
 	 */
 	private String projectno;

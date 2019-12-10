@@ -3,7 +3,7 @@ package com.bestvike.pub.service.impl;
 import com.bestvike.pub.enums.EsStatusEnum;
 import com.bestvike.pub.enums.ReturnCode;
 import com.bestvike.pub.exception.MsgException;
-import com.bestvike.pub.param.BvdfHouseParam;
+import com.bestvike.pub.param.EsHouseParam;
 import com.bestvike.pub.service.ElasticSearchService;
 import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.action.index.IndexResponse;
@@ -42,11 +42,11 @@ public class ElasticSearchServiceImpl implements ElasticSearchService {
 	 * @return:
 	 */
 	@Override
-	public void insertElasticSearch(BvdfHouseParam bvdfHouseParam, TransportClient client) throws MsgException {
+	public void insertElasticSearch(TransportClient client, EsHouseParam esHouseParam) throws MsgException {
 		// 唯一编号
-		String id = bvdfHouseParam.getSysguid();
+		String id = esHouseParam.getId();
 		// 拼装新增es的数据
-		XContentBuilder doc = organizeEsData(bvdfHouseParam);
+		XContentBuilder doc = organizeEsData(esHouseParam);
 		// es的返回状态
 		String esStatus;
 		IndexResponse response;
@@ -76,19 +76,19 @@ public class ElasticSearchServiceImpl implements ElasticSearchService {
 	 * @param:
 	 * @return:
 	 */
-	private XContentBuilder organizeEsData(BvdfHouseParam bvdfHouseParam) {
+	private XContentBuilder organizeEsData(EsHouseParam esHouseParam) {
 		XContentBuilder doc;
 		try {
 			doc = XContentFactory.jsonBuilder()
 					.startObject()
-					.field("buycertnos", bvdfHouseParam.getBuycertnos())
-					.field("regionno", bvdfHouseParam.getProjectno())
-					.field("bldno", bvdfHouseParam.getBldno())
-					.field("cellno", bvdfHouseParam.getCellno())
-					.field("floorname", bvdfHouseParam.getFloorname())
-					.field("roomno", bvdfHouseParam.getRoomno())
-					.field("buynames", bvdfHouseParam.getBuynames())
-					.field("houseAddress", bvdfHouseParam.getAddress())
+					.field("buyCertNos", esHouseParam.getBuyCertNos())
+					.field("developName", esHouseParam.getDevelopName())
+					.field("bldName", esHouseParam.getBldName())
+					.field("cellName", esHouseParam.getCellName())
+					.field("floorName", esHouseParam.getFloorName())
+					.field("roomNo", esHouseParam.getRoomno())
+					.field("buyNames", esHouseParam.getBuyNames())
+					.field("houseAddress", esHouseParam.getHouseAddress())
 					.endObject();
 		} catch (IOException e) {
 			log.error("拼装ElasticSearch的数据失败" + e);

@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.bestvike.pub.dao.BvdfHouseDao">
-	<!--分页查询用户列表-->
 	<select id="queryBvdfHouseInfo" resultType="com.bestvike.pub.param.BvdfHouseParam">
 			select * from (select  t1.sysguid,
 		        t1.buycertnos,
+		        t1.corpno,
                 t1.projectno,
                 t1.bldno,
                 t1.cellno,
@@ -16,6 +16,7 @@
 		minus
 		select  t2.sysguid,
 		        t2.buycertnos,
+		        t2.corpno,
                 t2.projectno,
                 t2.bldno,
                 t2.cellno,
@@ -28,5 +29,14 @@
 		<![CDATA[
 		where rownum <= #{houseMaxNum}
 		]]>
+	</select>
+	<select id="selectCorpNameByCorpNo" resultType="java.lang.String">
+		select corpName from arc_houseinfo where corpNo = #{corpNo,jdbcType=VARCHAR}
+	</select>
+	<select id="selectBldNameByBldNo" resultType="java.lang.String">
+		select bldName from arc_buildinfo where bldNo = #{bldNo,jdbcType=VARCHAR}
+	</select>
+	<select id="selectCellNameByCellNo" resultType="java.lang.String">
+		select cellName from arc_cellinfo where cellNo = #{cellNo,jdbcType=VARCHAR}
 	</select>
 </mapper>

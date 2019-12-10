@@ -3,6 +3,7 @@ package com.bestvike.pub.service;
 import com.bestvike.mid.entity.MidHouseInfo;
 import com.bestvike.pub.exception.MsgException;
 import com.bestvike.pub.param.BvdfHouseParam;
+import com.bestvike.pub.param.EsHouseParam;
 import org.elasticsearch.client.transport.TransportClient;
 
 import java.util.List;
@@ -16,7 +17,7 @@ public interface BvdfHouseService {
 	 * @param:
 	 * @return:
 	 */
-	void insertCopyHouseAndEs(BvdfHouseParam bvdfHouseParam, TransportClient client, MidHouseInfo midHouseInfo) throws MsgException;
+	void insertCopyHouseAndEs(BvdfHouseParam bvdfHouseParam, TransportClient client, MidHouseInfo midHouseInfo, EsHouseParam esHouseParam) throws MsgException;
 
 	/**
 	 * @Author: yinxunyang

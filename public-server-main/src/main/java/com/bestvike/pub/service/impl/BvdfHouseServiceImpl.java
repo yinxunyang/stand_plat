@@ -6,6 +6,7 @@ import com.bestvike.pub.dao.BvdfHouseDao;
 import com.bestvike.pub.enums.ReturnCode;
 import com.bestvike.pub.exception.MsgException;
 import com.bestvike.pub.param.BvdfHouseParam;
+import com.bestvike.pub.param.EsHouseParam;
 import com.bestvike.pub.service.BvdfHouseService;
 import com.bestvike.pub.service.ElasticSearchService;
 import lombok.extern.slf4j.Slf4j;
@@ -37,7 +38,7 @@ public class BvdfHouseServiceImpl implements BvdfHouseService {
 	 */
 	@Override
 	@Transactional(rollbackFor = Exception.class)
-	public void insertCopyHouseAndEs(BvdfHouseParam bvdfHouseParam, TransportClient client, MidHouseInfo midHouseInfo) throws MsgException {
+	public void insertCopyHouseAndEs(BvdfHouseParam bvdfHouseParam, TransportClient client, MidHouseInfo midHouseInfo, EsHouseParam esHouseParam) throws MsgException {
 		// midHouseInfo为空的话新增一条midHouseInfo，否则更新
 		if (null == midHouseInfo) {
 			// 新增房屋信息
@@ -52,8 +53,8 @@ public class BvdfHouseServiceImpl implements BvdfHouseService {
 				throw new MsgException(ReturnCode.sdp_update_fail, "更新中间库房屋信息失败");
 			}
 		}
-		// 往elasticsearch迁移一条数据，elasticsearch主键相同会覆盖原数据，改处不用判断
-		elasticSearchService.insertElasticSearch(bvdfHouseParam, client);
+		// 往elasticsearch迁移一条数据，elasticsearch主键相同会覆盖原数据，该处不用判断
+		elasticSearchService.insertElasticSearch(client, esHouseParam);
 	}
 
 	/**

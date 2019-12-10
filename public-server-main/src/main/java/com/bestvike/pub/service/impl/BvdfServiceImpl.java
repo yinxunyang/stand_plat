@@ -2,9 +2,11 @@ package com.bestvike.pub.service.impl;
 
 import com.bestvike.mid.entity.MidHouseInfo;
 import com.bestvike.mid.service.MidHouseService;
+import com.bestvike.pub.dao.BvdfHouseDao;
 import com.bestvike.pub.enums.ReturnCode;
 import com.bestvike.pub.exception.MsgException;
 import com.bestvike.pub.param.BvdfHouseParam;
+import com.bestvike.pub.param.EsHouseParam;
 import com.bestvike.pub.service.BvdfHouseService;
 import com.bestvike.pub.service.BvdfService;
 import lombok.extern.slf4j.Slf4j;
@@ -16,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -49,6 +52,8 @@ public class BvdfServiceImpl implements BvdfService {
 	private BvdfHouseService bvdfHouseService;
 	@Autowired
 	private MidHouseService midHouseService;
+	@Autowired
+	private BvdfHouseDao bvdfHouseDao;
 	/**
 	 * @Author: yinxunyang
 	 * @Description: 将bvdf房屋信息迁移至elasticsearch
@@ -92,7 +97,9 @@ public class BvdfServiceImpl implements BvdfService {
 				try {
 					// 根据主键查询中间库房屋信息
 					MidHouseInfo midHouseInfo = midHouseService.queryMidHouseInfoById(bvdfHouseParam);
-					bvdfHouseService.insertCopyHouseAndEs(bvdfHouseParam, client, midHouseInfo);
+					// 组织往elasticSearch推送的数据
+					EsHouseParam esHouseParam = organizeEsHouseParam(bvdfHouseParam);
+					bvdfHouseService.insertCopyHouseAndEs(bvdfHouseParam, client, midHouseInfo, esHouseParam);
 				} catch (MsgException e) {
 					log.error(e + "bvdfHouseParam参数为：{}", bvdfHouseParam);
 				}
@@ -100,6 +107,56 @@ public class BvdfServiceImpl implements BvdfService {
 		} catch (UnknownHostException e) {
 			log.error("创建elasticsearch客户端连接失败" + e);
 			throw new MsgException(ReturnCode.sdp_sys_error, "创建elasticsearch客户端连接失败");
+		}
+	}
+
+	/**
+	 * @Author: yinxunyang
+	 * @Description: 组织往elasticSearch推送的数据
+	 * @Date: 2019/12/10 13:29
+	 * @param:
+	 * @return:
+	 */
+	private EsHouseParam organizeEsHouseParam(BvdfHouseParam bvdfHouseParam) {
+		try {
+			EsHouseParam esHouseParam = new EsHouseParam();
+			esHouseParam.setId(bvdfHouseParam.getSysguid());
+			String corpName = null;
+			if (!StringUtils.isEmpty(bvdfHouseParam.getCorpno())) {
+				corpName = bvdfHouseDao.selectCorpNameByCorpNo(bvdfHouseParam.getCorpno());
+			}
+			if (StringUtils.isEmpty(corpName)) {
+				corpName = "无";
+			}
+			// 开发企业名称
+			esHouseParam.setDevelopName(corpName);
+			String bldName = null;
+			if (!StringUtils.isEmpty(bvdfHouseParam.getBldno())) {
+				bldName = bvdfHouseDao.selectBldNameByBldNo(bvdfHouseParam.getBldno());
+			}
+			if (StringUtils.isEmpty(bldName)) {
+				bldName = "无";
+			}
+			// 楼幢名称
+			esHouseParam.setBldName(bldName);
+			String cellName = null;
+			if (!StringUtils.isEmpty(bvdfHouseParam.getCellno())) {
+				cellName = bvdfHouseDao.selectCellNameByCellNo(bvdfHouseParam.getCellno());
+			}
+			if (StringUtils.isEmpty(cellName)) {
+				cellName = "无";
+			}
+			// 单元名称
+			esHouseParam.setCellName(cellName);
+			esHouseParam.setFloorName(bvdfHouseParam.getFloorname());
+			esHouseParam.setRoomno(bvdfHouseParam.getRoomno());
+			esHouseParam.setBuyCertNos(bvdfHouseParam.getBuycertnos());
+			esHouseParam.setBuyNames(bvdfHouseParam.getBuynames());
+			esHouseParam.setHouseAddress(bvdfHouseParam.getAddress());
+			return esHouseParam;
+		} catch (Exception e) {
+			log.error("组织往elasticSearch推送的数据失败" + e);
+			throw new MsgException(ReturnCode.sdp_select_fail, "组织往elasticSearch推送的数据失败");
 		}
 	}
 }
