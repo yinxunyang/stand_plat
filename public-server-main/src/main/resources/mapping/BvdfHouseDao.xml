@@ -11,7 +11,8 @@
                 t1.floorname,
                 t1.roomno,
                 t1.buynames,
-                t1.address
+                t1.address,
+                t1.housetype
 		from arc_houseinfo t1
 		minus
 		select  t2.sysguid,
@@ -23,7 +24,8 @@
                 t2.floorname,
                 t2.roomno,
                 t2.buynames,
-                t2.address
+                t2.address,
+                t2.housetype
 		from mid_aks.copy_houseinfo t2
 		)
 		<![CDATA[
@@ -37,6 +39,6 @@
 		select bldName from arc_buildinfo where bldNo = #{bldNo,jdbcType=VARCHAR}
 	</select>
 	<select id="selectCellNameByCellNo" resultType="java.lang.String">
-		select cellName from arc_cellinfo where bldNo = #{bldNo,jdbcType=VARCHAR} and cellNo = #{cellNo,jdbcType=VARCHAR}
+		select cellName from arc_cellinfo where bldNo = #{bldNo,jdbcType=VARCHAR} and cellNo = #{cellNo,jdbcType=VARCHAR} and housetype = #{housetype,jdbcType=VARCHAR}
 	</select>
 </mapper>

@@ -143,10 +143,12 @@ public class BvdfServiceImpl implements BvdfService {
 			esHouseParam.setBldName(bldName);
 			String cellName = null;
 			String cellNo = bvdfHouseParam.getCellno();
+			String housetype = bvdfHouseParam.getHousetype();
 			if (!StringUtils.isEmpty(cellNo) && !StringUtils.isEmpty(bldNo)) {
 				Map<String, Object> parameterMap = new HashMap<>();
 				parameterMap.put("cellNo", cellNo);
 				parameterMap.put("bldNo", bldNo);
+				parameterMap.put("housetype", housetype);
 				cellName = bvdfHouseDao.selectCellNameByCellNo(parameterMap);
 			}
 			if (StringUtils.isEmpty(cellName)) {

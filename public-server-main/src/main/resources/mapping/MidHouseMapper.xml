@@ -13,7 +13,8 @@
         floorname,
         roomno,
         buynames,
-        address
+        address,
+        housetype
         )
         values
         (
@@ -26,7 +27,8 @@
         #{param.floorname,jdbcType=VARCHAR},
         #{param.roomno,jdbcType=VARCHAR},
         #{param.buynames,jdbcType=VARCHAR},
-        #{param.address,jdbcType=VARCHAR}
+        #{param.address,jdbcType=VARCHAR},
+        #{param.housetype,jdbcType=VARCHAR}
         )
     </insert>
     <update id="updateBvdfHouseInfoById">
@@ -39,7 +41,8 @@
         t.floorname =  #{param.floorname,jdbcType=VARCHAR},
         t.roomno = #{param.roomno,jdbcType=VARCHAR},
         t.buynames=#{param.buynames,jdbcType=VARCHAR},
-        t.address= #{param.address,jdbcType=VARCHAR}
+        t.address= #{param.address,jdbcType=VARCHAR},
+        t.housetype= #{param.housetype,jdbcType=VARCHAR}
         where t.sysguid = #{param.sysguid,jdbcType=VARCHAR}
     </update>
     <!--根据主键查询中间库房屋信息-->

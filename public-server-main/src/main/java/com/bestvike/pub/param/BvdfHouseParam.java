@@ -52,6 +52,10 @@ public class BvdfHouseParam {
 	 * 房屋地址
 	 */
 	private String address;
+	/**
+	 * 房屋性质
+	 */
+	private String housetype;
 
 	@Override
 	public String toString() {
