@@ -3,6 +3,7 @@ package com.bestvike.standplat;
 import com.bestvike.mid.dao.MidHouseDao;
 import com.bestvike.mid.entity.MidHouseInfo;
 import com.bestvike.mid.service.MidHouseService;
+import com.bestvike.pub.dao.BvdfHouseDao;
 import com.bestvike.pub.param.BvdfHouseParam;
 import com.bestvike.pub.service.impl.BvdfServiceImpl;
 import org.junit.Test;
@@ -22,6 +23,8 @@ public class MidTest extends BaseTest {
 	private BvdfServiceImpl bvdfServiceImpl;
 	@Autowired
 	private MidHouseService midHouseService;
+	@Autowired
+	private BvdfHouseDao bvdfHouseDao;
 
 
 	@Test
@@ -32,9 +35,9 @@ public class MidTest extends BaseTest {
 		midHouseInfo.setCellno("12");
 		midHouseInfo.setFloorname("123");
 		midHouseInfo.setBuycertnos("456");
-		midHouseInfo.setRegionno("123");
+		midHouseInfo.setProjectno("123");
 		midHouseInfo.setRoomno("77");
-				midHouseInfo.setHouseAddress("123");
+		midHouseInfo.setAddress("123");
 		midHouseDao.insertBvdfHouseInfo(midHouseInfo);
 	}
 	@Test
@@ -50,12 +53,12 @@ public class MidTest extends BaseTest {
 		bvdfHouseParam.setSysguid("42f089a6-18dd-4756-9c31-7aa6ed7210b6");
 		bvdfHouseParam.setFloorname("测试");
 		bvdfHouseParam.setRoomno("1");
-		bvdfHouseParam.setRegionno("2");
+		bvdfHouseParam.setProjectno("2");
 		bvdfHouseParam.setBldno("2");
 		bvdfHouseParam.setCellno("2");
 		bvdfHouseParam.setBuynames("测试");
 		bvdfHouseParam.setBuycertnos("测试");
-		bvdfHouseParam.setHouseAddress("测试");
+		bvdfHouseParam.setAddress("测试");
 		int ss  = midHouseService.updateBvdfHouseInfoById(bvdfHouseParam);
 		int i = 0;
 	}
@@ -64,4 +67,21 @@ public class MidTest extends BaseTest {
 		// 定时任务
 		bvdfServiceImpl.bvdfHouseToEs();
 	}
+
+	@Test
+	public void test16() {
+		String corpName = bvdfHouseDao.selectCorpNameByCorpNo("3181041084");
+		int i = 0;
+	}
+	@Test
+	public void test17() {
+		String bldName = bvdfHouseDao.selectBldNameByBldNo("602609797");
+		int i = 0;
+	}
+	@Test
+	public void test18() {
+		String cellName = bvdfHouseDao.selectCellNameByCellNo("602609430");
+		int i = 0;
+	}
+
 }
