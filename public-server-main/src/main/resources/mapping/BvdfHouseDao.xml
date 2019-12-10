@@ -31,7 +31,7 @@
 		]]>
 	</select>
 	<select id="selectCorpNameByCorpNo" resultType="java.lang.String">
-		select corpName from arc_houseinfo where corpNo = #{corpNo,jdbcType=VARCHAR}
+		select corpName from arc_corpinfo where corpNo = #{corpNo,jdbcType=VARCHAR}
 	</select>
 	<select id="selectBldNameByBldNo" resultType="java.lang.String">
 		select bldName from arc_buildinfo where bldNo = #{bldNo,jdbcType=VARCHAR}
