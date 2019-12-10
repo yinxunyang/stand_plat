@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bestvike.bvrfis.dao.BvrfisHouseDao">
+	<select id="queryBvrfisHouseInfo" resultType="com.bestvike.bvrfis.param.BvrfisHouseParam">
+			select * from (select
+							t1.sysGuid,
+							t1.bldNo,
+							t1.cellNo,
+							t1.floorNo,
+							t1.roomNo,
+							t1.address,
+							t1.houseType
+		from arc_houseinfo t1
+		minus
+		select
+				t2.sysGuid,
+				t2.bldNo,
+				t2.cellNo,
+				t2.floorNo,
+				t2.roomNo,
+				t2.address,
+				t2.houseType
+		from mid_aks.arc_houseinfo t2
+		)
+		<![CDATA[
+		where rownum <= #{houseMaxNum}
+
+		]]>
+	</select>
+</mapper>
