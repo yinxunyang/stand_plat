@@ -122,8 +122,9 @@ public class BvdfServiceImpl implements BvdfService {
 			EsHouseParam esHouseParam = new EsHouseParam();
 			esHouseParam.setId(bvdfHouseParam.getSysguid());
 			String corpName = null;
-			if (!StringUtils.isEmpty(bvdfHouseParam.getCorpno())) {
-				corpName = bvdfHouseDao.selectCorpNameByCorpNo(bvdfHouseParam.getCorpno());
+			String corpNo = bvdfHouseParam.getCorpno();
+			if (!StringUtils.isEmpty(corpNo)) {
+				corpName = bvdfHouseDao.selectCorpNameByCorpNo(corpNo);
 			}
 			if (StringUtils.isEmpty(corpName)) {
 				corpName = "无";
@@ -131,8 +132,9 @@ public class BvdfServiceImpl implements BvdfService {
 			// 开发企业名称
 			esHouseParam.setDevelopName(corpName);
 			String bldName = null;
-			if (!StringUtils.isEmpty(bvdfHouseParam.getBldno())) {
-				bldName = bvdfHouseDao.selectBldNameByBldNo(bvdfHouseParam.getBldno());
+			String bldNo = bvdfHouseParam.getBldno();
+			if (!StringUtils.isEmpty(bldNo)) {
+				bldName = bvdfHouseDao.selectBldNameByBldNo(bldNo);
 			}
 			if (StringUtils.isEmpty(bldName)) {
 				bldName = "无";
@@ -140,8 +142,12 @@ public class BvdfServiceImpl implements BvdfService {
 			// 楼幢名称
 			esHouseParam.setBldName(bldName);
 			String cellName = null;
-			if (!StringUtils.isEmpty(bvdfHouseParam.getCellno())) {
-				cellName = bvdfHouseDao.selectCellNameByCellNo(bvdfHouseParam.getCellno());
+			String cellNo = bvdfHouseParam.getCellno();
+			if (!StringUtils.isEmpty(cellNo) && !StringUtils.isEmpty(bldNo)) {
+				Map<String, Object> parameterMap = new HashMap<>();
+				parameterMap.put("cellNo", cellNo);
+				parameterMap.put("bldNo", bldNo);
+				cellName = bvdfHouseDao.selectCellNameByCellNo(parameterMap);
 			}
 			if (StringUtils.isEmpty(cellName)) {
 				cellName = "无";

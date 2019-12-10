@@ -9,6 +9,9 @@ import com.bestvike.pub.service.impl.BvdfServiceImpl;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * @Author: yinxunyang
  * @Description: 中间表单元测试类
@@ -80,7 +83,10 @@ public class MidTest extends BaseTest {
 	}
 	@Test
 	public void test18() {
-		String cellName = bvdfHouseDao.selectCellNameByCellNo("602609430");
+		Map<String, Object> parameterMap = new HashMap<>();
+		parameterMap.put("cellNo", "002");
+		parameterMap.put("bldNo", "600551057");
+		String cellName = bvdfHouseDao.selectCellNameByCellNo(parameterMap);
 		int i = 0;
 	}
 

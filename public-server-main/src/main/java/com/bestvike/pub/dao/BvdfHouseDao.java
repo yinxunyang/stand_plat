@@ -49,5 +49,5 @@ public interface BvdfHouseDao {
 	 * @param:
 	 * @return:
 	 */
-	String selectCellNameByCellNo(String cellNo);
+	String selectCellNameByCellNo(Map<String, Object> parameterMap);
 }

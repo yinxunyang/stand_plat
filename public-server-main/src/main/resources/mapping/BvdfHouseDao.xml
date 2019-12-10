@@ -37,6 +37,6 @@
 		select bldName from arc_buildinfo where bldNo = #{bldNo,jdbcType=VARCHAR}
 	</select>
 	<select id="selectCellNameByCellNo" resultType="java.lang.String">
-		select cellName from arc_cellinfo where cellNo = #{cellNo,jdbcType=VARCHAR}
+		select cellName from arc_cellinfo where bldNo = #{bldNo,jdbcType=VARCHAR} and cellNo = #{cellNo,jdbcType=VARCHAR}
 	</select>
 </mapper>
