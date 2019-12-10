@@ -74,6 +74,15 @@ datasources:
       minimum-idle: 2
       maximum-pool-size: 5
       connection-test-query: select 1
+  bvrfis:
+    jdbc-url: jdbc:oracle:thin:@127.0.0.1:1521/orcl
+    driver-class-name: oracle.jdbc.driver.OracleDriver
+    username: bvrfis_aks
+    password: bvrfis_aks
+    hikari:
+      minimum-idle: 2
+      maximum-pool-size: 5
+      connection-test-query: select 1
 esConfig:
   # es数据库房屋的索引
   index: house_index
