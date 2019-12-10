@@ -6,48 +6,48 @@ import lombok.Setter;
 
 /**
  * @Author: yinxunyang
- * @Description: bvdf的房屋信息参数类
+ * @Description: elasticSearch的房屋信息参数类
  * @Date: 2019/12/5 11:08
  */
 @Getter
 @Setter
-public class BvdfHouseParam {
+public class EsHouseParam {
 	/**
 	 * 主键
 	 */
-	private String sysguid;
+	private String id;
 	/**
-	 * 买受人身份证号
+	 * 开发企业名称
 	 */
-	private String buycertnos;
+	private String developName;
 	/**
-	 * 小区编号
+	 * 楼幢名称
 	 */
-	private String projectno;
+	private String bldName;
 	/**
-	 * 楼幢编号
+	 * 单元名称
 	 */
-	private String bldno;
-	/**
-	 * 单元编号
-	 */
-	private String cellno;
+	private String cellName;
 	/**
 	 * 楼层名称
 	 */
-	private String floorname;
+	private String floorName;
 	/**
 	 * 室号
 	 */
 	private String roomno;
 	/**
+	 * 买受人身份证号
+	 */
+	private String buyCertNos;
+	/**
 	 * 房屋买受人
 	 */
-	private String buynames;
+	private String buyNames;
 	/**
 	 * 房屋地址
 	 */
-	private String address;
+	private String houseAddress;
 
 	@Override
 	public String toString() {

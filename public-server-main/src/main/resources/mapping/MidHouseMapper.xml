@@ -18,25 +18,25 @@
         (
         #{param.sysguid,jdbcType=VARCHAR},
         #{param.buycertnos,jdbcType=VARCHAR},
-        #{param.regionno,jdbcType=VARCHAR},
+        #{param.projectno,jdbcType=VARCHAR},
         #{param.bldno,jdbcType=VARCHAR},
         #{param.cellno,jdbcType=VARCHAR},
         #{param.floorname,jdbcType=VARCHAR},
         #{param.roomno,jdbcType=VARCHAR},
         #{param.buynames,jdbcType=VARCHAR},
-        #{param.houseAddress,jdbcType=VARCHAR}
+        #{param.address,jdbcType=VARCHAR}
         )
     </insert>
     <update id="updateBvdfHouseInfoById">
         update mid_aks.copy_houseinfo t
         set t.buycertnos = #{param.buycertnos,jdbcType=VARCHAR},
-        t.projectno = #{param.regionno,jdbcType=VARCHAR},
+        t.projectno = #{param.projectno,jdbcType=VARCHAR},
         t.bldno=#{param.bldno,jdbcType=VARCHAR},
         t.cellno=#{param.cellno,jdbcType=VARCHAR},
         t.floorname =  #{param.floorname,jdbcType=VARCHAR},
         t.roomno = #{param.roomno,jdbcType=VARCHAR},
         t.buynames=#{param.buynames,jdbcType=VARCHAR},
-        t.address= #{param.houseAddress,jdbcType=VARCHAR}
+        t.address= #{param.address,jdbcType=VARCHAR}
         where t.sysguid = #{param.sysguid,jdbcType=VARCHAR}
     </update>
     <!--根据主键查询中间库房屋信息-->

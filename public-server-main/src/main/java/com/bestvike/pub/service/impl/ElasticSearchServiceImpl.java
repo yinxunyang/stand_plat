@@ -82,13 +82,13 @@ public class ElasticSearchServiceImpl implements ElasticSearchService {
 			doc = XContentFactory.jsonBuilder()
 					.startObject()
 					.field("buycertnos", bvdfHouseParam.getBuycertnos())
-					.field("regionno", bvdfHouseParam.getRegionno())
+					.field("regionno", bvdfHouseParam.getProjectno())
 					.field("bldno", bvdfHouseParam.getBldno())
 					.field("cellno", bvdfHouseParam.getCellno())
 					.field("floorname", bvdfHouseParam.getFloorname())
 					.field("roomno", bvdfHouseParam.getRoomno())
 					.field("buynames", bvdfHouseParam.getBuynames())
-					.field("houseAddress", bvdfHouseParam.getHouseAddress())
+					.field("houseAddress", bvdfHouseParam.getAddress())
 					.endObject();
 		} catch (IOException e) {
 			log.error("拼装ElasticSearch的数据失败" + e);

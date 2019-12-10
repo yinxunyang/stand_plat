@@ -5,13 +5,13 @@
 	<select id="queryBvdfHouseInfo" resultType="com.bestvike.pub.param.BvdfHouseParam">
 			select * from (select  t1.sysguid,
 		        t1.buycertnos,
-                t1.projectno as regionno,
+                t1.projectno,
                 t1.bldno,
                 t1.cellno,
                 t1.floorname,
                 t1.roomno,
                 t1.buynames,
-                t1.address as houseAddress
+                t1.address
 		from arc_houseinfo t1
 		minus
 		select  t2.sysguid,
@@ -22,7 +22,7 @@
                 t2.floorname,
                 t2.roomno,
                 t2.buynames,
-                t2.address as houseAddress
+                t2.address
 		from mid_aks.copy_houseinfo t2
 		)
 		<![CDATA[
