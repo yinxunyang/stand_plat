@@ -16,6 +16,10 @@ public class BvrfisBldParam {
 	 * 楼幢名称
 	 */
 	private String bldName;
+	/**
+	 * 楼幢名称
+	 */
+	private String developNo;
 
 	@Override
 	public String toString() {

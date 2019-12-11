@@ -37,6 +37,11 @@ public class BvrfisTest extends BaseTest {
 		BvrfisBldParam bvrfisBldParam = bvrfisHouseDao.queryBldInfoByBldNo("04002582");
 		int i = 0;
 	}
+	@Test
+	public void test3() {
+		String developName = bvrfisHouseDao.selectDevelopNameByDevelopNo("01000087");
+		int i = 0;
+	}
 
 
 }

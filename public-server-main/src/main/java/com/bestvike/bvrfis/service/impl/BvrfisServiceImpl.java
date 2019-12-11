@@ -78,20 +78,30 @@ public class BvrfisServiceImpl implements BvrfisService {
 	 */
 	private EsHouseParam organizeMatchEsParam(BvrfisHouseParam bvrfisHouseParam) {
 		EsHouseParam esHouseParam = new EsHouseParam();
-		esHouseParam.setDevelopName("临时");
 		// 楼幢名称
 		String bldName = null;
+		// 开发企业编号
+		String developNo = null;
 		String bldNo = bvrfisHouseParam.getBldNo();
 		if (!StringUtils.isEmpty(bldNo)) {
 			BvrfisBldParam bvrfisBldParam = bvrfisHouseDao.queryBldInfoByBldNo(bldNo);
 			if (null != bvrfisBldParam) {
 				bldName = bvrfisBldParam.getBldName();
+				developNo = bvrfisBldParam.getDevelopNo();
 			}
 		}
 		if (StringUtils.isEmpty(bldName)) {
 			bldName = "无";
 		}
 		esHouseParam.setBldName(bldName);
+		String developName = null;
+		if (!StringUtils.isEmpty(developNo)) {
+			developName = bvrfisHouseDao.selectDevelopNameByDevelopNo(developNo);
+		}
+		if (StringUtils.isEmpty(developName)) {
+			developName = "无";
+		}
+		esHouseParam.setDevelopName(developName);
 		esHouseParam.setCellName("临时");
 		esHouseParam.setFloorName("临时");
 		esHouseParam.setRoomno(bvrfisHouseParam.getRoomNo());

@@ -63,7 +63,7 @@ public class BvdfServiceImpl implements BvdfService {
 	 * @return:
 	 */
 	@Override
-	@Scheduled(fixedRate = 1000 * 60 * 5)
+	//@Scheduled(fixedRate = 1000 * 60 * 5)
 	public void bvdfHouseToEs() {
 		try {
 			Map<String, Object> parameterMap = new HashMap<>();

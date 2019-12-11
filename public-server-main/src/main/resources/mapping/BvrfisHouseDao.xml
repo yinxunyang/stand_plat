@@ -30,4 +30,7 @@
 	<select id="queryBldInfoByBldNo" resultType="com.bestvike.bvrfis.param.BvrfisBldParam">
 		select bldName from bvrfis_aks.Arc_BldInfo where bldNo = #{bldNo,jdbcType=VARCHAR}
 	</select>
+	<select id="selectDevelopNameByDevelopNo" resultType="java.lang.String">
+		select corpName from bvrfis_aks.Arc_CorpInfo where corpNo = #{corpNo,jdbcType=VARCHAR}
+	</select>
 </mapper>

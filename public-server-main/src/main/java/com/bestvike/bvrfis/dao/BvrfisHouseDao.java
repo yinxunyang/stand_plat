@@ -33,4 +33,12 @@ public interface BvrfisHouseDao {
 	 * @return:
 	 */
 	BvrfisBldParam queryBldInfoByBldNo(String bldNo);
+	/**
+	 * @Author: yinxunyang
+	 * @Description: 根据企业编号查询企业名称
+	 * @Date: 2019/12/10 13:50
+	 * @param:
+	 * @return:
+	 */
+	String selectDevelopNameByDevelopNo(String developNo);
 }
