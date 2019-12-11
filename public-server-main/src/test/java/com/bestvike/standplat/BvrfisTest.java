@@ -42,6 +42,14 @@ public class BvrfisTest extends BaseTest {
 		String developName = bvrfisHouseDao.selectDevelopNameByDevelopNo("01000087");
 		int i = 0;
 	}
-
+	@Test
+	public void test4() {
+		Map<String, Object> parameterMap = new HashMap<>();
+		parameterMap.put("cellNo", "003");
+		parameterMap.put("bldNo", "04002256");
+		parameterMap.put("houseProp", "01");
+		String cellName = bvrfisHouseDao.selectCellNameByNo(parameterMap);
+		int i = 0;
+	}
 
 }

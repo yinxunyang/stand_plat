@@ -39,7 +39,7 @@ public class BvrfisHouseParam {
 	/**
 	 * 房屋性质
 	 */
-	private String houseType;
+	private String houseProp;
 
 	@Override
 	public String toString() {

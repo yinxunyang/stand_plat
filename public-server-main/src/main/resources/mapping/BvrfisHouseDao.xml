@@ -9,7 +9,7 @@
 							t1.floorNo,
 							t1.roomNo,
 							t1.address,
-							t1.houseType
+							t1.houseProp
 		from arc_houseinfo t1
 		minus
 		select
@@ -19,7 +19,7 @@
 				t2.floorNo,
 				t2.roomNo,
 				t2.address,
-				t2.houseType
+				t2.houseProp
 		from mid_aks.arc_houseinfo t2
 		)
 		<![CDATA[
@@ -32,5 +32,8 @@
 	</select>
 	<select id="selectDevelopNameByDevelopNo" resultType="java.lang.String">
 		select corpName from bvrfis_aks.Arc_CorpInfo where corpNo = #{corpNo,jdbcType=VARCHAR}
+	</select>
+	<select id="selectCellNameByNo" resultType="java.lang.String">
+		select cellName from bvrfis_aks.Arc_CellInfo where bldNo = #{bldNo,jdbcType=VARCHAR} and cellNo = #{cellNo,jdbcType=VARCHAR} and houseProp = #{houseProp,jdbcType=VARCHAR}
 	</select>
 </mapper>

@@ -41,4 +41,12 @@ public interface BvrfisHouseDao {
 	 * @return:
 	 */
 	String selectDevelopNameByDevelopNo(String developNo);
+	/**
+	 * @Author: yinxunyang
+	 * @Description: 根据单元编号查询单元名称
+	 * @Date: 2019/12/10 14:12
+	 * @param:
+	 * @return:
+	 */
+	String selectCellNameByNo(Map<String, Object> parameterMap);
 }
