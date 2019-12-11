@@ -5,6 +5,7 @@ import com.bestvike.bvrfis.dao.BvrfisHouseDao;
 import com.bestvike.bvrfis.param.BvrfisBldParam;
 import com.bestvike.bvrfis.param.BvrfisHouseParam;
 import com.bestvike.bvrfis.param.BvrfisOwnerInfoParam;
+import com.bestvike.bvrfis.param.BvrfisShareOwnerInfoParam;
 import com.bestvike.bvrfis.service.BvrfisHouseService;
 import com.bestvike.bvrfis.service.BvrfisService;
 import com.bestvike.commons.exception.MsgException;
@@ -134,6 +135,7 @@ public class BvrfisServiceImpl implements BvrfisService {
 		String houseGuid = bvrfisHouseParam.getSysGuid();
 		String buyCertNos = null;
 		String buyNames = null;
+		String subAccount = null;
 		if (!StringUtils.isEmpty(houseGuid)) {
 			Map<String, Object> parameterMap = new HashMap<>();
 			parameterMap.put("houseGuid", houseGuid);
@@ -142,8 +144,11 @@ public class BvrfisServiceImpl implements BvrfisService {
 			BvrfisOwnerInfoParam bvrfisOwnerInfoParam = bvrfisHouseDao.selectOwnerInfoByHouseId(parameterMap);
 			String certNo = bvrfisOwnerInfoParam.getCertNo();
 			String ownerName = bvrfisOwnerInfoParam.getOwnerName();
+			subAccount = bvrfisOwnerInfoParam.getSubAccount();
+		}
+		if (!StringUtils.isEmpty(subAccount)) {
 			// 查询共有人
-
+			List<BvrfisShareOwnerInfoParam> bvrfisShareOwnerInfoList = bvrfisHouseDao.selectShareOwnerInfoByHouseId(subAccount);
 		}
 		if (StringUtils.isEmpty(buyCertNos)) {
 			buyCertNos = "无";

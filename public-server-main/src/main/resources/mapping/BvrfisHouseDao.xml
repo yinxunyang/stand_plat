@@ -42,4 +42,7 @@
 	<select id="selectOwnerInfoByHouseId" resultType="com.bestvike.bvrfis.param.BvrfisOwnerInfoParam">
 		select subAccount, certNo, ownerName from bvrfis_aks.Arc_OwnerInfo where houseGuid = #{houseGuid,jdbcType=VARCHAR} and state = #{state,jdbcType=VARCHAR}
 	</select>
+	<select id="selectShareOwnerInfoByHouseId" resultType="com.bestvike.bvrfis.param.BvrfisShareOwnerInfoParam">
+		select certNo, ownerName from bvrfis_aks.Arc_ShareOwnerInfo where subAccount = #{subAccount,jdbcType=VARCHAR}
+	</select>
 </mapper>

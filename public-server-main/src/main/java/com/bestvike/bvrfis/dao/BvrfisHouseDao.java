@@ -3,6 +3,7 @@ package com.bestvike.bvrfis.dao;
 import com.bestvike.bvrfis.param.BvrfisBldParam;
 import com.bestvike.bvrfis.param.BvrfisHouseParam;
 import com.bestvike.bvrfis.param.BvrfisOwnerInfoParam;
+import com.bestvike.bvrfis.param.BvrfisShareOwnerInfoParam;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -68,4 +69,13 @@ public interface BvrfisHouseDao {
 	 * @return:
 	 */
 	BvrfisOwnerInfoParam selectOwnerInfoByHouseId(Map<String, Object> parameterMap);
+
+	/**
+	 * @Author: yinxunyang
+	 * @Description: 根据业主账户查询共有人信息
+	 * @Date: 2019/12/11 14:06
+	 * @param:
+	 * @return:
+	 */
+	List<BvrfisShareOwnerInfoParam> selectShareOwnerInfoByHouseId(String subAccount);
 }
