@@ -1,6 +1,8 @@
 package com.bestvike.bvrfis.service.impl;
 
 import com.bestvike.bvdf.param.EsHouseParam;
+import com.bestvike.bvrfis.dao.BvrfisHouseDao;
+import com.bestvike.bvrfis.param.BvrfisBldParam;
 import com.bestvike.bvrfis.param.BvrfisHouseParam;
 import com.bestvike.bvrfis.service.BvrfisHouseService;
 import com.bestvike.bvrfis.service.BvrfisService;
@@ -8,6 +10,7 @@ import com.bestvike.commons.exception.MsgException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.HashMap;
 import java.util.List;
@@ -28,6 +31,8 @@ public class BvrfisServiceImpl implements BvrfisService {
 	private static final Integer HOUSE_MAX_NUM = 20000;
 	@Autowired
 	private BvrfisHouseService bvrfisHouseService;
+	@Autowired
+	private BvrfisHouseDao bvrfisHouseDao;
 
 	/**
 	 * @Author: yinxunyang
@@ -73,8 +78,26 @@ public class BvrfisServiceImpl implements BvrfisService {
 	 */
 	private EsHouseParam organizeMatchEsParam(BvrfisHouseParam bvrfisHouseParam) {
 		EsHouseParam esHouseParam = new EsHouseParam();
-
-
+		esHouseParam.setDevelopName("临时");
+		// 楼幢名称
+		String bldName = null;
+		String bldNo = bvrfisHouseParam.getBldNo();
+		if (!StringUtils.isEmpty(bldNo)) {
+			BvrfisBldParam bvrfisBldParam = bvrfisHouseDao.queryBldInfoByBldNo(bldNo);
+			if (null != bvrfisBldParam) {
+				bldName = bvrfisBldParam.getBldName();
+			}
+		}
+		if (StringUtils.isEmpty(bldName)) {
+			bldName = "无";
+		}
+		esHouseParam.setBldName(bldName);
+		esHouseParam.setCellName("临时");
+		esHouseParam.setFloorName("临时");
+		esHouseParam.setRoomno(bvrfisHouseParam.getRoomNo());
+		esHouseParam.setBuyCertNos("临时");
+		esHouseParam.setBuyNames("临时");
+		esHouseParam.setHouseAddress(bvrfisHouseParam.getAddress());
 		return esHouseParam;
 	}
 }

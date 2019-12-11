@@ -1,11 +1,11 @@
 package com.bestvike.standplat;
 
+import com.bestvike.bvdf.dao.BvdfHouseDao;
+import com.bestvike.bvdf.service.impl.BvdfServiceImpl;
 import com.bestvike.mid.dao.MidHouseDao;
 import com.bestvike.mid.entity.MidHouseInfo;
 import com.bestvike.mid.service.MidHouseService;
-import com.bestvike.pub.dao.BvdfHouseDao;
 import com.bestvike.bvdf.param.BvdfHouseParam;
-import com.bestvike.pub.service.impl.BvdfServiceImpl;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 

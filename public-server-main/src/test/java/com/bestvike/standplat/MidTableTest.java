@@ -1,7 +1,6 @@
 package com.bestvike.standplat;
 
-import com.bestvike.pub.dao.ArcBuildInfoMapper;
-import com.bestvike.pub.dao.BvdfHouseDao;
+import com.bestvike.bvdf.dao.BvdfHouseDao;
 import com.bestvike.bvdf.param.BvdfHouseParam;
 import org.elasticsearch.action.get.GetResponse;
 import org.elasticsearch.action.index.IndexResponse;
@@ -29,16 +28,7 @@ import java.util.Map;
 public class MidTableTest extends BaseTest {
 
 	@Autowired
-	private ArcBuildInfoMapper arcBuildInfoDao;
-	@Autowired
 	private BvdfHouseDao bvdfHouseDao;
-
-
-	@Test
-	public void test1() {
-		String ss = arcBuildInfoDao.queryArcBuildInfoById();
-		System.out.println("ss:" + ss);
-	}
 
 	@Test
 	public void test2() {

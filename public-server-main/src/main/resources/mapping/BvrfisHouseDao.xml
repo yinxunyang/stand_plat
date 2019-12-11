@@ -27,4 +27,7 @@
 
 		]]>
 	</select>
+	<select id="queryBldInfoByBldNo" resultType="com.bestvike.bvrfis.param.BvrfisBldParam">
+		select bldName from bvrfis_aks.Arc_BldInfo where bldNo = #{bldNo,jdbcType=VARCHAR}
+	</select>
 </mapper>
