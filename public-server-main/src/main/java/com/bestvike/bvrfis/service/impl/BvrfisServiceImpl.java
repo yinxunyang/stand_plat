@@ -8,12 +8,20 @@ import com.bestvike.bvrfis.param.BvrfisOwnerInfoParam;
 import com.bestvike.bvrfis.param.BvrfisShareOwnerInfoParam;
 import com.bestvike.bvrfis.service.BvrfisHouseService;
 import com.bestvike.bvrfis.service.BvrfisService;
+import com.bestvike.commons.enums.ReturnCode;
 import com.bestvike.commons.exception.MsgException;
 import lombok.extern.slf4j.Slf4j;
+import org.elasticsearch.client.transport.TransportClient;
+import org.elasticsearch.common.settings.Settings;
+import org.elasticsearch.common.transport.TransportAddress;
+import org.elasticsearch.transport.client.PreBuiltTransportClient;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -32,6 +40,21 @@ public class BvrfisServiceImpl implements BvrfisService {
 	 * 房屋信息表(arc_houseinfo)最大查询条数,防止内存溢出
 	 */
 	private static final Integer HOUSE_MAX_NUM = 20000;
+	/**
+	 * es集群的名称
+	 */
+	@Value("${esConfig.esClusterName}")
+	private String esClusterName;
+	/**
+	 * es的IP
+	 */
+	@Value("${esConfig.esIP}")
+	private String esIP;
+	/**
+	 * es的esPort
+	 */
+	@Value("${esConfig.esPort}")
+	private String esPort;
 	@Autowired
 	private BvrfisHouseService bvrfisHouseService;
 	@Autowired
@@ -65,11 +88,26 @@ public class BvrfisServiceImpl implements BvrfisService {
 	 * @return:
 	 */
 	private void matchEsAndInsertMid(List<BvrfisHouseParam> bvrfisHouseParamList) {
-		bvrfisHouseParamList.forEach(bvrfisHouseParam -> {
-			// 组织跟elasticSearch匹配的数据
-			EsHouseParam esHouseParam = organizeMatchEsParam(bvrfisHouseParam);
-			// todo 组织查询es打分的语句
-		});
+		try (TransportClient client = new PreBuiltTransportClient(Settings.builder().put("cluster.name", esClusterName).build())
+				.addTransportAddress(new TransportAddress(InetAddress.getByName(esIP), Integer.parseInt(esPort)))) {
+			// 遍历新增房屋信息和elasticsearch
+			bvrfisHouseParamList.forEach(bvrfisHouseParam -> {
+				// 新增房屋信息和迁移elasticsearch
+				try {
+					// 组织跟elasticSearch匹配的数据
+					EsHouseParam esHouseParam = organizeMatchEsParam(bvrfisHouseParam);
+					// todo 组织查询es打分的语句
+
+
+
+				} catch (MsgException e) {
+					log.error(e + "bvrfisHouseParam参数为：{}", bvrfisHouseParam);
+				}
+			});
+		} catch (UnknownHostException e) {
+			log.error("创建elasticsearch客户端连接失败" + e);
+			throw new MsgException(ReturnCode.sdp_sys_error, "创建elasticsearch客户端连接失败");
+		}
 	}
 
 	/**
