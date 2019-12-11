@@ -1,6 +1,7 @@
 package com.bestvike.bvrfis.controller;
 
-import com.bestvike.bvdf.service.BvdfService;
+import com.bestvike.bvrfis.service.BvrfisService;
+import com.bestvike.commons.exception.MsgException;
 import com.bestvike.portal.controller.BaseController;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,12 +11,15 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class BvrfisController extends BaseController {
 	@Autowired
-	BvdfService bvdfService;
+	BvrfisService bvrfisService;
 
-	@ApiOperation(value = "将bvdf房屋信息迁移至elasticsearch", notes = "将bvdf房屋信息迁移至elasticsearch")
+	@ApiOperation(value = "将bvrfis房屋信息跟es中的匹配", notes = "将bvrfis房屋信息跟es中的匹配")
 	@GetMapping("/api/bvrfis/bvrfisHouseMatchEs")
-	public void bvdfHouseToEs() {
-		bvdfService.bvdfHouseToEs();
+	public void bvrfisHouseMatchEs() {
+		try {
+			bvrfisService.bvrfisHouseMatchEs();
+		} catch (MsgException e) {
+			logger.error("将bvrfis房屋信息跟es中的匹配失败");
+		}
 	}
-
 }
