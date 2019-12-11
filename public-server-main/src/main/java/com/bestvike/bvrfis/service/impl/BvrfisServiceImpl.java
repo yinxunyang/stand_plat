@@ -116,7 +116,19 @@ public class BvrfisServiceImpl implements BvrfisService {
 			cellName = "无";
 		}
 		esHouseParam.setCellName(cellName);
-		esHouseParam.setFloorName("临时");
+		String floorName = null;
+		String floorNo = bvrfisHouseParam.getFloorNo();
+		if (!StringUtils.isEmpty(floorNo)) {
+			Map<String, Object> parameterMap = new HashMap<>();
+			parameterMap.put("floorNo", floorNo);
+			parameterMap.put("bldNo", bldNo);
+			parameterMap.put("houseProp", houseProp);
+			floorName = bvrfisHouseDao.selectFloorNameByFloorNo(parameterMap);
+		}
+		if(StringUtils.isEmpty(floorName)){
+			floorName = "无";
+		}
+		esHouseParam.setFloorName(floorName);
 		esHouseParam.setRoomno(bvrfisHouseParam.getRoomNo());
 		esHouseParam.setBuyCertNos("临时");
 		esHouseParam.setBuyNames("临时");

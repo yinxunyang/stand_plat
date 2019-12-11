@@ -36,4 +36,7 @@
 	<select id="selectCellNameByNo" resultType="java.lang.String">
 		select cellName from bvrfis_aks.Arc_CellInfo where bldNo = #{bldNo,jdbcType=VARCHAR} and cellNo = #{cellNo,jdbcType=VARCHAR} and houseProp = #{houseProp,jdbcType=VARCHAR}
 	</select>
+	<select id="selectFloorNameByFloorNo" resultType="java.lang.String">
+		select floorName from bvrfis_aks.Arc_FloorInfo where bldNo = #{bldNo,jdbcType=VARCHAR} and floorNo = #{floorNo,jdbcType=VARCHAR} and houseProp = #{houseProp,jdbcType=VARCHAR}
+	</select>
 </mapper>

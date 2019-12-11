@@ -51,5 +51,15 @@ public class BvrfisTest extends BaseTest {
 		String cellName = bvrfisHouseDao.selectCellNameByNo(parameterMap);
 		int i = 0;
 	}
+	@Test
+	public void test5() {
+		Map<String, Object> parameterMap = new HashMap<>();
+		parameterMap.put("floorNo", "014");
+		parameterMap.put("bldNo", "04001653");
+		parameterMap.put("houseProp", "01");
+		String floorName = bvrfisHouseDao.selectFloorNameByFloorNo(parameterMap);
+		int i = 0;
+	}
+
 
 }

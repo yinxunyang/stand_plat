@@ -49,4 +49,13 @@ public interface BvrfisHouseDao {
 	 * @return:
 	 */
 	String selectCellNameByNo(Map<String, Object> parameterMap);
+
+	/**
+	 * @Author: yinxunyang
+	 * @Description: 根据楼层编号查询楼层名称
+	 * @Date: 2019/12/11 13:08
+	 * @param:
+	 * @return:
+	 */
+	String selectFloorNameByFloorNo(Map<String, Object> parameterMap);
 }
