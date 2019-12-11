@@ -4,6 +4,7 @@ import com.bestvike.bvdf.param.EsHouseParam;
 import com.bestvike.bvrfis.dao.BvrfisHouseDao;
 import com.bestvike.bvrfis.param.BvrfisBldParam;
 import com.bestvike.bvrfis.param.BvrfisHouseParam;
+import com.bestvike.bvrfis.param.BvrfisOwnerInfoParam;
 import com.bestvike.bvrfis.service.BvrfisHouseService;
 import com.bestvike.bvrfis.service.BvrfisService;
 import com.bestvike.commons.exception.MsgException;
@@ -130,8 +131,28 @@ public class BvrfisServiceImpl implements BvrfisService {
 		}
 		esHouseParam.setFloorName(floorName);
 		esHouseParam.setRoomno(bvrfisHouseParam.getRoomNo());
-		esHouseParam.setBuyCertNos("临时");
-		esHouseParam.setBuyNames("临时");
+		String houseGuid = bvrfisHouseParam.getSysGuid();
+		String buyCertNos = null;
+		String buyNames = null;
+		if (!StringUtils.isEmpty(houseGuid)) {
+			Map<String, Object> parameterMap = new HashMap<>();
+			parameterMap.put("houseGuid", houseGuid);
+			// 查询正常状态的业主
+			parameterMap.put("state", "0");
+			BvrfisOwnerInfoParam bvrfisOwnerInfoParam = bvrfisHouseDao.selectOwnerInfoByHouseId(parameterMap);
+			String certNo = bvrfisOwnerInfoParam.getCertNo();
+			String ownerName = bvrfisOwnerInfoParam.getOwnerName();
+			// 查询共有人
+
+		}
+		if (StringUtils.isEmpty(buyCertNos)) {
+			buyCertNos = "无";
+		}
+		if (StringUtils.isEmpty(buyNames)) {
+			buyNames = "无";
+		}
+		esHouseParam.setBuyCertNos(buyCertNos);
+		esHouseParam.setBuyNames(buyNames);
 		esHouseParam.setHouseAddress(bvrfisHouseParam.getAddress());
 		return esHouseParam;
 	}

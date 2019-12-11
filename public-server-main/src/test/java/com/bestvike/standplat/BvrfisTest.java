@@ -3,6 +3,7 @@ package com.bestvike.standplat;
 import com.bestvike.bvrfis.dao.BvrfisHouseDao;
 import com.bestvike.bvrfis.param.BvrfisBldParam;
 import com.bestvike.bvrfis.param.BvrfisHouseParam;
+import com.bestvike.bvrfis.param.BvrfisOwnerInfoParam;
 import com.bestvike.bvrfis.service.BvrfisHouseService;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,6 +61,13 @@ public class BvrfisTest extends BaseTest {
 		String floorName = bvrfisHouseDao.selectFloorNameByFloorNo(parameterMap);
 		int i = 0;
 	}
-
-
+	@Test
+	public void test6() {
+		Map<String, Object> parameterMap = new HashMap<>();
+		parameterMap.put("houseGuid", "2afe07b2-0c24-4a5d-9345-8df345790b17");
+		// 查询正常状态的业主
+		parameterMap.put("state", "0");
+		BvrfisOwnerInfoParam bvrfisOwnerInfoParam = bvrfisHouseDao.selectOwnerInfoByHouseId(parameterMap);
+		int i = 0;
+	}
 }

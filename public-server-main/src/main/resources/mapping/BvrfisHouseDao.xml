@@ -39,4 +39,7 @@
 	<select id="selectFloorNameByFloorNo" resultType="java.lang.String">
 		select floorName from bvrfis_aks.Arc_FloorInfo where bldNo = #{bldNo,jdbcType=VARCHAR} and floorNo = #{floorNo,jdbcType=VARCHAR} and houseProp = #{houseProp,jdbcType=VARCHAR}
 	</select>
+	<select id="selectOwnerInfoByHouseId" resultType="com.bestvike.bvrfis.param.BvrfisOwnerInfoParam">
+		select subAccount, certNo, ownerName from bvrfis_aks.Arc_OwnerInfo where houseGuid = #{houseGuid,jdbcType=VARCHAR} and state = #{state,jdbcType=VARCHAR}
+	</select>
 </mapper>
