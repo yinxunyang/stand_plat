@@ -2,7 +2,7 @@ package com.bestvike.standplat;
 
 import com.bestvike.pub.dao.ArcBuildInfoMapper;
 import com.bestvike.pub.dao.BvdfHouseDao;
-import com.bestvike.pub.param.BvdfHouseParam;
+import com.bestvike.bvdf.param.BvdfHouseParam;
 import org.elasticsearch.action.get.GetResponse;
 import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.client.transport.TransportClient;

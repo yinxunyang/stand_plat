@@ -4,7 +4,7 @@ import com.bestvike.mid.dao.MidHouseDao;
 import com.bestvike.mid.entity.MidHouseInfo;
 import com.bestvike.mid.service.MidHouseService;
 import com.bestvike.pub.dao.BvdfHouseDao;
-import com.bestvike.pub.param.BvdfHouseParam;
+import com.bestvike.bvdf.param.BvdfHouseParam;
 import com.bestvike.pub.service.impl.BvdfServiceImpl;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;

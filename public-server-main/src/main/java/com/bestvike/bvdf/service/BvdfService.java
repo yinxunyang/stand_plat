@@ -1,4 +1,4 @@
-package com.bestvike.pub.service;
+package com.bestvike.bvdf.service;
 
 public interface BvdfService {
 	/**

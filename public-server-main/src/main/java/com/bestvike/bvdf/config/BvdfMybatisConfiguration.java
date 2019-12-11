@@ -1,8 +1,6 @@
-package com.bestvike.pub.config;
+package com.bestvike.bvdf.config;
 
 import com.github.pagehelper.PageInterceptor;
-import java.util.Properties;
-import javax.sql.DataSource;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.ibatis.plugin.Interceptor;
@@ -20,13 +18,14 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.transaction.PlatformTransactionManager;
-import tk.mybatis.mapper.code.Style;
-import tk.mybatis.mapper.entity.Config;
 import tk.mybatis.spring.annotation.MapperScan;
 
+import javax.sql.DataSource;
+import java.util.Properties;
+
 @Configuration
-@MapperScan(value = "com.bestvike.pub.dao")
-public class MybatisConfiguration implements ApplicationContextAware {
+@MapperScan(value = "com.bestvike.bvdf.dao")
+public class BvdfMybatisConfiguration implements ApplicationContextAware {
 
 	protected Log logger = LogFactory.getLog(this.getClass());
 
@@ -34,20 +33,20 @@ public class MybatisConfiguration implements ApplicationContextAware {
 	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
 	}
 
-	@Bean(name = "dataSource")
-	@ConfigurationProperties(prefix = "datasources.pub")
-	//@Primary
+	@Bean(name = "bvdfDataSource")
+	@ConfigurationProperties(prefix = "datasources.bvdf")
+	@Primary
 	public DataSource dataSource() {
 		return DataSourceBuilder.create().build();
 	}
 
-	@Bean(name = "sqlSessionFactory")
-	//@Primary
+	@Bean(name = "bvdfSqlSessionFactory")
+	@Primary
 	public SqlSessionFactory sqlSessionFactoryBean() throws Exception {
 		SqlSessionFactoryBean sqlSessionFactoryBean = new SqlSessionFactoryBean();
 		sqlSessionFactoryBean.setDataSource(dataSource());
-		sqlSessionFactoryBean.setTypeAliasesPackage("com.bestvike.pub.data");
-		sqlSessionFactoryBean.setMapperLocations(new PathMatchingResourcePatternResolver().getResources("classpath*:mapping/pub/*.xml"));
+		sqlSessionFactoryBean.setTypeAliasesPackage("com.bestvike.bvdf.entity");
+		sqlSessionFactoryBean.setMapperLocations(new PathMatchingResourcePatternResolver().getResources("classpath*:mapping/*.xml"));
 		tk.mybatis.mapper.session.Configuration configuration = new tk.mybatis.mapper.session.Configuration();
 		configuration.setMapUnderscoreToCamelCase(true);
 //		// 设置驼峰不自动转下划线
@@ -70,14 +69,14 @@ public class MybatisConfiguration implements ApplicationContextAware {
 		return sqlSessionFactoryBean.getObject();
 	}
 
-	@Bean(name = "sqlSessionTemplate")
-	//@Primary
+	@Bean(name = "bvdfSqlSessionTemplate")
+	@Primary
 	public SqlSessionTemplate sqlSessionTemplate(SqlSessionFactory sqlSessionFactory) {
 		return new SqlSessionTemplate(sqlSessionFactory);
 	}
 
-	@Bean(name = "transactionManager")
-	//@Primary
+	@Bean(name = "bvdfTransactionManager")
+	@Primary
 	public PlatformTransactionManager annotationDrivenTransactionManager() {
 		return new DataSourceTransactionManager(dataSource());
 	}

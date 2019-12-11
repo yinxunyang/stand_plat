@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.bestvike.pub.dao.BvdfHouseDao">
-	<select id="queryBvdfHouseInfo" resultType="com.bestvike.pub.param.BvdfHouseParam">
+<mapper namespace="com.bestvike.bvdf.dao.BvdfHouseDao">
+	<select id="queryBvdfHouseInfo" resultType="com.bestvike.bvdf.param.BvdfHouseParam">
 			select * from (select  t1.sysguid,
 		        t1.buycertnos,
 		        t1.corpno,

@@ -55,7 +55,7 @@ spring:
     mongodb:
       uri: mongodb://website:website@10.10.12.1:27017/website
 datasources:
-  pub:
+  bvdf:
     #jdbc-url: jdbc:mariadb://192.168.2.21:3306/hmis
     jdbc-url: jdbc:oracle:thin:@127.0.0.1:1521/orcl
     driver-class-name: oracle.jdbc.driver.OracleDriver

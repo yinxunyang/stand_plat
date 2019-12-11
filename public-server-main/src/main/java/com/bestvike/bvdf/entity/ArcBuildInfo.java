@@ -1,4 +1,4 @@
-package com.bestvike.pub.data.table;
+package com.bestvike.bvdf.entity;
 
 import com.bestvike.portal.data.BaseData;
 

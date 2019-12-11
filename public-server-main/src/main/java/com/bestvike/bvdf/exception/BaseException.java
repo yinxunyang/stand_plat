@@ -1,4 +1,4 @@
-package com.bestvike.pub.exception;
+package com.bestvike.bvdf.exception;
 
 
 import org.apache.commons.lang3.ArrayUtils;

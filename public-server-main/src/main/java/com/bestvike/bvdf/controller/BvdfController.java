@@ -1,7 +1,7 @@
-package com.bestvike.pub.controller;
+package com.bestvike.bvdf.controller;
 
 import com.bestvike.portal.controller.BaseController;
-import com.bestvike.pub.service.BvdfService;
+import com.bestvike.bvdf.service.BvdfService;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;

@@ -1,7 +1,7 @@
-package com.bestvike.pub.exception;
+package com.bestvike.bvdf.exception;
 
 
-import com.bestvike.pub.enums.ReturnCode;
+import com.bestvike.bvdf.enums.ReturnCode;
 import org.apache.commons.lang3.StringUtils;
 
 /**

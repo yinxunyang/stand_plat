@@ -1,6 +1,6 @@
-package com.bestvike.pub.dao;
+package com.bestvike.bvdf.dao;
 
-import com.bestvike.pub.param.BvdfHouseParam;
+import com.bestvike.bvdf.param.BvdfHouseParam;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
