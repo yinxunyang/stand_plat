@@ -10,7 +10,7 @@
 							t1.roomNo,
 							t1.address,
 							t1.houseProp
-		from arc_houseinfo t1
+		from bvrfis_aks.arc_houseinfo t1
 		minus
 		select
 				t2.sysGuid,

@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -133,31 +134,55 @@ public class BvrfisServiceImpl implements BvrfisService {
 		esHouseParam.setFloorName(floorName);
 		esHouseParam.setRoomno(bvrfisHouseParam.getRoomNo());
 		String houseGuid = bvrfisHouseParam.getSysGuid();
-		String buyCertNos = null;
-		String buyNames = null;
-		String subAccount = null;
+		StringBuilder buyCertNos = new StringBuilder();
+		StringBuilder buyNames = new StringBuilder();
 		if (!StringUtils.isEmpty(houseGuid)) {
 			Map<String, Object> parameterMap = new HashMap<>();
 			parameterMap.put("houseGuid", houseGuid);
 			// 查询正常状态的业主
 			parameterMap.put("state", "0");
 			BvrfisOwnerInfoParam bvrfisOwnerInfoParam = bvrfisHouseDao.selectOwnerInfoByHouseId(parameterMap);
-			String certNo = bvrfisOwnerInfoParam.getCertNo();
-			String ownerName = bvrfisOwnerInfoParam.getOwnerName();
-			subAccount = bvrfisOwnerInfoParam.getSubAccount();
+			String certNo = null;
+			String ownerName = null;
+			String subAccount = null;
+			if (null != bvrfisOwnerInfoParam) {
+				certNo = bvrfisOwnerInfoParam.getCertNo();
+				ownerName = bvrfisOwnerInfoParam.getOwnerName();
+				subAccount = bvrfisOwnerInfoParam.getSubAccount();
+			}
+			List<BvrfisShareOwnerInfoParam> bvrfisShareOwnerInfoList = new ArrayList<>();
+			if (!StringUtils.isEmpty(subAccount)) {
+				// 查询共有人
+				bvrfisShareOwnerInfoList = bvrfisHouseDao.selectShareOwnerInfoByHouseId(subAccount);
+			}
+			if (!StringUtils.isEmpty(certNo)) {
+				buyCertNos.append(certNo);
+			}
+			if (!StringUtils.isEmpty(ownerName)) {
+				buyNames.append(ownerName);
+			}
+			if (!bvrfisShareOwnerInfoList.isEmpty()) {
+				for (BvrfisShareOwnerInfoParam bvrfisShareOwnerInfoParam : bvrfisShareOwnerInfoList) {
+					String shareCertNo = bvrfisShareOwnerInfoParam.getCertNo();
+					if (!StringUtils.isEmpty(shareCertNo)) {
+						// 英文状态下逗号
+						buyCertNos.append(",").append(shareCertNo);
+					}
+					String shareOwnerName = bvrfisShareOwnerInfoParam.getOwnerName();
+					if (!StringUtils.isEmpty(shareOwnerName)) {
+						buyNames.append(",").append(shareOwnerName);
+					}
+				}
+			}
 		}
-		if (!StringUtils.isEmpty(subAccount)) {
-			// 查询共有人
-			List<BvrfisShareOwnerInfoParam> bvrfisShareOwnerInfoList = bvrfisHouseDao.selectShareOwnerInfoByHouseId(subAccount);
+		if (StringUtils.isEmpty(buyCertNos.toString())) {
+			buyCertNos.append("无");
 		}
-		if (StringUtils.isEmpty(buyCertNos)) {
-			buyCertNos = "无";
+		if (StringUtils.isEmpty(buyNames.toString())) {
+			buyNames.append("无");
 		}
-		if (StringUtils.isEmpty(buyNames)) {
-			buyNames = "无";
-		}
-		esHouseParam.setBuyCertNos(buyCertNos);
-		esHouseParam.setBuyNames(buyNames);
+		esHouseParam.setBuyCertNos(buyCertNos.toString());
+		esHouseParam.setBuyNames(buyNames.toString());
 		esHouseParam.setHouseAddress(bvrfisHouseParam.getAddress());
 		return esHouseParam;
 	}
