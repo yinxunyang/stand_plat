@@ -1,7 +1,7 @@
 package com.bestvike.bvdf.service;
 
 import com.bestvike.mid.entity.MidHouseInfo;
-import com.bestvike.bvdf.exception.MsgException;
+import com.bestvike.commons.exception.MsgException;
 import com.bestvike.bvdf.param.BvdfHouseParam;
 import com.bestvike.bvdf.param.EsHouseParam;
 import org.elasticsearch.client.transport.TransportClient;

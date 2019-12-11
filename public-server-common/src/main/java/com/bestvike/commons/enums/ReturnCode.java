@@ -1,4 +1,4 @@
-package com.bestvike.bvdf.enums;
+package com.bestvike.commons.enums;
 
 /**
  * sdp:standplat

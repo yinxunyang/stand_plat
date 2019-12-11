@@ -1,6 +1,6 @@
 package com.bestvike.bvdf.service.impl;
 
-import com.bestvike.bvdf.enums.ReturnCode;
+import com.bestvike.commons.enums.ReturnCode;
 import com.bestvike.bvdf.param.BvdfHouseParam;
 import com.bestvike.bvdf.param.EsHouseParam;
 import com.bestvike.bvdf.service.BvdfHouseService;
@@ -8,7 +8,7 @@ import com.bestvike.bvdf.service.BvdfService;
 import com.bestvike.mid.entity.MidHouseInfo;
 import com.bestvike.mid.service.MidHouseService;
 import com.bestvike.bvdf.dao.BvdfHouseDao;
-import com.bestvike.bvdf.exception.MsgException;
+import com.bestvike.commons.exception.MsgException;
 import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.Settings;

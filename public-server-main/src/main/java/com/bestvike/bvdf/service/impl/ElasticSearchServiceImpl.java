@@ -1,10 +1,10 @@
 package com.bestvike.bvdf.service.impl;
 
-import com.bestvike.bvdf.enums.EsStatusEnum;
-import com.bestvike.bvdf.enums.ReturnCode;
+import com.bestvike.commons.enums.EsStatusEnum;
+import com.bestvike.commons.enums.ReturnCode;
 import com.bestvike.bvdf.param.EsHouseParam;
 import com.bestvike.bvdf.service.ElasticSearchService;
-import com.bestvike.bvdf.exception.MsgException;
+import com.bestvike.commons.exception.MsgException;
 import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.client.transport.TransportClient;

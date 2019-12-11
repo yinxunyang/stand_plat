@@ -1,4 +1,4 @@
-package com.bestvike.bvdf.enums;
+package com.bestvike.commons.enums;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
