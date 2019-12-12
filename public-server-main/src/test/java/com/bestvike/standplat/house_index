@@ -1,0 +1,31 @@
+PUT /test
+{
+  "settings": {
+    "index": {
+      "analysis": {
+        "analyzer": {
+          "jt_cn": {
+            "type": "custom",
+            "use_smart": "true",
+            "tokenizer": "ik_smart",
+            "char_filter": [
+              "jt_cfr"
+            ]
+          },
+          "ik_smart": {
+            "type": "ik_smart",
+            "use_smart": "true"
+          }
+        },
+        "char_filter": {
+          "jt_cfr": {
+            "type": "mapping",
+            "mappings": [
+              "# => 号"
+            ]
+          }
+        }
+      }
+    }
+  }
+}
