@@ -2,6 +2,7 @@ package com.bestvike.standplat;
 
 import com.bestvike.bvrfis.dao.BvrfisHouseDao;
 import com.bestvike.bvrfis.param.BvrfisBldParam;
+import com.bestvike.bvrfis.param.BvrfisCorpInfoParam;
 import com.bestvike.bvrfis.param.BvrfisHouseParam;
 import com.bestvike.bvrfis.param.BvrfisOwnerInfoParam;
 import com.bestvike.bvrfis.param.BvrfisShareOwnerInfoParam;
@@ -41,7 +42,7 @@ public class BvrfisTest extends BaseTest {
 	}
 	@Test
 	public void test3() {
-		String developName = bvrfisHouseDao.selectDevelopNameByDevelopNo("01000087");
+		BvrfisCorpInfoParam bvrfisCorpInfoParam = bvrfisHouseDao.selectDevelopNameByDevelopNo("01000087");
 		int i = 0;
 	}
 	@Test

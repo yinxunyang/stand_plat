@@ -21,6 +21,10 @@ public class EsHouseParam {
 	 */
 	private String developName;
 	/**
+	 * 营业执照编号
+	 */
+	private String licenseNo;
+	/**
 	 * 楼幢名称
 	 */
 	private String bldName;

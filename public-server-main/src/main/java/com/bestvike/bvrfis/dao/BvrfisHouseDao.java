@@ -1,6 +1,7 @@
 package com.bestvike.bvrfis.dao;
 
 import com.bestvike.bvrfis.param.BvrfisBldParam;
+import com.bestvike.bvrfis.param.BvrfisCorpInfoParam;
 import com.bestvike.bvrfis.param.BvrfisHouseParam;
 import com.bestvike.bvrfis.param.BvrfisOwnerInfoParam;
 import com.bestvike.bvrfis.param.BvrfisShareOwnerInfoParam;
@@ -42,7 +43,7 @@ public interface BvrfisHouseDao {
 	 * @param:
 	 * @return:
 	 */
-	String selectDevelopNameByDevelopNo(String developNo);
+	BvrfisCorpInfoParam selectDevelopNameByDevelopNo(String developNo);
 	/**
 	 * @Author: yinxunyang
 	 * @Description: 根据单元编号查询单元名称

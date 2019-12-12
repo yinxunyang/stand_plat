@@ -30,8 +30,8 @@
 	<select id="queryBldInfoByBldNo" resultType="com.bestvike.bvrfis.param.BvrfisBldParam">
 		select bldName from bvrfis_aks.Arc_BldInfo where bldNo = #{bldNo,jdbcType=VARCHAR}
 	</select>
-	<select id="selectDevelopNameByDevelopNo" resultType="java.lang.String">
-		select corpName from bvrfis_aks.Arc_CorpInfo where corpNo = #{corpNo,jdbcType=VARCHAR}
+	<select id="selectDevelopNameByDevelopNo" resultType="com.bestvike.bvrfis.param.BvrfisCorpInfoParam">
+		select corpName, licenseNo from bvrfis_aks.Arc_CorpInfo where corpNo = #{corpNo,jdbcType=VARCHAR}
 	</select>
 	<select id="selectCellNameByNo" resultType="java.lang.String">
 		select cellName from bvrfis_aks.Arc_CellInfo where bldNo = #{bldNo,jdbcType=VARCHAR} and cellNo = #{cellNo,jdbcType=VARCHAR} and houseProp = #{houseProp,jdbcType=VARCHAR}

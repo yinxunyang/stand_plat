@@ -3,6 +3,7 @@ package com.bestvike.bvrfis.service.impl;
 import com.bestvike.bvdf.param.EsHouseParam;
 import com.bestvike.bvrfis.dao.BvrfisHouseDao;
 import com.bestvike.bvrfis.param.BvrfisBldParam;
+import com.bestvike.bvrfis.param.BvrfisCorpInfoParam;
 import com.bestvike.bvrfis.param.BvrfisHouseParam;
 import com.bestvike.bvrfis.param.BvrfisOwnerInfoParam;
 import com.bestvike.bvrfis.param.BvrfisShareOwnerInfoParam;
@@ -136,13 +137,22 @@ public class BvrfisServiceImpl implements BvrfisService {
 		}
 		esHouseParam.setBldName(bldName);
 		String developName = null;
+		String licenseNo = null;
 		if (!StringUtils.isEmpty(developNo)) {
-			developName = bvrfisHouseDao.selectDevelopNameByDevelopNo(developNo);
+			BvrfisCorpInfoParam bvrfisCorpInfoParam = bvrfisHouseDao.selectDevelopNameByDevelopNo(developNo);
+			if (null != bvrfisCorpInfoParam) {
+				developName = bvrfisCorpInfoParam.getCorpName();
+				licenseNo = bvrfisCorpInfoParam.getLicenseNo();
+			}
 		}
 		if (StringUtils.isEmpty(developName)) {
 			developName = "无";
 		}
+		if (StringUtils.isEmpty(licenseNo)) {
+			licenseNo = "无";
+		}
 		esHouseParam.setDevelopName(developName);
+		esHouseParam.setLicenseNo(licenseNo);
 		String cellNo = bvrfisHouseParam.getCellNo();
 		String cellName = null;
 		String houseProp = bvrfisHouseParam.getHouseProp();
