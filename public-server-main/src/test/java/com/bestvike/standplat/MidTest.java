@@ -7,6 +7,7 @@ import com.bestvike.mid.dao.MidHouseDao;
 import com.bestvike.mid.entity.MidHouseInfo;
 import com.bestvike.mid.service.MidHouseService;
 import com.bestvike.bvdf.param.BvdfHouseParam;
+import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.Settings;
@@ -36,6 +37,7 @@ import java.util.Map;
  * @param:
  * @return:
  */
+@Slf4j
 public class MidTest extends BaseTest {
 	@Autowired
 	private MidHouseDao midHouseDao;
@@ -171,6 +173,8 @@ public class MidTest extends BaseTest {
 			SearchHit[] hits = searchResponse.getHits().getHits();
 			for(SearchHit hit : hits){
 				String content = hit.getSourceAsString();
+				// 房屋主键
+				log.info(hit.getId());
 				System.out.println(content);
 			}
 		} catch (IOException e) {
