@@ -7,9 +7,18 @@ import com.bestvike.mid.dao.MidHouseDao;
 import com.bestvike.mid.entity.MidHouseInfo;
 import com.bestvike.mid.service.MidHouseService;
 import com.bestvike.bvdf.param.BvdfHouseParam;
+import org.elasticsearch.action.search.SearchResponse;
+import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.index.query.WrapperQueryBuilder;
+import org.elasticsearch.search.SearchHit;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -98,5 +107,21 @@ public class MidTest extends BaseTest {
 		System.out.println(sssdd.replaceAll("#","号"));
 		int i = 0;
 	}
+	@Test
+	public void test20() {
+		ClassPathResource classPathResource = new ClassPathResource("static/elasticSearch/elasticQuery.json");
+		try {
+			InputStream inputStream = classPathResource.getInputStream();
+			BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));
+			StringBuffer sb = new StringBuffer();
+			String line;
+			while ((line=br.readLine())!=null){
+				sb.append(line);
+			}
+			System.out.println(sb.toString());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 
+	}
 }
