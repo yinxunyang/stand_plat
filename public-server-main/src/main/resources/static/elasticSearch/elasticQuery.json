@@ -1,7 +1,5 @@
 {
-  "query": {
     "term": {
       "licenseNoForKey": "916529015605416063"
     }
-  }
 }

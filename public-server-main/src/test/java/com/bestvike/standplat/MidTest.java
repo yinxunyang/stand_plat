@@ -8,17 +8,24 @@ import com.bestvike.mid.entity.MidHouseInfo;
 import com.bestvike.mid.service.MidHouseService;
 import com.bestvike.bvdf.param.BvdfHouseParam;
 import org.elasticsearch.action.search.SearchResponse;
+import org.elasticsearch.client.transport.TransportClient;
+import org.elasticsearch.common.settings.Settings;
+import org.elasticsearch.common.transport.TransportAddress;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.WrapperQueryBuilder;
 import org.elasticsearch.search.SearchHit;
+import org.elasticsearch.transport.client.PreBuiltTransportClient;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -38,6 +45,21 @@ public class MidTest extends BaseTest {
 	private MidHouseService midHouseService;
 	@Autowired
 	private BvdfHouseDao bvdfHouseDao;
+	/**
+	 * es集群的名称
+	 */
+	@Value("${esConfig.esClusterName}")
+	private String esClusterName;
+	/**
+	 * es的IP
+	 */
+	@Value("${esConfig.esIP}")
+	private String esIP;
+	/**
+	 * es的esPort
+	 */
+	@Value("${esConfig.esPort}")
+	private String esPort;
 
 
 	@Test
@@ -119,6 +141,38 @@ public class MidTest extends BaseTest {
 				sb.append(line);
 			}
 			System.out.println(sb.toString());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+	}
+	@Test
+	public void test21() {
+		TransportClient client = null;
+		try {
+			client = new PreBuiltTransportClient(Settings.builder().put("cluster.name", esClusterName).build())
+					.addTransportAddress(new TransportAddress(InetAddress.getByName(esIP), Integer.parseInt(esPort)));
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
+		}
+		ClassPathResource classPathResource = new ClassPathResource("static/elasticSearch/elasticQuery.json");
+		try {
+			InputStream inputStream = classPathResource.getInputStream();
+			BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));
+			StringBuffer sb = new StringBuffer();
+			String line;
+			while ((line=br.readLine())!=null){
+				sb.append(line);
+			}
+			System.out.println(sb.toString());
+			WrapperQueryBuilder wqb = QueryBuilders.wrapperQuery(sb.toString());
+			SearchResponse searchResponse = client.prepareSearch("house_index")
+					.setTypes("house_type").setQuery(wqb).setSize(10).get();
+			SearchHit[] hits = searchResponse.getHits().getHits();
+			for(SearchHit hit : hits){
+				String content = hit.getSourceAsString();
+				System.out.println(content);
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
