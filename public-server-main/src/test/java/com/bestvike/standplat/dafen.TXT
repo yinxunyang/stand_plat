@@ -4,7 +4,7 @@ GET /house_index/house_type/_search
     "function_score": {
       "query": {
         "match": {
-          "buycertnos": "430426198111171374"
+          "licenseNoForKey": "430426198111171374"
         }
       },
       "functions": [
@@ -28,7 +28,7 @@ GET /house_index/house_type/_search
           "weight": 1,
           "filter": {
             "term": {
-              "floorname": "7层"
+              "floorName": "7层"
             }
           }
         },
@@ -36,7 +36,7 @@ GET /house_index/house_type/_search
           "weight": 1,
           "filter": {
             "term": {
-              "roomno": "004"
+              "roomNo": "004"
             }
           }
         },
@@ -52,7 +52,7 @@ GET /house_index/house_type/_search
           "weight": 1,
           "filter": {
             "term": {
-              "buynames": "周长春"
+              "buyNames": "周长春"
             }
           }
         }
