@@ -59,3 +59,5 @@ GET /house_index/house_type/_search
       ],
       "boost_mode": "sum"
     }
+    }
+    }
