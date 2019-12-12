@@ -21,7 +21,7 @@ PUT /house_index
           "jt_cfr": {
             "type": "mapping",
             "mappings": [
-              "#=>号"
+              "#=>$"
             ]
           }
         }

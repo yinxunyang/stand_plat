@@ -90,5 +90,13 @@ public class MidTest extends BaseTest {
 		String cellName = bvdfHouseDao.selectCellNameByCellNo(parameterMap);
 		int i = 0;
 	}
+	@Test
+	public void test19() {
+		String ss = "1#楼";
+		String sssdd = "2#楼5#单元8#";
+		System.out.println(ss.replaceAll("#","号"));
+		System.out.println(sssdd.replaceAll("#","号"));
+		int i = 0;
+	}
 
 }
