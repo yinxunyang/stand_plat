@@ -1,0 +1,74 @@
+POST house_index/house_type/_mapping
+{
+  "house_type": {
+    "dynamic": false,
+    "_all": {
+      "enabled": false
+    },
+    "properties": {
+      "developName": {
+        "type": "text",
+        "analyzer": "ik_max_word"
+      },
+      "licenseNo": {
+        "type": "text",
+        "analyzer": "ik_max_word"
+      },
+      "bldName": {
+        "type": "text",
+        "analyzer": "ik_max_word"
+      },
+      "cellName": {
+        "type": "text",
+        "analyzer": "ik_max_word"
+      },
+      "floorName": {
+        "type": "text",
+        "analyzer": "ik_max_word"
+      },
+      "roomNo": {
+        "type": "text",
+        "analyzer": "ik_max_word"
+      },
+      "buyCertNos": {
+        "type": "text",
+        "analyzer": "ik_max_word"
+      },
+      "buyNames": {
+        "type": "text",
+        "analyzer": "ik_max_word"
+      },
+      "houseAddress": {
+        "type": "text",
+        "analyzer": "ik_max_word"
+      },
+      "developNameForKey": {
+        "type": "keyword"
+      },
+      "licenseNoForKey": {
+        "type": "keyword"
+      },
+      "bldNameForKey": {
+        "type": "keyword"
+      },
+      "cellNameForKey": {
+        "type": "keyword"
+      },
+      "floorNameForKey": {
+        "type": "keyword"
+      },
+      "roomNoForKey": {
+        "type": "keyword"
+      },
+      "buyCertNosForKey": {
+        "type": "keyword"
+      },
+      "buyNamesForKey": {
+        "type": "keyword"
+      },
+      "houseAddressForKey": {
+        "type": "keyword"
+      }
+    }
+  }
+}
