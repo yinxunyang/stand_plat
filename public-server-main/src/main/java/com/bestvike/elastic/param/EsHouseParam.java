@@ -1,4 +1,4 @@
-package com.bestvike.bvdf.param;
+package com.bestvike.elastic.param;
 
 import com.alibaba.fastjson.JSONObject;
 import lombok.Getter;

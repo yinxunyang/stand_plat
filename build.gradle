@@ -116,6 +116,7 @@ subprojects {
         //==编译时==
         compileOnly('org.projectlombok:lombok')
         testCompile('org.projectlombok:lombok')
+        compile("com.alibaba:fastjson:1.2.60")
 
     }
 }

@@ -1,6 +1,5 @@
 package com.bestvike.bvrfis.service.impl;
 
-import com.bestvike.bvdf.param.EsHouseParam;
 import com.bestvike.bvrfis.dao.BvrfisHouseDao;
 import com.bestvike.bvrfis.param.BvrfisBldParam;
 import com.bestvike.bvrfis.param.BvrfisCorpInfoParam;
@@ -11,6 +10,8 @@ import com.bestvike.bvrfis.service.BvrfisHouseService;
 import com.bestvike.bvrfis.service.BvrfisService;
 import com.bestvike.commons.enums.ReturnCode;
 import com.bestvike.commons.exception.MsgException;
+import com.bestvike.elastic.param.EsHouseParam;
+import com.bestvike.elastic.service.ElasticSearchService;
 import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.Settings;
@@ -60,6 +61,8 @@ public class BvrfisServiceImpl implements BvrfisService {
 	private BvrfisHouseService bvrfisHouseService;
 	@Autowired
 	private BvrfisHouseDao bvrfisHouseDao;
+	@Autowired
+	private ElasticSearchService elasticSearchService;
 
 	/**
 	 * @Author: yinxunyang
@@ -98,6 +101,8 @@ public class BvrfisServiceImpl implements BvrfisService {
 				try {
 					// 组织跟elasticSearch匹配的数据
 					EsHouseParam esHouseParam = organizeMatchEsParam(bvrfisHouseParam);
+					// 标准化处理跟es交互的数据
+					elasticSearchService.bvdfHouseParamFormat(esHouseParam);
 					// todo 替换es查询的值str.replace
 
 

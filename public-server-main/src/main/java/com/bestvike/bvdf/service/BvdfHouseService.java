@@ -1,9 +1,9 @@
 package com.bestvike.bvdf.service;
 
-import com.bestvike.mid.entity.MidHouseInfo;
-import com.bestvike.commons.exception.MsgException;
 import com.bestvike.bvdf.param.BvdfHouseParam;
-import com.bestvike.bvdf.param.EsHouseParam;
+import com.bestvike.commons.exception.MsgException;
+import com.bestvike.elastic.param.EsHouseParam;
+import com.bestvike.mid.entity.MidHouseInfo;
 import org.elasticsearch.client.transport.TransportClient;
 
 import java.util.List;

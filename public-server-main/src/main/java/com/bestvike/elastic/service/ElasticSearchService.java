@@ -1,7 +1,7 @@
-package com.bestvike.bvdf.service;
+package com.bestvike.elastic.service;
 
 import com.bestvike.commons.exception.MsgException;
-import com.bestvike.bvdf.param.EsHouseParam;
+import com.bestvike.elastic.param.EsHouseParam;
 import org.elasticsearch.client.transport.TransportClient;
 
 /**
@@ -18,4 +18,13 @@ public interface ElasticSearchService {
 	 * @return:
 	 */
 	void insertElasticSearch(TransportClient client, EsHouseParam esHouseParam) throws MsgException;
+
+	/**
+	 * @Author: yinxunyang
+	 * @Description: 标准化处理跟es交互的数据
+	 * @Date: 2019/12/12 17:25
+	 * @param:
+	 * @return:
+	 */
+	void bvdfHouseParamFormat(EsHouseParam esHouseParam);
 }

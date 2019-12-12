@@ -3,11 +3,12 @@ package com.bestvike.bvdf.service.impl;
 import com.bestvike.bvdf.dao.BvdfHouseDao;
 import com.bestvike.bvdf.param.BvdfCorpParam;
 import com.bestvike.bvdf.param.BvdfHouseParam;
-import com.bestvike.bvdf.param.EsHouseParam;
 import com.bestvike.bvdf.service.BvdfHouseService;
 import com.bestvike.bvdf.service.BvdfService;
 import com.bestvike.commons.enums.ReturnCode;
 import com.bestvike.commons.exception.MsgException;
+import com.bestvike.elastic.param.EsHouseParam;
+import com.bestvike.elastic.service.ElasticSearchService;
 import com.bestvike.mid.entity.MidHouseInfo;
 import com.bestvike.mid.service.MidHouseService;
 import lombok.extern.slf4j.Slf4j;
@@ -17,7 +18,6 @@ import org.elasticsearch.common.transport.TransportAddress;
 import org.elasticsearch.transport.client.PreBuiltTransportClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -55,6 +55,8 @@ public class BvdfServiceImpl implements BvdfService {
 	private MidHouseService midHouseService;
 	@Autowired
 	private BvdfHouseDao bvdfHouseDao;
+	@Autowired
+	private ElasticSearchService elasticSearchService;
 	/**
 	 * @Author: yinxunyang
 	 * @Description: 将bvdf房屋信息迁移至elasticsearch
@@ -100,6 +102,8 @@ public class BvdfServiceImpl implements BvdfService {
 					MidHouseInfo midHouseInfo = midHouseService.queryMidHouseInfoById(bvdfHouseParam);
 					// 组织往elasticSearch推送的数据
 					EsHouseParam esHouseParam = organizeEsHouseParam(bvdfHouseParam);
+					// 标准化处理跟es交互的数据
+					elasticSearchService.bvdfHouseParamFormat(esHouseParam);
 					log.info("推送es的esHouseParam参数为：{}",esHouseParam);
 					bvdfHouseService.insertCopyHouseAndEs(bvdfHouseParam, client, midHouseInfo, esHouseParam);
 				} catch (MsgException e) {
@@ -145,7 +149,7 @@ public class BvdfServiceImpl implements BvdfService {
 			String bldName = null;
 			String bldNo = bvdfHouseParam.getBldno();
 			if (!StringUtils.isEmpty(bldNo)) {
-				bldName = bvdfHouseDao.selectBldNameByBldNo(bldNo).replaceAll("#","号");
+				bldName = bvdfHouseDao.selectBldNameByBldNo(bldNo);
 			}
 			if (StringUtils.isEmpty(bldName)) {
 				bldName = "无";
@@ -172,7 +176,7 @@ public class BvdfServiceImpl implements BvdfService {
 			esHouseParam.setBuyCertNos(bvdfHouseParam.getBuycertnos());
 			esHouseParam.setBuyNames(bvdfHouseParam.getBuynames());
 			// # 替换成号
-			esHouseParam.setHouseAddress(bvdfHouseParam.getAddress().replaceAll("#","号"));
+			esHouseParam.setHouseAddress(bvdfHouseParam.getAddress());
 			return esHouseParam;
 		} catch (Exception e) {
 			log.error("组织往elasticSearch推送的数据失败" + e);

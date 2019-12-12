@@ -1,10 +1,10 @@
-package com.bestvike.bvdf.service.impl;
+package com.bestvike.elastic.service.impl;
 
 import com.bestvike.commons.enums.EsStatusEnum;
 import com.bestvike.commons.enums.ReturnCode;
-import com.bestvike.bvdf.param.EsHouseParam;
-import com.bestvike.bvdf.service.ElasticSearchService;
 import com.bestvike.commons.exception.MsgException;
+import com.bestvike.elastic.param.EsHouseParam;
+import com.bestvike.elastic.service.ElasticSearchService;
 import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.client.transport.TransportClient;
@@ -105,5 +105,20 @@ public class ElasticSearchServiceImpl implements ElasticSearchService {
 			throw new MsgException(ReturnCode.fail, "拼装ElasticSearch的数据失败");
 		}
 		return doc;
+	}
+
+	/**
+	 * @Author: yinxunyang
+	 * @Description: 标准化处理跟es交互的数据
+	 * @Date: 2019/12/12 17:25
+	 * @param:
+	 * @return:
+	 */
+	@Override
+	public void bvdfHouseParamFormat(EsHouseParam esHouseParam) {
+		String bldName = esHouseParam.getBldName().replaceAll("#", "号");
+		esHouseParam.setBldName(bldName);
+		String houseAddress = esHouseParam.getHouseAddress().replaceAll("#", "号");
+		esHouseParam.setHouseAddress(houseAddress);
 	}
 }
