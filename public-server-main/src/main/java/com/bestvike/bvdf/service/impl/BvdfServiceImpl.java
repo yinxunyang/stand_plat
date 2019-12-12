@@ -1,14 +1,15 @@
 package com.bestvike.bvdf.service.impl;
 
-import com.bestvike.commons.enums.ReturnCode;
+import com.bestvike.bvdf.dao.BvdfHouseDao;
+import com.bestvike.bvdf.param.BvdfCorpParam;
 import com.bestvike.bvdf.param.BvdfHouseParam;
 import com.bestvike.bvdf.param.EsHouseParam;
 import com.bestvike.bvdf.service.BvdfHouseService;
 import com.bestvike.bvdf.service.BvdfService;
+import com.bestvike.commons.enums.ReturnCode;
+import com.bestvike.commons.exception.MsgException;
 import com.bestvike.mid.entity.MidHouseInfo;
 import com.bestvike.mid.service.MidHouseService;
-import com.bestvike.bvdf.dao.BvdfHouseDao;
-import com.bestvike.commons.exception.MsgException;
 import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.Settings;
@@ -16,7 +17,6 @@ import org.elasticsearch.common.transport.TransportAddress;
 import org.elasticsearch.transport.client.PreBuiltTransportClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -123,14 +123,23 @@ public class BvdfServiceImpl implements BvdfService {
 			esHouseParam.setId(bvdfHouseParam.getSysguid());
 			String corpName = null;
 			String corpNo = bvdfHouseParam.getCorpno();
+			String licenseNo = null;
 			if (!StringUtils.isEmpty(corpNo)) {
-				corpName = bvdfHouseDao.selectCorpNameByCorpNo(corpNo);
+				BvdfCorpParam bvdfCorpParam = bvdfHouseDao.selectCorpNameByCorpNo(corpNo);
+				if (null != bvdfCorpParam) {
+					corpName = bvdfCorpParam.getCorpName();
+					licenseNo = bvdfCorpParam.getLicenseNo();
+				}
 			}
 			if (StringUtils.isEmpty(corpName)) {
 				corpName = "无";
 			}
+			if (StringUtils.isEmpty(licenseNo)) {
+				licenseNo = "无";
+			}
 			// 开发企业名称
 			esHouseParam.setDevelopName(corpName);
+			esHouseParam.setLicenseNo(licenseNo);
 			String bldName = null;
 			String bldNo = bvdfHouseParam.getBldno();
 			if (!StringUtils.isEmpty(bldNo)) {

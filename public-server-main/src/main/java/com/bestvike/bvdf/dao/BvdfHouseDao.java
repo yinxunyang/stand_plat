@@ -1,5 +1,6 @@
 package com.bestvike.bvdf.dao;
 
+import com.bestvike.bvdf.param.BvdfCorpParam;
 import com.bestvike.bvdf.param.BvdfHouseParam;
 import org.springframework.stereotype.Repository;
 
@@ -31,7 +32,7 @@ public interface BvdfHouseDao {
 	 * @param:
 	 * @return:
 	 */
-	String selectCorpNameByCorpNo(String corpNo);
+	BvdfCorpParam selectCorpNameByCorpNo(String corpNo);
 
 	/**
 	 * @Author: yinxunyang

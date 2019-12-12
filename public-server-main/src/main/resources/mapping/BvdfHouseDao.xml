@@ -32,8 +32,8 @@
 		where rownum <= #{houseMaxNum}
 		]]>
 	</select>
-	<select id="selectCorpNameByCorpNo" resultType="java.lang.String">
-		select corpName from arc_corpinfo where corpNo = #{corpNo,jdbcType=VARCHAR}
+	<select id="selectCorpNameByCorpNo" resultType="com.bestvike.bvdf.param.BvdfCorpParam">
+		select corpName, licenseNo from arc_corpinfo where corpNo = #{corpNo,jdbcType=VARCHAR}
 	</select>
 	<select id="selectBldNameByBldNo" resultType="java.lang.String">
 		select bldName from arc_buildinfo where bldNo = #{bldNo,jdbcType=VARCHAR}

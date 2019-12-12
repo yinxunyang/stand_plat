@@ -83,12 +83,22 @@ public class ElasticSearchServiceImpl implements ElasticSearchService {
 					.startObject()
 					.field("buyCertNos", esHouseParam.getBuyCertNos())
 					.field("developName", esHouseParam.getDevelopName())
+					.field("licenseNo", esHouseParam.getLicenseNo())
 					.field("bldName", esHouseParam.getBldName())
 					.field("cellName", esHouseParam.getCellName())
 					.field("floorName", esHouseParam.getFloorName())
 					.field("roomNo", esHouseParam.getRoomno())
 					.field("buyNames", esHouseParam.getBuyNames())
 					.field("houseAddress", esHouseParam.getHouseAddress())
+					.field("buyCertNosForKey", esHouseParam.getBuyCertNos())
+					.field("developNameForKey", esHouseParam.getDevelopName())
+					.field("licenseNoForKey", esHouseParam.getLicenseNo())
+					.field("bldNameForKey", esHouseParam.getBldName())
+					.field("cellNameForKey", esHouseParam.getCellName())
+					.field("floorNameForKey", esHouseParam.getFloorName())
+					.field("roomNoForKey", esHouseParam.getRoomno())
+					.field("buyNamesForKey", esHouseParam.getBuyNames())
+					.field("houseAddressForKey", esHouseParam.getHouseAddress())
 					.endObject();
 		} catch (IOException e) {
 			log.error("拼装ElasticSearch的数据失败" + e);

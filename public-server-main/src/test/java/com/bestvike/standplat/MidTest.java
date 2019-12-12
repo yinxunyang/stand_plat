@@ -1,6 +1,7 @@
 package com.bestvike.standplat;
 
 import com.bestvike.bvdf.dao.BvdfHouseDao;
+import com.bestvike.bvdf.param.BvdfCorpParam;
 import com.bestvike.bvdf.service.impl.BvdfServiceImpl;
 import com.bestvike.mid.dao.MidHouseDao;
 import com.bestvike.mid.entity.MidHouseInfo;
@@ -73,7 +74,7 @@ public class MidTest extends BaseTest {
 
 	@Test
 	public void test16() {
-		String corpName = bvdfHouseDao.selectCorpNameByCorpNo("3181041084");
+		BvdfCorpParam  bvdfCorpParam= bvdfHouseDao.selectCorpNameByCorpNo("3181041084");
 		int i = 0;
 	}
 	@Test
