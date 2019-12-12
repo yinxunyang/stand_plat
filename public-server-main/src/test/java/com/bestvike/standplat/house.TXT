@@ -8,39 +8,48 @@ POST house_index/house_type/_mapping
     "properties": {
       "developName": {
         "type": "text",
-        "analyzer": "ik_max_word"
+        "analyzer": "ik_max_word",
+        "search_analyzer": "ik_max_word"
       },
       "licenseNo": {
         "type": "text",
-        "analyzer": "ik_max_word"
+        "analyzer": "ik_max_word",
+        "search_analyzer": "ik_max_word"
       },
       "bldName": {
         "type": "text",
-        "analyzer": "ik_max_word"
+        "analyzer": "ik_max_word",
+        "search_analyzer": "ik_max_word"
       },
       "cellName": {
         "type": "text",
-        "analyzer": "ik_max_word"
+        "analyzer": "ik_max_word",
+        "search_analyzer": "ik_max_word"
       },
       "floorName": {
         "type": "text",
-        "analyzer": "ik_max_word"
+        "analyzer": "ik_max_word",
+        "search_analyzer": "ik_max_word"
       },
       "roomNo": {
         "type": "text",
-        "analyzer": "ik_max_word"
+        "analyzer": "ik_max_word",
+        "search_analyzer": "ik_max_word"
       },
       "buyCertNos": {
         "type": "text",
-        "analyzer": "ik_max_word"
+        "analyzer": "ik_max_word",
+        "search_analyzer": "ik_max_word"
       },
       "buyNames": {
         "type": "text",
-        "analyzer": "ik_max_word"
+        "analyzer": "ik_max_word",
+        "search_analyzer": "ik_max_word"
       },
       "houseAddress": {
         "type": "text",
-        "analyzer": "ik_max_word"
+        "analyzer": "ik_max_word",
+        "search_analyzer": "ik_max_word"
       },
       "developNameForKey": {
         "type": "keyword"
