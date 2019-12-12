@@ -8,47 +8,47 @@ POST house_index/house_type/_mapping
     "properties": {
       "developName": {
         "type": "text",
-        "analyzer": "my_ik_smart",
+        "analyzer": "ik_smart",
         "search_analyzer": "ik_smart"
       },
       "licenseNo": {
         "type": "text",
-        "analyzer": "my_ik_smart",
+        "analyzer": "ik_smart",
         "search_analyzer": "ik_smart"
       },
       "bldName": {
         "type": "text",
-        "analyzer": "my_ik_smart",
+        "analyzer": "ik_smart",
         "search_analyzer": "ik_smart"
       },
       "cellName": {
         "type": "text",
-        "analyzer": "my_ik_smart",
+        "analyzer": "ik_smart",
         "search_analyzer": "ik_smart"
       },
       "floorName": {
         "type": "text",
-        "analyzer": "my_ik_smart",
+        "analyzer": "ik_smart",
         "search_analyzer": "ik_smart"
       },
       "roomNo": {
         "type": "text",
-        "analyzer": "my_ik_smart",
+        "analyzer": "ik_smart",
         "search_analyzer": "ik_smart"
       },
       "buyCertNos": {
         "type": "text",
-        "analyzer": "my_ik_smart",
+        "analyzer": "ik_smart",
         "search_analyzer": "ik_smart"
       },
       "buyNames": {
         "type": "text",
-        "analyzer": "my_ik_smart",
+        "analyzer": "ik_smart",
         "search_analyzer": "ik_smart"
       },
       "houseAddress": {
         "type": "text",
-        "analyzer": "my_ik_smart",
+        "analyzer": "ik_smart",
         "search_analyzer": "ik_smart"
       },
       "developNameForKey": {
