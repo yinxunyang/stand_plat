@@ -91,13 +91,14 @@ public class BvrfisServiceImpl implements BvrfisService {
 	private void matchEsAndInsertMid(List<BvrfisHouseParam> bvrfisHouseParamList) {
 		try (TransportClient client = new PreBuiltTransportClient(Settings.builder().put("cluster.name", esClusterName).build())
 				.addTransportAddress(new TransportAddress(InetAddress.getByName(esIP), Integer.parseInt(esPort)))) {
+			// todo 从配置文件读取es查询语句
 			// 遍历新增房屋信息和elasticsearch
 			bvrfisHouseParamList.forEach(bvrfisHouseParam -> {
 				// 新增房屋信息和迁移elasticsearch
 				try {
 					// 组织跟elasticSearch匹配的数据
 					EsHouseParam esHouseParam = organizeMatchEsParam(bvrfisHouseParam);
-					// todo 组织查询es打分的语句
+					// todo 替换es查询的值str.replace
 
 
 
