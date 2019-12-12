@@ -116,9 +116,28 @@ public class ElasticSearchServiceImpl implements ElasticSearchService {
 	 */
 	@Override
 	public void bvdfHouseParamFormat(EsHouseParam esHouseParam) {
+		// 将#替换成号
 		String bldName = esHouseParam.getBldName().replaceAll("#", "号");
-		esHouseParam.setBldName(bldName);
+		esHouseParam.setBldName(numberToChinese(bldName));
+		String cellName = esHouseParam.getCellName();
+		esHouseParam.setCellName(numberToChinese(cellName));
+		String floorName = esHouseParam.getFloorName();
+		esHouseParam.setFloorName(floorName);
 		String houseAddress = esHouseParam.getHouseAddress().replaceAll("#", "号");
-		esHouseParam.setHouseAddress(houseAddress);
+		esHouseParam.setHouseAddress(numberToChinese(houseAddress));
+	}
+
+	/**
+	 * @Author: yinxunyang
+	 * @Description: 将字符串中的阿拉伯数字转成汉字
+	 * @Date: 2019/12/12 18:44
+	 * @param:
+	 * @return:
+	 */
+	private String numberToChinese(String str) {
+		for (int i = 0; i < 10; i++) {
+			str = str.replace((char) ('0' + i), "零一二三四五六七八九".charAt(i));
+		}
+		return str;
 	}
 }

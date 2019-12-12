@@ -2,11 +2,11 @@ package com.bestvike.standplat;
 
 import com.bestvike.bvdf.dao.BvdfHouseDao;
 import com.bestvike.bvdf.param.BvdfCorpParam;
+import com.bestvike.bvdf.param.BvdfHouseParam;
 import com.bestvike.bvdf.service.impl.BvdfServiceImpl;
 import com.bestvike.mid.dao.MidHouseDao;
 import com.bestvike.mid.entity.MidHouseInfo;
 import com.bestvike.mid.service.MidHouseService;
-import com.bestvike.bvdf.param.BvdfHouseParam;
 import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.transport.TransportClient;
@@ -180,6 +180,17 @@ public class MidTest extends BaseTest {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+
+	}
+
+	@Test
+	public void test8() {
+		String text = "登记编号0123456789正在审批过程中。";
+		for (int i = 0; i < 10; i++) {
+			text = text.replace((char) ('0' + i),
+					"零一二三四五六七八九".charAt(i));
+		}
+		log.info(text);
 
 	}
 }

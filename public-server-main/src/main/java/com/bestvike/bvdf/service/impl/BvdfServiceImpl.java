@@ -175,7 +175,6 @@ public class BvdfServiceImpl implements BvdfService {
 			esHouseParam.setRoomno(bvdfHouseParam.getRoomno());
 			esHouseParam.setBuyCertNos(bvdfHouseParam.getBuycertnos());
 			esHouseParam.setBuyNames(bvdfHouseParam.getBuynames());
-			// # 替换成号
 			esHouseParam.setHouseAddress(bvdfHouseParam.getAddress());
 			return esHouseParam;
 		} catch (Exception e) {
