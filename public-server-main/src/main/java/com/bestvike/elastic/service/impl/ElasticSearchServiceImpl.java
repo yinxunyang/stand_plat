@@ -122,7 +122,7 @@ public class ElasticSearchServiceImpl implements ElasticSearchService {
 		String cellName = esHouseParam.getCellName();
 		esHouseParam.setCellName(numberToChinese(cellName));
 		String floorName = esHouseParam.getFloorName();
-		esHouseParam.setFloorName(floorName);
+		esHouseParam.setFloorName(numberToChinese(floorName));
 		String houseAddress = esHouseParam.getHouseAddress().replaceAll("#", "号");
 		esHouseParam.setHouseAddress(numberToChinese(houseAddress));
 	}

@@ -185,7 +185,7 @@ public class MidTest extends BaseTest {
 
 	@Test
 	public void test8() {
-		String text = "登记编号0123456789正在审批过程中。";
+		String text = "登记编号011234562789正在审批过程中。";
 		for (int i = 0; i < 10; i++) {
 			text = text.replace((char) ('0' + i),
 					"零一二三四五六七八九".charAt(i));
