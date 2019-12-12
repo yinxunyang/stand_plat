@@ -1,5 +1,36 @@
 {
-    "term": {
-      "licenseNoForKey": "916529015605416063"
-    }
+  "function_score": {
+    "query": {
+      "match": {
+        "licenseNoForKey": "916529015605416063"
+      }
+    },
+    "functions": [
+      {
+        "weight": 3,
+        "filter": {
+          "match": {
+            "bldName": "A、B、C、D栋"
+          }
+        }
+      },
+      {
+        "weight": 3,
+        "filter": {
+          "match": {
+            "cellName": "A栋"
+          }
+        }
+      },
+      {
+        "weight": 3,
+        "filter": {
+          "match": {
+            "houseAddress": "栏杆区东大街35号城市一号一期一期A栋908室"
+          }
+        }
+      }
+    ],
+    "boost_mode": "sum"
+  }
 }
