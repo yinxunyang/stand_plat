@@ -1,10 +1,10 @@
-PUT /test
+PUT /house_index
 {
   "settings": {
     "index": {
       "analysis": {
         "analyzer": {
-          "jt_cn": {
+          "my_ik_smart": {
             "type": "custom",
             "use_smart": "true",
             "tokenizer": "ik_smart",
