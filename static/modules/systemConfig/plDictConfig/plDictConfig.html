@@ -1,0 +1,228 @@
+<div class="bv-fill" data-container="plDict">
+    <div class="col-sm-4">
+        <component is="bv-tree" :key="tags.treeId" @on-click="treeEvent.click" v-bind="treeConfig"></component>
+    </div>
+    <div class="col-sm-8 bv-fixed-right" v-show="shown">
+        <component is="bv-form" :key="tags.formId" v-bind="formConfig"></component>
+    </div>
+</div>
+<script type="text/javascript">
+    require(['jquery', 'util', 'Const'], function ($, util, Const) {
+        var vm = util.bind({
+            container: 'plDict',
+            data: {
+                tags: {
+                    treeId: 'plDictTree',
+                    formId: 'plDictForm'
+                },
+                shown: false,
+                allowSave: false,
+                currentNode: undefined,
+                treeConfig: {
+                    entityName: 'plDictConfig',
+                    orders: 'showOrder',
+                    rootNode: {
+                        id: '0000',
+                        name: '字典',
+                        open: true
+                    },
+                    pack: function(entity) {
+                        return {
+                            id: entity.dictId,
+                            pId: entity.parentId || '0000',
+                            name: entity.dictCode + '_' + entity.dictName,
+                            open: !entity.parentId,
+                            entity: entity
+                        };
+                    }
+                },
+                treeEvent: {
+                    click: function(event, treeId, treeNode) {
+                        vm.shown = true;
+                        vm.currentNode = treeNode;
+                        if (treeNode.entity) {
+                            vm.allowSave = true;
+                            // 修改
+                            var parentNode = treeNode.getParentNode();
+                            util.refresh({
+                                vm: util.vm(vm, vm.tags.formId),
+                                editType: 'update',
+                                entity: {
+                                    dictId: treeNode.entity.dictId,
+                                    dictCode: treeNode.entity.dictCode,
+                                    dictName: treeNode.entity.dictName,
+                                    detail: treeNode.entity.detail || '',
+                                    parentId: parentNode && parentNode.entity && parentNode.entity.dictId,
+                                    parentCode: parentNode && parentNode.entity && parentNode.entity.dictCode,
+                                    showOrder: treeNode.entity.showOrder
+                                }
+                            });
+                        } else {
+                            if (treeNode.level > 0) {
+                                vm.allowSave = true;
+                                util.refresh({
+                                    vm: util.vm(vm, vm.tags.formId),
+                                    editType: 'insert',
+                                    entity: {
+                                        dictId: '',
+                                        dictCode: '',
+                                        dictName: '',
+                                        detail: '',
+                                        parentId: '',
+                                        parentCode: '',
+                                        showOrder: 0
+                                    }
+                                });
+                            } else {
+                                vm.allowSave = false;
+                                util.refresh({
+                                    vm: util.vm(vm, vm.tags.formId),
+                                    editType: 'disable',
+                                    entity: {
+                                        dictId: '',
+                                        dictCode: '',
+                                        dictName: '',
+                                        detail: '',
+                                        parentId: '',
+                                        parentCode: '',
+                                        showOrder: 0
+                                    }
+                                });
+                            }
+                        }
+                    }
+                },
+                formConfig: {
+                    title: '维护字典信息',
+                    layoutCols: 1,
+                    entityName: 'plDictConfig',
+                    keys: 'dictId',
+                    keyGenerator: 'guid',
+                    editType: 'auto',
+                    entity: {},
+                    formKeyValues: {},
+                    entityDefaults: {
+                        showOrder: 0
+                    },
+                    columns: [
+                        {
+                            name: 'dictId',
+                            hide: true
+                        },
+                        {
+                            name: 'dictCode',
+                            head: '字典代码',
+                            config: {
+                                attr:{
+                                    maxlength: 30
+                                }
+                            }
+                        },
+                        {
+                            name: 'dictName',
+                            head: '字典名称',
+                            config: {
+                                attr:{
+                                    maxlength: 150
+                                }
+                            }
+                        },
+                        {
+                            name: 'detail',
+                            head: '字典说明',
+                            edit: {
+                                type: 'textarea'
+                            },
+                            config: {
+                                attr:{
+                                    maxlength: 300
+                                }
+                            }
+                        },
+                        {
+                            name: 'showOrder',
+                            head: '显示顺序',
+                            config: {
+                                attr:{
+                                    maxlength: 6
+                                }
+                            }
+                        }
+                    ],
+                    operates: [
+                        {
+                            text: '增加下级字典',
+                            icon: 'icon-add',
+                            position: 'header',
+                            validate: false,
+                            click: function($event, editType, entity) {
+                                vm.allowSave = true;
+                                util.refresh({
+                                    vm: util.vm(vm, vm.tags.formId),
+                                    editType: 'insert',
+                                    entity: {
+                                        dictId: '',
+                                        dictCode: '',
+                                        dictName: '',
+                                        detail: '',
+                                        parentId: vm.currentNode.entity ? vm.currentNode.entity.dictId : '',
+                                        parentCode: vm.currentNode.entity ? vm.currentNode.entity.dictCode : '',
+                                        showOrder: 0
+                                    }
+                                });
+                            }
+                        },
+                        {
+                            text: '保存',
+                            clazz: 'btn-primary',
+                            icon: 'icon-save',
+                            loading: '处理中...',
+                            click: function($event, editType, entity) {
+                                util.post({
+                                    url: '/api/plr/pldictconfig/save/',
+                                    data:entity,
+                                    success: function(data) {
+                                        util.refresh({
+                                            vm: util.vm(vm, vm.tags.treeId)
+                                        });
+                                        vm.shown = false;
+                                        vm.currentNode = undefined;
+                                    }
+                                });
+                            }
+                        },
+                        {
+                            text: '删除字典',
+                            clazz: 'btn-warning',
+                            icon: 'icon-delete',
+                            show: 'update',
+                            position: 'footer',
+                            click: function($event, editType, entity) {
+                                util.post({
+                                    url: '/api/plr/pldictconfig/delete/' + entity.dictId,
+                                    success: function(data) {
+                                        util.refresh({
+                                            vm: util.vm(vm, vm.tags.formId),
+                                            entity: {
+                                                dictId: '',
+                                                dictCode: '',
+                                                dictName: '',
+                                                detail: '',
+                                                showOrder: 0
+                                            }
+                                        });
+                                        util.refresh({
+                                            vm: util.vm(vm, vm.tags.treeId)
+                                        });
+                                        vm.shown = false;
+                                        vm.currentNode = undefined;
+                                    }
+                                });
+                            }
+                        }
+                    ]
+                }
+            }
+        });
+    });
+</script>

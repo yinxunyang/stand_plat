@@ -1,0 +1,330 @@
+<div data-container="repayAccountTransaction">
+    <component is="bv-table" :key="tags.tableId" v-bind="config"></component>
+    <component is="bv-table" key="repayAccountEntryTable" v-bind="config2"></component>
+</div>
+<script type="text/javascript">
+    require(['jquery', 'util', 'Const'], function ($, util, Const) {
+        var vm = util.bind({
+            container: 'repayAccountTransaction',
+            data: {
+                tags: {
+                    tableId: 'repayAccountTransactionTable'
+                    // tableId2: 'repayAccountEntryTable'
+                },
+                config: {
+                    entityName: 'repayAccountTransaction',
+                    keys: 'id',
+                    filterLayout: 'filterMore',
+                    // 下面属性设置为false可以预设为隐藏查询条件
+                    // filterVisible: false,
+                    orders: 'createTime desc',
+                    columns: [
+                        {
+                            name: 'id',
+                            head: 'id',
+                            filter: '='
+                        },
+                        {
+                            name: 'repaySeq',
+                            head: '还款请求ID',
+                            filter: '='
+                        },
+                        {
+                            name: 'repayType',
+                            head: '还款类型',
+                            filter: 'select',
+                            config: {
+                                format: 'dict',
+                                preset: 'enums',
+                                choose: Const.enums.bizTypeEnum
+                            }
+                        },
+                        {
+                            name: 'recordType',
+                            head: '记账类型',
+                            filter: 'select',
+                            config: {
+                                format: 'dict',
+                                preset: 'enums',
+                                choose: Const.enums.stageEnum
+                            }
+                        },
+                        {
+                            name: 'contNo',
+                            head: '合同号',
+                            filter: '='
+                        },
+                        {
+                            name: 'loanNo',
+                            head: '借据号',
+                            filter: '='
+                        },
+                        {
+                            name: 'transNo',
+                            head: '报账事务号',
+                            filter: '='
+                        },
+                        {
+                            name: 'contextTransNo',
+                            head: '关联报账事务号',
+                            filter: '='
+                        },
+                        {
+                            name: 'sysTraceNo',
+                            head: '系统跟踪号',
+                            filter: '='
+                        },
+                        {
+                            name: 'bizType',
+                            head: '业务类型',
+                            filter: 'select',
+                            config: {
+                                format: 'dict',
+                                preset: 'enums',
+                                choose: Const.enums.recordBizTypeEnum
+                            }
+                        },
+                        {
+                            name: 'tradeLink',
+                            head: '交易环节',
+                            filter: 'select',
+                            config: {
+                                format: 'dict',
+                                preset: 'enums',
+                                choose: Const.enums.recordTypeEnum
+                            }
+                        },
+                        {
+                            name: 'appId',
+                            head: '应用ID'
+                        },
+                        {
+                            name: 'bizId',
+                            head: '业务单号',
+                            filter: '='
+                        },
+                        {
+                            name: 'isBounced',
+                            head: '是否退票',
+                            filter:{
+                                type:'radio'
+                            },
+                            config: {
+                                format: 'dict',
+                                preset: 'enums',
+                                choose: Const.enums.yesNoEnum
+                            }
+                        },
+                        {
+                            name: 'accountingStatus',
+                            head: '入账状态',
+                            filter: 'select',
+                            config: {
+                                format: 'dict',
+                                preset: 'enums',
+                                choose: Const.enums.handleStatusEnum
+                            }
+                        },
+                        {
+                            name: 'respCode',
+                            head: '响应码'
+                        },
+                        {
+                            name: 'respMsg',
+                            head: '响应描述'
+                        },
+                        {
+                            name: 'requestDate',
+                            head: '请求时间'
+                        },
+                        {
+                            name: 'isCorrect',
+                            head: '事务是否冲正',
+                            filter:{
+                                type:'radio'
+                            },
+                            config: {
+                                format: 'dict',
+                                preset: 'enums',
+                                choose: Const.enums.yesNoEnum
+                            }
+                        },
+                        {
+                            name: 'remark',
+                            head: '备注',
+                            title: true,
+                            config: {
+                                format: 'truncate(5)'
+                            }
+                        },
+                        {
+                            name: 'createTime',
+                            head: '创建时间',
+                            filter: {
+                                operate: 'between',
+                                type: 'date'
+                            },
+                            config: {
+                                format: 'datetime',
+                                defaultValueFrom: util.date()
+                            }
+                        },
+                        {
+                            name: 'updateTime',
+                            head: '修改时间',
+                            filter: {
+                                operate: 'between',
+                                type: 'date'
+                            },
+                            config: {
+                                format: 'datetime',
+                                defaultValueFrom: util.date()
+                            }
+                        },
+                        {
+                            name: 'dddddd',
+                            head: '操作',
+                            width: '80px',
+                            type: 'operate',
+                            align: 'center',
+                            operates: [
+                                {
+                                    id: 'repayAccountEntryTable',
+                                    text: '分录表',
+                                    preset: 'sub',
+                                    config: {
+                                        id: 'repayAccountEntryTable',
+                                        initParamList: [{
+                                            name: 'transNo',
+                                            operate: '=',
+                                            from: 'id'
+                                        }]
+                                    }
+                                }
+                            ]
+                        }
+                    ]
+                },
+                config2: {
+                    title: '分录表数据',
+                    type: 'sub',
+                    entityName: 'repayAccountEntry',
+                    columns: [
+                        {
+                            name: 'id',
+                            head: 'id'
+                        },
+                        {
+                            name: 'transNo',
+                            head: '入账事务id'
+                        },
+                        {
+                            name: 'accountId',
+                            head: '账户ID'
+                        },
+                        {
+                            name: 'accountType',
+                            head: '账户类型'
+                        },
+                        {
+                            name: 'isControl',
+                            head: '是否受控',
+                            config: {
+                                format: 'dict',
+                                preset: 'enums',
+                                choose: Const.enums.yesNoEnum
+                            }
+                        },
+                        {
+                            name: 'controlValue',
+                            head: '受控条件'
+                        },
+                        {
+                            name: 'controlType',
+                            head: '受控类型'
+                        },
+                        {
+                            name: 'voucherNo',
+                            head: '凭证号'
+                        },
+                        {
+                            name: 'amount',
+                            head: '金额'
+                        },
+                        {
+                            name: 'balanceDirection',
+                            head: '余额方向',
+                            config: {
+                                format: 'dict',
+                                preset: 'enums',
+                                choose: Const.enums.balanceDirectionEnum
+                            }
+                        },
+                        {
+                            name: 'drcr',
+                            head: '借贷方向',
+                            config: {
+                                format: 'dict',
+                                preset: 'enums',
+                                choose: Const.enums.drCrEnum
+                            }
+                        },
+                        {
+                            name: 'isCash',
+                            head: '资金属性',
+                            config: {
+                                format: 'dict',
+                                preset: 'enums',
+                                choose: Const.enums.cashStatusEnum
+                            }
+                        },
+                        {
+                            name: 'isCorrect',
+                            head: '是否冲正',
+                            config: {
+                                format: 'dict',
+                                preset: 'enums',
+                                choose: Const.enums.yesNoEnum
+                            }
+                        },
+                        {
+                            name: 'assCheckType',
+                            head: '辅助类型',
+                            config: {
+                                format: 'dict',
+                                preset: 'enums',
+                                choose: Const.enums.assTypeEnum
+                            }
+                        },
+                        {
+                            name: 'assCheckCode',
+                            head: '辅助代码'
+                        },
+                        {
+                            name: 'remark',
+                            head: '备注'
+                        },
+                        {
+                            name: 'note',
+                            head: '摘要'
+                        },
+                        {
+                            name: 'tradeTime',
+                            head: '交易时间'
+                        },
+                        {
+                            name: 'createTime',
+                            head: '创建时间'
+                        },
+                        {
+                            name: 'updateTime',
+                            head: '修改时间'
+                        }
+                    ]
+                    //orders: 'issuerCode asc',
+                }
+            }
+        });
+    });
+</script>
+

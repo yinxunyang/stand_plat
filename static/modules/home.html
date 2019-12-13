@@ -1,0 +1,123 @@
+<div class="bv-home" data-container="pgw-home">
+    <div class="col-md-9 banner">
+        <div class="thumbnail">
+            <img src="modules/themes/images/home-banner.png" :style="{width: '100%', height: height.line1 + 'px'}" />
+        </div>
+    </div>
+    <div class="col-md-3 calendar">
+        <div class="panel panel-default" :style="{height: (height.line1 + 8) + 'px'}">
+            <div class="panel-heading"><h3 class="panel-title">日历</h3></div>
+            <div class="panel-body" :style="{height: (height.line1 - 70) + 'px', 'font-size': (height.line1 - 70) / 2 + 'px'}" v-text="calendar.day"></div>
+            <div class="panel-footer">
+                <h3 class="panel-title">
+                    <span v-text="calendar.month"></span><span v-text="calendar.week"></span><span v-text="calendar.time"></span>
+                </h3>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="panel panel-default" :style="{height: height.line2 + 'px'}">
+            <div class="panel-heading"><h3 class="panel-title">公告信息<a href="javascript:;">更多</a></h3></div>
+            <div class="panel-body">
+                <p></p>
+                <p></p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="panel panel-default message" :style="{height: height.line2 + 'px'}">
+            <div class="panel-heading"><h3 class="panel-title">交易提醒<span class="badge">5</span><a href="javascript:;">更多</a></h3></div>
+            <div class="list-group">
+                <a href="#" class="list-group-item">第1条信息提醒</a>
+                <a href="#" class="list-group-item">第2条信息提醒</a>
+                <a href="#" class="list-group-item">第3条信息提醒</a>
+                <a href="#" class="list-group-item">第4条信息提醒</a>
+                <a href="#" class="list-group-item">第5条信息提醒</a>
+                <a href="#" class="list-group-item">第6条信息提醒</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="panel panel-default todo" :style="{height: height.line2 + 'px'}">
+            <div class="panel-heading"><h3 class="panel-title">待办事项<span class="badge">15</span><a href="javascript:;">更多</a></h3></div>
+            <div class="list-group">
+                <a href="#" class="list-group-item">第1条待办事项</a>
+                <a href="#" class="list-group-item">第2条待办事项</a>
+                <a href="#" class="list-group-item">第3条待办事项</a>
+                <a href="#" class="list-group-item">第4条待办事项</a>
+                <a href="#" class="list-group-item">第5条待办事项</a>
+                <a href="#" class="list-group-item">第6条待办事项</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="panel panel-default shutcut" :style="{height: height.line3 + 'px'}">
+            <div class="panel-heading"><h3 class="panel-title">快捷入口<a href="javascript:;">自定义</a></h3></div>
+            <div class="panel-body">
+                <a class="col-md-3" href="javascript:;" @click="openShutcut('8a24967855ed240c0155ed4e8586001a')"><img src="modules/themes/images/home-shutcut.png" /><p>收单批次</p></a>
+                <a class="col-md-3" href="javascript:;" @click="openShutcut('8a24967855ed240c0155ed4afbbb000c')"><img src="modules/themes/images/home-shutcut.png" /><p>收单明细</p></a>
+                <a class="col-md-3" href="javascript:;" @click="openShutcut('8a24967855ed240c0155ed4cee6d0018')"><img src="modules/themes/images/home-shutcut.png" /><p>交易明细</p></a>
+                <a class="col-md-3" href="javascript:;" @click="openShutcut('8a24967855ed240c0155ed4d45a20019')"><img src="modules/themes/images/home-shutcut.png" /><p>支付明细</p></a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="panel panel-default" :style="{height: height.line3 + 'px'}">
+            <div class="panel-heading"><h3 class="panel-title">搜索查询</h3></div>
+            <div class="panel-body"></div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="panel panel-default" :style="{height: height.line3 + 'px'}">
+            <div class="panel-heading"><h3 class="panel-title">常用工具</h3></div>
+            <div class="panel-body"></div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    require(['jquery', 'util', 'Const'], function($, util, Const) {
+        var today = new Date();
+        var vm = util.bind({
+            container: 'pgw-home',
+            data: {
+                height: {
+                    container: 'auto',
+                    line1: 257,
+                    line2: 'auto',
+                    line3: 165,
+                    calc: function() {
+                        vm.height.container = $(vm.$el).closest('.bv-content').height() - 15;
+//                vm.height.line1 = $('.banner .thumbnail img', $(vm.$element)).height() + 8;
+                        var diff = vm.height.container - vm.height.line1 - vm.height.line3 - 35;
+                        if (diff <= 0) {
+                            diff = 230;
+                        }
+                        vm.height.line2 = diff;
+                    }
+                },
+                calendar: {
+                    day: util.date('DD', today),
+                    month: util.date('MMMM', today),
+                    week: util.date('dddd', today),
+                    time: util.date('HH:mm:ss', today)
+                }
+            },
+            methods: {
+                openShutcut: function(menuId) {
+                    util.mainTabs(menuId);
+                }
+            }
+        });
+        vm.height.calc();
+        setInterval(function() {
+            vm.calendar.time = util.date('HH:mm:ss');
+        }, 1000);
+        /*    $('.banner .thumbnail img', $(vm.$element)).load(function() {
+         vm.height.calc();
+         });*/
+
+        $(window).resize(function() {
+            vm.height.calc();
+        });
+    });
+</script>

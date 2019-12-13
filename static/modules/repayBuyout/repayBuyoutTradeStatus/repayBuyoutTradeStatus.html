@@ -1,0 +1,191 @@
+<div data-container="repayBuyoutTradeStatus">
+    <component is="bv-table" :key="tags.tableId" v-bind="config"></component>
+</div>
+<script type="text/javascript">
+    require(['jquery', 'util', 'Const'], function ($, util, Const) {
+        var vm = util.bind({
+            container: 'repayBuyoutTradeStatus',
+            data: {
+                tags: {
+                    tableId: 'repayBuyoutTradeStatusTable'
+                },
+                config: {
+                    entityName: 'repayBuyoutTradeSts',
+                    keys: 'id',
+                    filterLayout: 'filterMore',
+                    // 下面属性设置为false可以预设为隐藏查询条件
+                    // filterVisible: false,
+                    orders: 'createTime desc',
+                    columns: [
+                        {
+                            name: 'id',
+                            head: 'id',
+                            filter: '='
+                        },
+                        {
+                            name: 'requestId',
+                            head: '还款请求ID',
+                            filter: '='
+                        },
+                        {
+                            name: 'contNo',
+                            head: '合同号',
+                            filter: '='
+                        },
+                        {
+                            name: 'loanNo',
+                            head: '借据号',
+                            filter: '='
+                        },
+                        {
+                            name: 'buyoutType',
+                            head: '代偿买断类型',
+                            filter: 'select',
+                            config: {
+                                format: 'dict',
+                                preset: 'enums',
+                                choose: Const.enums.buyoutTypeEnum
+                            }
+                        },
+                        {
+                            name: 'buyoutTerm',
+                            head: '代偿期数'
+                        },
+                        {
+                            name: 'capCode',
+                            head: '联合资金方编码',
+                            filter: '='
+                        },
+                        {
+                            name: 'capName',
+                            head: '资金方名称',
+                            filter: '='
+                        },
+                        // {
+                        //     name: 'bankAcctNo',
+                        //     head: '资金方账户号'
+                        // },
+                        // {
+                        //     name: 'bankAcctName',
+                        //     head: '资金方账户户名'
+                        // },
+                        {
+                            name: 'claimTradeStatus',
+                            head: '理赔交易状态',
+                            filter: 'select',
+                            config: {
+                                format: 'dict',
+                                preset: 'enums',
+                                choose: Const.enums.handleStatusEnum
+                            }
+                        },
+                        {
+                            name: 'claimTradeCode',
+                            head: '理赔返回码'
+                        },
+                        {
+                            name: 'claimTradeDesc',
+                            head: '理赔返回描述'
+                        },
+                        {
+                            name: 'claimTradeTime',
+                            head: '理赔交易时间'
+                        },
+                        //20181026：新增字段-理赔记账-4个
+                        {
+                            name: 'claimChargeStatus',
+                            head: '理赔记账状态',
+                            filter: 'select',
+                            config: {
+                                format: 'dict',
+                                preset: 'enums',
+                                choose: Const.enums.handleStatusEnum
+                            }
+                        },
+                        {
+                            name: 'claimChargeCode',
+                            head: '理赔记账返回码'
+                        },
+                        {
+                            name: 'claimChargeDesc',
+                            head: '理赔记账返回描述'
+                        },
+                        {
+                            name: 'claimChargeTime',
+                            head: '理赔记账时间'
+                        },
+                        {
+                            name: 'outTradeStatus',
+                            head: '外部交易状态（资金方）',
+                            filter: 'select',
+                            config: {
+                                format: 'dict',
+                                preset: 'enums',
+                                choose: Const.enums.handleStatusEnum
+                            }
+                        },
+                        {
+                            name: 'outTradeCode',
+                            head: '外部交易返回码'
+                        },
+                        {
+                            name: 'outTradeDesc',
+                            head: '外部交易返回描述'
+                        },
+                        {
+                            name: 'outTradeTime',
+                            head: '外部交易时间'
+                        },
+                        {
+                            name: 'outChargeStatus',
+                            head: '外部记账状态（VA-资金方）',
+                            filter: 'select',
+                            config: {
+                                format: 'dict',
+                                preset: 'enums',
+                                choose: Const.enums.handleStatusEnum
+                            }
+                        },
+                        {
+                            name: 'outChargeCode',
+                            head: '外部记账返回码'
+                        },
+                        {
+                            name: 'outChargeDesc',
+                            head: '外部记账返回描述'
+                        },
+                        {
+                            name: 'outChargeTime',
+                            head: '外部记账时间'
+                        },
+                        {
+                            name: 'createTime',
+                            head: '创建时间',
+                            filter: {
+                                operate: 'between',
+                                type: 'date'
+                            },
+                            config: {
+                                format: 'datetime',
+                                defaultValueFrom: util.date()
+                            }
+                        },
+                        {
+                            name: 'updateTime',
+                            head: '修改时间',
+                            filter: {
+                                operate: 'between',
+                                type: 'date'
+                            },
+                            config: {
+                                format: 'datetime',
+                                defaultValueFrom: util.date()
+                            }
+                        }
+                    ]
+                }
+            }
+        });
+    });
+</script>
+

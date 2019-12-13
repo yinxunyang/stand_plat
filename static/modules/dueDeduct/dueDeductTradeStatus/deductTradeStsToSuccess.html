@@ -1,0 +1,53 @@
+<div data-container="deductTradeStsToSuccess">
+    <component is="bv-form" :key="tags.tableId" v-bind="config"></component>
+</div>
+<script type="text/javascript">
+    require(['jquery', 'util', 'Const'], function ($, util, Const) {
+        var deductTradeSts = util.json(util.gup('deductTradeSts'));
+        //获取到期扣款状态表ID
+        var tradeStsId = deductTradeSts.id;
+        var vm = util.bind({
+            container: 'deductTradeStsToSuccess',
+            data: {
+                tags: {
+                    formId: 'deductTradeStsToSuccess'
+                },
+                config: {
+                    title: '置为成功',
+                    saveUrl: '/api/plr/deductTradeStsSuccess',
+                    columns: [
+                        {
+                            name: 'realTradeAmt',
+                            head: '实扣金额',
+                            config: {
+                                validate: {
+                                    custom: 'decimals15',
+                                    min: 0.01,
+                                    required: '实扣金额是必输项'
+                                }
+                            }
+                        }, {
+                            name: 'tradeStsId',
+                            head: '到期扣款状态表ID',
+                            edit: {
+                                type: 'hidden'
+                            },
+                            config: {
+                                value: tradeStsId
+                            }
+                        }
+                    ],
+                    operates: [
+                        {
+                            text: '保存',
+                            clazz: 'btn-primary',
+                            icon: 'icon-save',
+                            loading: '处理中...',
+                            preset: 'save'
+                        }
+                    ]
+                }
+            }
+        });
+    });
+</script>

@@ -1,0 +1,177 @@
+<div data-container="plBizConfig">
+    <component is="bv-table" :key="tags.tableId" v-bind="config"></component>
+</div>
+<script type="text/javascript">
+    require(['jquery', 'util', 'Const'], function ($, util, Const) {
+        var vm = util.bind({
+            container: 'plBizConfig',
+            data: {
+                tags: {
+                    tableId: 'plBizConfigTable'
+                },
+                config: {
+                    entityName: 'plBizConfig',
+                    keys: 'id',
+                    select: 'checkbox',
+                    orders: 'createTime desc',
+                    filterLayout: 'filterMore',
+                    // 下面属性设置为false可以预设为隐藏查询条件
+                    // filterVisible: false,
+                    columns: [
+                        {
+                            name: 'id',
+                            head: 'id'
+                        },
+                        {
+                            name: 'bizType',
+                            head: '业务类型',
+                            filter: 'select',
+                            config: {
+                                format: 'dict',
+                                preset: 'enums',
+                                choose: Const.enums.recordBizTypeEnum
+                            }
+                        },
+                        {
+                            name: 'recordType',
+                            head: '记账环节',
+                            filter: 'select',
+                            config: {
+                                format: 'dict',
+                                choose: Const.enums.recordTypeEnum,
+                                preset: 'enums'
+                            }
+                        },
+                        // {
+                        //     name: 'custType',
+                        //     head: '客户类型',
+                        //     filter: 'select',
+                        //     config: {
+                        //         format: 'dict',
+                        //         choose: Const.enums.crmTypeEnum,
+                        //         preset: 'enums'
+                        //     }
+                        // },
+                        {
+                            name: 'voucherNo',
+                            head: '凭证代码',
+                            filter: '='
+                        },
+                        {
+                            name: 'startActType',
+                            head: '起始账户类型',
+                            filter: '='
+                        },
+                        {
+                            name: 'startCustType',
+                            head: '起始客户类型',
+                            filter: 'select',
+                            config: {
+                                format: 'dict',
+                                choose: Const.enums.custTypeEnum,
+                                preset: 'enums'
+                            }
+                        },
+                        {
+                            name: 'middleActType',
+                            head: '中间账户类型',
+                            filter: '='
+                        },
+                        {
+                            name: 'middleCustType',
+                            head: '中间客户类型',
+                            filter: 'select',
+                            config: {
+                                format: 'dict',
+                                choose: Const.enums.custTypeEnum,
+                                preset: 'enums'
+                            }
+                        },
+                        {
+                            name: 'payActType',
+                            head: '支付账户类型',
+                            filter: '='
+                        },
+                        {
+                            name: 'payCustType',
+                            head: '支付客户类型',
+                            filter: 'select',
+                            config: {
+                                format: 'dict',
+                                choose: Const.enums.custTypeEnum,
+                                preset: 'enums'
+                            }
+                        },
+                        {
+                            name: 'createUser',
+                            head: '创建人'
+                        },
+                        {
+                            name: 'updateUser',
+                            head: '修改人'
+                        },
+                        {
+                            name: 'createTime',
+                            head: '创建时间'
+                        },
+                        {
+                            name: 'updateTime',
+                            head: '修改时间'
+                            // filter: {
+                            //     operate: 'between',
+                            //     type: 'date'
+                            // },
+                            // config: {
+                            //     format: 'datetime',
+                            //     defaultValueFrom: util.date()
+                            // }
+                        }
+                    ],
+                    operates: [
+                        {
+                            id: 'add',
+                            text: '增加',
+                            icon: 'icon-add',
+                            show: 'none',
+                            preset: 'insert',
+                            url: 'modules/systemConfig/pLBizConfig/addPLBizConfig.html'
+                        },
+                        {
+                            id: 'edit',
+                            text: '修改',
+                            icon: 'icon-edit',
+                            show: function (selected) {
+                                if (!selected || selected.length != 1) {
+                                    return false;
+                                }
+                                return true;
+                            },
+                            preset: 'update',
+                            url: 'modules/systemConfig/pLBizConfig/editPLBizConfig.html'
+                        },
+                        {
+                            id: 'delete',
+                            text: '删除',
+                            icon: 'icon-delete',
+                            show: 'oneOrMore',
+                            preset: 'delete',
+                            click: function ($element, name, entityName, selected) {
+                                var idList = [];
+                                for (var i = 0; i < selected.length; i++) {
+                                    idList.push(selected[i].id);
+                                }
+                                util.confirm({
+                                    url: '/api/plr/delete/pLBizConfig',
+                                    data: idList,
+                                    refresh: true,
+                                    vm: this
+                                })
+                            }
+                        }
+                    ]
+                }
+            }
+        });
+    });
+</script>
+

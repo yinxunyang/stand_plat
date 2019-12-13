@@ -1,0 +1,294 @@
+<div data-container="activeRepayTrade">
+    <component is="bv-table" :key="tags.tableId" v-bind="config"></component>
+</div>
+<script type="text/javascript">
+    require(['jquery', 'util', 'Const'], function ($, util, Const) {
+        var vm = util.bind({
+            container: 'activeRepayTrade',
+            data: {
+                tags: {
+                    tableId: 'activeRepayTradeTable'
+                },
+                config: {
+                    entityName: 'actvRepayTrade',
+                    keys: 'id',
+                    orders: 'createTime desc',
+                    filterLayout: 'filterMore',
+                    columns: [
+                        {
+                            name: 'id',
+                            head: 'id',
+                            filter: '='
+                        },
+                        {
+                            name: 'actvRepaySeq',
+                            head: '主动还款流水号',
+                            filter: '='
+                        },
+                        {
+                            name: 'contNo',
+                            head: '合同号',
+                            filter: '='
+                        },
+                        {
+                            name: 'loanNo',
+                            head: '借据号',
+                            filter: '='
+                        },
+                        {
+                            name: 'custNo',
+                            head: '客户号',
+                            filter: '='
+                        },
+                        {
+                            name: 'custName',
+                            head: '客户姓名',
+                            filter: '='
+                        },
+                        {
+                            name: 'certType',
+                            head: '证件类型'
+                        },
+                        {
+                            name: 'certNo',
+                            head: '证件号码',
+                            filter: '='
+                        },
+                        {
+                            name: 'typCde',
+                            head: '贷款品种代码',
+                            filter: '='
+                        },
+                        {
+                            name: 'paymentChannel',
+                            head: '扣款渠道编号',
+                            filter: '='
+                        },
+                        {
+                            name: 'contTyp',
+                            head: '合同类型',
+                            config: {
+                                format: 'dict',
+                                preset: 'enums',
+                                choose: Const.enums.contTypeEnum
+                            }
+                        },
+                        {
+                            name: 'setlMode',
+                            head: '提前还款模式',
+                            filter: 'select',
+                            config: {
+                                format: 'dict',
+                                choose: Const.enums.setlModeEnum,
+                                preset: 'enums'
+                            }
+                        },
+                        {
+                            name: 'actvPayInd',
+                            head: '提前还款金额类型',
+                            filter: 'select',
+                            config: {
+                                format: 'dict',
+                                choose: Const.enums.actvPayIndEnum,
+                                preset: 'enums'
+                            }
+                        },
+                        {
+                            name: 'tradeType',
+                            head: '交易类型',
+                            filter: 'select',
+                            config: {
+                                format: 'dict',
+                                choose: Const.enums.tradeTypeEnum,
+                                preset: 'enums'
+                            }
+                        },
+                        {
+                            name: 'transId',
+                            head: '第三方支付流水号'
+                        },
+                        {
+                            name: 'transOrderId',
+                            head: '支付订单号'
+                        },
+                        {
+                            name: 'transTyp',
+                            head: '订单类型'
+                        },
+                        {
+                            name: 'transactionType',
+                            head: '单笔/整笔还款标识'
+                        },
+                        {
+                            name: 'fundType',
+                            head: '资金类型',
+                            filter: 'select',
+                            config: {
+                                format: 'dict',
+                                preset: 'enums',
+                                choose: Const.enums.fundTypeEnum
+                            }
+                        },
+                        {
+                            name: 'paymInd',
+                            head: '是否已到账',
+                            filter:{
+                                type:'radio'
+                            },
+                            config: {
+                                format: 'dict',
+                                choose: Const.enums.yesNoEnum,
+                                preset: 'enums'
+                            }
+                        },
+                        {
+                            name: 'expRecCode',
+                            head: '还款途径'
+                        },
+                        {
+                            name: 'buzDt',
+                            head: '业务日期'
+                        },
+                        {
+                            name: 'totalAmt',
+                            //总金额改为请求金额，并把实际交易金额和实际交易时间放在其后
+                            head: '请求金额'
+                        },
+                        {
+                            name: 'realTradeAmt',
+                            head: '实际交易金额'
+                        },
+                        {
+                            name: 'realTradeTime',
+                            head: '实际交易时间'
+                        },
+                        {
+                            name: 'prcpAmt',
+                            head: '应归还逾期本金'
+                        },
+                        {
+                            name: 'normInt',
+                            head: '应归还正常利息'
+                        },
+                        {
+                            name: 'odInt',
+                            head: '应归还逾期利息'
+                        },
+                        {
+                            name: 'commInt',
+                            head: '应归还复利'
+                        },
+                        {
+                            name: 'actvNormInt',
+                            head: '主动还款利息'
+                        },
+                        {
+                            name: 'actvPrcp',
+                            head: '提前还款本金'
+                        },
+                        {
+                            name: 'relPerdCnt',
+                            head: '相对缩期期数'
+                        },
+                        {
+                            name: 'actvRepayFee',
+                            head: '提前还款手续费'
+                        },
+                        {
+                            name: 'repayFee',
+                            head: '应还手续费'
+                        },
+                        {
+                            name: 'penaltyAmt',
+                            head: '违约金费用'
+                        },
+                        {
+                            name: 'lateAmt',
+                            head: '滞纳金费用'
+                        },
+                        {
+                            name: 'coupAmtTyp',
+                            head: '优惠券种类',
+                            filter: 'select',
+                            config: {
+                                format: 'dict',
+                                preset: 'enums',
+                                choose: Const.enums.coupTypeEnum
+                            }
+                        },
+                        {
+                            name: 'coupNo',
+                            head: '优惠券号'
+                        },
+                        {
+                            name: 'coupUseAmt',
+                            head: '优惠券金额'
+                        },
+                        {
+                            name: 'bankAcctNo',
+                            head: '扣款账户'
+                        },
+                        {
+                            name: 'bankAcctName',
+                            head: '扣款账户户名'
+                        },
+                        {
+                            name: 'bankCardProvince',
+                            head: '扣款卡省份'
+                        },
+                        {
+                            name: 'bankCardCity',
+                            head: '滞纳金费用'
+                        },
+                        {
+                            name: 'bankCode',
+                            head: '银行代码'
+                        },
+                        {
+                            name: 'bankUnionCode',
+                            head: '银行联行号'
+                        },
+                        {
+                            name: 'pgwReturnSeq',
+                            head: '支付网关流水号'
+                        },
+                        {
+                            name: 'checkCode',
+                            head: '安全码',
+                            hide: 'true'
+                        },
+                        {
+                            name: 'prepayOrderId',
+                            head: '预支付订单号'
+                        },
+                        {
+                            name: 'createTime',
+                            head: '创建时间',
+                            filter: {
+                                operate: 'between',
+                                type: 'date'
+                            },
+                            config: {
+                                format: 'datetime',
+                                defaultValueFrom: util.date()
+                            }
+                        },
+                        {
+                            name: 'updateTime',
+                            head: '修改时间',
+                            filter: {
+                                operate: 'between',
+                                type: 'date'
+                            },
+                            config: {
+                                format: 'datetime',
+                                defaultValueFrom: util.date()
+                            }
+                        }
+                    ]
+                }
+            }
+        });
+    });
+</script>
+

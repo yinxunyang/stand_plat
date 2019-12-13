@@ -1,0 +1,128 @@
+<div data-container="capSplitDetail">
+    <component is="bv-table" :key="tags.tableId" v-bind="config"></component>
+</div>
+<script type="text/javascript">
+    require(['jquery', 'util', 'Const'], function($, util, Const) {
+        var vm = util.bind({
+            container: 'capSplitDetail',
+            data: {
+                tags: {
+                    tableId: 'capSplitDetailTable'
+                },
+                config: {
+                    entityName: 'capSplitDetail',
+                    keys: 'id',
+                    orders: 'createTime desc',
+                    filterLayout: 'filterMore',
+                    columns: [
+                        {
+                            name: 'id',
+                            head: 'id',
+                            filter: '='
+                        },
+                        {
+                            name: 'actvRepaySeq',
+                            head: '主动还款流水号',
+                            filter: '='
+                        },
+                        {
+                            name: 'repayType',
+                            head: '还款类型',
+                            filter: 'select',
+                            config: {
+                                format: 'dict',
+                                choose: Const.enums.bizTypeEnum,
+                                preset: 'enums'
+                            }
+                        },
+                        //20181026：添加合同类型字段
+                        {
+                            name: 'contType',
+                            head: '合同类型',
+                            //filter: 'select',
+                            config: {
+                                format: 'dict',
+                                preset: 'enums',
+                                choose: Const.enums.contTypeEnum
+                            }
+                        },
+                        {
+                            name: 'capAmt',
+                            head: '资方核算金额'
+                        },
+                        {
+                            name: 'beforeSelfAmt',
+                            head: '自有核算金额(减优惠券前)'
+                        },
+                        {
+                            name: 'selfAmt',
+                            head: '自有核算金额(减优惠券后)'
+                        },
+                        {
+                            name: 'capLoanNo',
+                            head: '资方借据号',
+                            filter: '='
+                        },
+                        {
+                            name: 'selfLoanNo',
+                            head: '自有借据号',
+                            filter: '='
+                        },
+                        {
+                            name: 'capContNo',
+                            head: '资方合同号',
+                            filter: '='
+                        },
+                        //20181026：添加客户号、客户名称、联合资方编码和联合资金方产品编码
+                        {
+                            name: 'custNo',
+                            head: '客户号'
+                        },
+                        {
+                            name: 'custName',
+                            head: '客户名称'
+                        },
+                        {
+                            name: 'capCode',
+                            head: '联合资方编码'
+                        },
+                        {
+                            name: 'capTypCde',
+                            head: '联合资金方产品编码'
+                        },
+                        {
+                            name: 'checkCode',
+                            head: '安全码',
+                            hide: 'true'
+                        },
+                        {
+                            name: 'createTime',
+                            head: '创建时间',
+                            filter: {
+                                operate: 'between',
+                                type: 'date'
+                            },
+                            config: {
+                                format: 'datetime',
+                                defaultValueFrom: util.date()
+                            }
+                        },
+                        {
+                            name: 'updateTime',
+                            head: '修改时间',
+                            filter: {
+                                operate: 'between',
+                                type: 'date'
+                            },
+                            config: {
+                                format: 'datetime',
+                                defaultValueFrom: util.date()
+                            }
+                        }
+                    ]
+                }
+            }
+        });
+    });
+</script>
+

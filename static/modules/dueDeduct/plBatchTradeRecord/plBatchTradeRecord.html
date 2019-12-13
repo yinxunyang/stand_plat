@@ -1,0 +1,108 @@
+<div data-container="tradeRecord">
+    <component is="bv-table" :key="tags.tableId" v-bind="config"></component>
+</div>
+<script type="text/javascript">
+    require(['jquery', 'util', 'Const'], function ($, util, Const) {
+        var vm = util.bind({
+            container: 'tradeRecord',
+            data: {
+                tags: {
+                    tableId: 'tradeRecordTable'
+                },
+                config: {
+                    //到期扣款入账状态表
+                    entityName: 'plBatchTradeRecord',
+                    keys: 'id',
+                    filterLayout: 'filterMore',
+                    orders: 'createTime desc',
+                    columns: [
+                        {
+                            name: 'id',
+                            head: 'id',
+                            filter: '='
+                        },
+                        {
+                            name: 'casBatchNo',
+                            head: '账户系统批次号',
+                            filter: '='
+                        },
+                        {
+                            name: 'contNo',
+                            head: '合同号',
+                            filter: '='
+                        },
+                        {
+                            name: 'certNo',
+                            head: '身份证号',
+                            filter: '='
+                        },
+                        {
+                            name: 'loanNoSelf',
+                            head: '自有借据号',
+                            filter: '='
+                        },
+                        {
+                            name: 'loanNoCap',
+                            head: '资方借据号',
+                            filter: '='
+                        },
+                        {
+                            name: 'realTradeAmt',
+                            head: '实扣金额',
+                            filter: '='
+                        },
+                        {
+                            name: 'realTradeDt',
+                            head: '实扣日期',
+                            filter: {
+                                operate: 'between',
+                                type: 'date'
+                            },
+                            config: {
+                                format: 'datetime',
+                                defaultValueFrom: util.date()
+                            }
+                        },
+                        {
+                            name: 'recordStatusSelf',
+                            head: '自有入账状态',
+                            filter: 'select',
+                            config: {
+                                format: 'dict',
+                                preset: 'enums',
+                                choose: Const.enums.handleStatusEnum
+                            }
+                        },
+                        {
+                            name: 'recordStatusCap',
+                            head: '资方入账状态',
+                            filter: 'select',
+                            config: {
+                                format: 'dict',
+                                preset: 'enums',
+                                choose: Const.enums.handleStatusEnum
+                            }
+                        },
+                        {
+                            name: 'createTime',
+                            head: '创建时间'
+                        },
+                        {
+                            name: 'updateTime',
+                            head: '修改时间',
+                            filter: {
+                                operate: 'between',
+                                type: 'date'
+                            },
+                            config: {
+                                format: 'datetime',
+                                defaultValueFrom: util.date()
+                            }
+                        }
+                    ]
+                }
+            }
+        });
+    });
+</script>
+

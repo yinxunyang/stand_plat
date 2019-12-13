@@ -1,0 +1,239 @@
+<div data-container="dueDeductTrade">
+    <component is="bv-table" :key="tags.tableId" v-bind="config"></component>
+</div>
+<script type="text/javascript">
+    require(['jquery', 'util', 'Const'], function ($, util, Const) {
+        var vm = util.bind({
+            container: 'dueDeductTrade',
+            data: {
+                tags: {
+                    tableId: 'dueDeductTradeTable'
+                },
+                config: {
+                    entityName: 'PlBatchTrade',
+                    keys: 'id',
+                    filterLayout: 'filterMore',
+                    // 下面属性设置为false可以预设为隐藏查询条件
+                    // filterVisible: false,
+                    loadType: 'false',
+                    orders: 'createTime desc',
+                    columns: [
+                        {
+                            name: 'id',
+                            head: 'id',
+                            filter: '='
+                        },
+                        {
+                            name: 'batchRequestId',
+                            head: '到期扣款流水表id',
+                            filter: '='
+                        },
+                        {
+                            name: 'casBatchNo',
+                            head: '账户系统批次号',
+                            filter: '='
+                        },
+                        {
+                            name: 'calBatchNo',
+                            head: '核算批次号',
+                            filter: '='
+                        },
+                        {
+                            name: 'calSerno',
+                            head: '核算流水号',
+                            filter: '='
+                        },
+                        {
+                            name: 'contNo',
+                            head: '合同号',
+                            filter: '='
+                        },
+                        {
+                            name: 'loanNo',
+                            head: '借据号',
+                            filter: '='
+                        },
+                        {
+                            name: 'bizDt',
+                            head: '业务日期'
+                        },
+                        {
+                            name: 'custNo',
+                            head: '客户号',
+                            filter: '='
+                        },
+                        {
+                            name: 'custName',
+                            head: '客户姓名',
+                            filter: '='
+                        },
+                        {
+                            name: 'certType',
+                            head: '证件类型'
+                        },
+                        {
+                            name: 'certNo',
+                            head: '证件号码',
+                            filter: '='
+                        },
+                        {
+                            name: 'typCde',
+                            head: '贷款品种代码',
+                            filter: '='
+                        },
+                        {
+                            name: 'paymentChannel',
+                            head: '扣款渠道编号',
+                            filter: '='
+                        },
+                        {
+                            name: 'fundType',
+                            head: '资金类型',
+                            filter: 'radio',
+                            config: {
+                                format: 'dict',
+                                preset: 'enums',
+                                choose: Const.enums.fundTypeEnum
+                            }
+                        },
+                        {
+                            name: 'shouldTransDt',
+                            head: '应扣日期'
+                        },
+                        {
+                            name: 'transTotalAmt',
+                            head: '应扣总额'
+                        },
+                        {
+                            name: 'transSuccAmt',
+                            head: '实扣金额'
+                        },
+                        {
+                            name: 'transSuccTime',
+                            head: '扣款时间'
+                        },
+                        {
+                            name: 'transPrcpAmt',
+                            head: '本金'
+                        },
+                        {
+                            name: 'transNormalIntAmt',
+                            head: '利息'
+                        },
+                        {
+                            name: 'transOdIntAmt',
+                            head: '逾期利息'
+                        },
+                        {
+                            name: 'transCompIntAmt',
+                            head: '复利'
+                        },
+                        {
+                            name: 'transFeeAmt',
+                            head: '费用'
+                        },
+                        {
+                            name: 'origPrcp',
+                            head: '贷款本金'
+                        },
+                        {
+                            name: 'loanOsPrcp',
+                            head: '剩余本金'
+                        },
+                        {
+                            name: 'bankAcctNo',
+                            head: '扣款账户',
+                            filter: '='
+                        },
+                        {
+                            name: 'bankAcctName',
+                            head: '扣款账户户名',
+                            filter: '='
+                        },
+                        {
+                            name: 'bankCardProvince',
+                            head: '扣款卡省份'
+                        },
+                        {
+                            name: 'bankCardCity',
+                            head: '扣款卡市'
+                        },
+                        {
+                            name: 'bankCode',
+                            head: '银行代码'
+                        },
+                        {
+                            name: 'bankUnionCode',
+                            head: '银行联行号'
+                        },
+                        {
+                            name: 'calFlag',
+                            head: '核算标志'
+                        },
+                        {
+                            name: 'remark',
+                            head: '备注'
+                        },
+                        {
+                            name: 'tradeStatus',
+                            head: '处理状态',
+                            filter: 'select',
+                            config: {
+                                format: 'dict',
+                                preset: 'enums',
+                                choose: Const.enums.handleStatusEnum
+                            }
+                        },
+                        {
+                            name: 'rtnCode',
+                            head: '错误码'
+                        },
+                        {
+                            name: 'rtnMsg',
+                            head: '错误描述'
+                        },
+                        {
+                            name: 'createTime',
+                            head: '创建时间',
+                            filter: {
+                                operate: 'between',
+                                type: 'date'
+                            },
+                            config: {
+                                format: 'datetime',
+                                defaultValueFrom: util.date()
+                            }
+                        },
+                        {
+                            name: 'updateTime',
+                            head: '修改时间',
+                            filter: {
+                                operate: 'between',
+                                type: 'date'
+                            },
+                            config: {
+                                format: 'datetime',
+                                defaultValueFrom: util.date()
+                            }
+                        },
+                        {
+                            name: 'thirdFlag',
+                            head: '是否第三方标识',
+                            filter: 'select',
+                            config: {
+                                format: 'dict',
+                                preset: 'enums',
+                                choose: Const.enums.yesNoEnum
+                            }
+                        },
+                        {
+                            name: 'psPerdNo',
+                            head: '期号'
+                        }
+                    ]
+                }
+            }
+        });
+    });
+</script>
+

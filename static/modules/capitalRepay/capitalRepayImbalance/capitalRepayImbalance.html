@@ -1,0 +1,88 @@
+<div data-container="capitalRepayImbalance">
+    <component is="bv-table" :key="tags.tableId" v-bind="config"></component>
+</div>
+<script type="text/javascript">
+    require(['jquery', 'util', 'Const'], function ($, util, Const) {
+        var vm = util.bind({
+            container: 'capitalRepayImbalance',
+            data: {
+                tags: {
+                    tableId: 'capitalRepayImbalanceTable'
+                },
+                config: {
+                    entityName: 'capRepayImbalance',
+                    keys: 'id',
+                    filterLayout: 'filterMore',
+                    // 下面属性设置为false可以预设为隐藏查询条件
+                    // filterVisible: false,
+                    orders: 'createTime desc',
+                    columns: [
+                        {
+                            name: 'id',
+                            head: 'ID'
+                        },
+                        {
+                            name: 'requestId',
+                            head: '还款请求ID',
+                            filter: '='
+                        },
+                        {
+                            name: 'inSetlDt',
+                            head: '内部结算业务日期'
+                        },
+                        {
+                            name: 'inSetlAmt',
+                            head: '内部入账金额（资金方核算）'
+                        },
+                        {
+                            name: 'capCode',
+                            head: '联合资金方编码',
+                            filter: '='
+                        },
+                        {
+                            name: 'capSetlDt',
+                            head: '资金方结算日期',
+                        },   {
+                            name: 'capSetlAmt',
+                            head: '资金方入账金额'
+                        },
+                        {
+                            name: 'imbalanceAmt',
+                            head: '结算差额'
+                        },
+                        {
+                            name: 'createTime',
+                            head: '创建时间',
+                            filter: {
+                                operate: 'between',
+                                type: 'date'
+                            },
+                            config: {
+                                format: 'datetime',
+                                defaultValueFrom: util.date()
+                            }
+                        },
+                        {
+                            name: 'checkCode',
+                            head: '安全码',
+                            hide: 'true'
+                        },
+                        {
+                            name: 'updateTime',
+                            head: '修改时间',
+                            filter: {
+                                operate: 'between',
+                                type: 'date'
+                            },
+                            config: {
+                                format: 'datetime',
+                                defaultValueFrom: util.date()
+                            }
+                        }
+                    ],
+                }
+            }
+        });
+    });
+</script>
+

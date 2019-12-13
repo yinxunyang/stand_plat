@@ -1,0 +1,113 @@
+<div data-container="plBuyoutFileGen">
+    <component is="bv-table" :key="tags.tableId" v-bind="config"></component>
+</div>
+<script type="text/javascript">
+    require(['jquery', 'util', 'Const'], function ($, util, Const) {
+        var vm = util.bind({
+            container: 'plBuyoutFileGen',
+            data: {
+                tags: {
+                    tableId: 'plBuyoutFileGenTable'
+                },
+                config: {
+                    entityName: 'plBuyoutFileGen',
+                    keys: 'id',
+                    filterLayout: 'filterMore',
+                    // 下面属性设置为false可以预设为隐藏查询条件
+                    // filterVisible: false,
+                    orders: 'createTime desc',
+                    columns: [
+                        {
+                            name: 'id',
+                            head: 'id',
+                            filter: '='
+                        },
+                        {
+                            name: 'reqNo',
+                            head: '请求号',
+                            filter: '='
+                        },
+                        {
+                            name: 'bizDt',
+                            head: '业务日期'
+                        },
+                        {
+                            name: 'caplCode',
+                            head: '资方编码'
+                        },
+                        {
+                            name: 'minOdDays',
+                            head: '最小逾期天数'
+                        },
+                        {
+                            name: 'maxOdDays',
+                            head: '最大逾期天数'
+                        },
+                        {
+                            name: 'fileLoc',
+                            head: '文件路径'
+                        },
+                        {
+                            name: 'fileName',
+                            head: '文件名称'
+                        },
+                        {
+                            name: 'fileNum',
+                            head: '条数'
+                        },
+                        {
+                            name: 'successNum',
+                            head: '申请成功条数'
+                        },
+                        {
+                            name: 'analysisNum',
+                            head: '解析成功条数'
+                        },
+                        {
+                            name: 'status',
+                            head: '处理状态',
+                            filter: 'select',
+                            config: {
+                                format: 'dict',
+                                preset: 'enums',
+                                choose: Const.enums.buyoutFileStatusEnum
+                            }
+                        },
+                        {
+                            name: 'errorCode',
+                            head: '错误码'
+                        },
+                        {
+                            name: 'errorDesc',
+                            head: '错误描述'
+                        },
+                        {
+                            name: 'createTime',
+                            head: '创建时间',
+                            filter: {
+                                operate: 'between',
+                                type: 'date'
+                            },
+                            config: {
+                                format: 'datetime',
+                                defaultValueFrom: util.date()
+                            }
+                        },
+                        {
+                            name: 'updateTime',
+                            head: '修改时间',
+                            filter: {
+                                operate: 'between',
+                                type: 'date'
+                            },
+                            config: {
+                                format: 'datetime',
+                                defaultValueFrom: util.date()
+                            }
+                        }
+                    ]
+                }
+            }
+        });
+    });
+</script>

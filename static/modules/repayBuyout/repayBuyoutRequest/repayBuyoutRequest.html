@@ -1,0 +1,204 @@
+<div data-container="repayBuyoutRequest">
+    <component is="bv-table" :key="tags.tableId" v-bind="config"></component>
+</div>
+<script type="text/javascript">
+    require(['jquery', 'util', 'Const'], function ($, util, Const) {
+        var vm = util.bind({
+            container: 'repayBuyoutRequest',
+            data: {
+                tags: {
+                    tableId: 'repayBuyoutRequestTable'
+                },
+                config: {
+                    entityName: 'repayBuyoutRequest',
+                    keys: 'id',
+                    filterLayout: 'filterMore',
+                    // 下面属性设置为false可以预设为隐藏查询条件
+                    // filterVisible: false,
+                    orders: 'createTime desc',
+                    columns: [
+                        {
+                            name: 'id',
+                            head: 'id',
+                            filter: '='
+                        },
+                        {
+                            name: 'contNo',
+                            head: '合同号',
+                            filter: '='
+                        },
+                        {
+                            name: 'loanNo',
+                            head: '资方借据号',
+                            filter: '='
+                        },
+                        {
+                            name: 'buzDt',
+                            head: '业务日期'
+                        },
+                        {
+                            name: 'custName',
+                            head: '客户姓名',
+                            filter: '='
+                        },
+                        {
+                            name: 'certType',
+                            head: '证件类型'
+                        },
+                        {
+                            name: 'certNo',
+                            head: '证件号码',
+                            filter: '='
+                        },
+                        {
+                            name: 'contTyp',
+                            head: '合同类型',
+                            config: {
+                                format: 'dict',
+                                preset: 'enums',
+                                choose: Const.enums.contTypeEnum
+                            }
+                        },
+                        {
+                            name: 'capCode',
+                            head: '联合资金方编码'
+                        },
+                        {
+                            name: 'overdueDays',
+                            head: '逾期天数'
+                        },
+                        {
+                            name: 'buyoutBatchNo',
+                            head: '买断批次号'
+                        },
+                        {
+                            name: 'typCde',
+                            head: '贷款品种代码'
+                        },
+                        {
+                            name: 'origPrcp',
+                            head: '贷款金额',
+                            hide: true
+                        },
+                        {
+                            name: 'loanOsPrcp',
+                            head: '剩余本金',
+                            hide: true
+                        },
+                        {
+                            name: 'loanRate',
+                            head: '贷款利率',
+                            hide: true
+                        },
+                        {
+                            name: 'loanTnr',
+                            head: '贷款期限'
+                        },
+                        {
+                            name: 'remainTnr',
+                            head: '剩余期限'
+                        },
+                        {
+                            name: 'lastDueDt',
+                            head: '上次扣款日期'
+                        },
+                        {
+                            name: 'nextDueDt',
+                            head: '下次还款日期'
+                        },
+                        {
+                            name: 'totalAmt',
+                            head: '应买断总金额',
+                            hide: true
+                        },
+                        {
+                            name: 'prcpAmt',
+                            head: '应归还逾期本金',
+                            hide: true
+                        },
+                        {
+                            name: 'normInt',
+                            head: '应归还正常利息',
+                            hide: true
+                        },
+                        {
+                            name: 'odInt',
+                            head: '应归还逾期利息',
+                            hide: 'true'
+                        },
+                        {
+                            name: 'commInt',
+                            head: '应归还复利',
+                            hide: 'true'
+                        },
+                        {
+                            name: 'repayFee',
+                            head: '应还手续费',
+                            hide: 'true'
+                        },
+                        {
+                            name: 'penaltyAmt',
+                            head: '违约金费用',
+                            hide: 'true'
+                        },
+                        {
+                            name: 'lateAmt',
+                            head: '滞纳金费用',
+                            hide: 'true'
+                        },
+                        {
+                            name: 'dealSts',
+                            head: '处理状态',
+                            config: {
+                                format: 'dict',
+                                preset: 'enums',
+                                choose: Const.enums.handleStatusEnum
+                            }
+                        },
+                        {
+                            name: 'checkCode',
+                            head: '安全码',
+                            hide: 'true'
+                        },
+                        {
+                            name: 'createTime',
+                            head: '创建时间',
+                            filter: {
+                                operate: 'between',
+                                type: 'date'
+                            },
+                            config: {
+                                format: 'datetime',
+                                defaultValueFrom: util.date()
+                            }
+                        },
+                        {
+                            name: 'updateTime',
+                            head: '修改时间',
+                            filter: {
+                                operate: 'between',
+                                type: 'date'
+                            },
+                            config: {
+                                format: 'datetime',
+                                defaultValueFrom: util.date()
+                            }
+                        }
+                    ],
+                    operates: [
+                        {
+                            text: '增加',
+                            icon: 'icon-add',
+                            show: 'none',
+                            preset: 'insert',
+                            url: 'modules/repayBuyout/repayBuyoutRequest/addRepayBuyoutRequest.html',
+                            id: 'save',
+                            auth: 'true'
+                        }
+                    ]
+                }
+            }
+        });
+    });
+</script>
+

@@ -1,0 +1,40 @@
+.page-A4 {
+	width: 550pt;
+	height: 730pt;
+	margin: 0 auto;
+	font-size: 12pt;
+	font-family: 宋体;
+}
+.page-A4 h4 {
+	font-size: 14pt;
+	text-align: center;
+	line-height: 3;
+	font-weight: bold;
+}
+.underline {
+	border-bottom: #000000 1px solid;
+}
+span.underline {
+	display: inline-block;
+	text-align: center;
+}
+.page-A4 .content {
+	display: inline-block;
+	border-bottom: #000000 1pt solid;
+	padding-bottom: 20pt;
+}
+.page-A4 .body {
+	width: 535pt;
+	float: left;
+}
+.page-A4 .page {
+	width: 15pt;
+	text-align: center;
+	float: right;
+}
+.page-A4 .page span {
+	width: 100%;
+	text-align: center;
+	display: inline-block;
+	line-height: 2;
+}

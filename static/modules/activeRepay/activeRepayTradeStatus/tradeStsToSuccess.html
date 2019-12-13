@@ -1,0 +1,53 @@
+<div data-container="tradeStsToSuccess">
+    <component is="bv-form" :key="tags.tableId" v-bind="config"></component>
+</div>
+<script type="text/javascript">
+    require(['jquery', 'util', 'Const'], function ($, util, Const) {
+        var actvTradeSts = util.json(util.gup('actvTradeSts'));
+        //获取主动还款流水号
+        var actvRepaySeq = actvTradeSts.actvRepaySeq;
+        var vm = util.bind({
+            container: 'tradeStsToSuccess',
+            data: {
+                tags: {
+                    formId: 'tradeStsToSuccessTable'
+                },
+                config: {
+                    title: '置为成功',
+                    saveUrl: '/api/plr/actvRepayTradeStsSuccess',
+                    columns: [
+                        {
+                            name: 'realTradeAmt',
+                            head: '实扣金额',
+                            config: {
+                                validate: {
+                                    custom: 'decimals15',
+                                    min: 0.01,
+                                    required: '实扣金额是必输项'
+                                }
+                            }
+                        }, {
+                            name: 'actvRepaySeq',
+                            head: '主动还款流水号',
+                            edit: {
+                                type: 'hidden'
+                            },
+                            config: {
+                                value: actvRepaySeq
+                            }
+                        }
+                    ],
+                    operates: [
+                        {
+                            text: '保存',
+                            clazz: 'btn-primary',
+                            icon: 'icon-save',
+                            loading: '处理中...',
+                            preset: 'save'
+                        }
+                    ]
+                }
+            }
+        });
+    });
+</script>

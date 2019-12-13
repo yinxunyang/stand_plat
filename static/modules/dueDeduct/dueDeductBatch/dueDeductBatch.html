@@ -1,0 +1,115 @@
+<div data-container="dueDeductBatch">
+    <component is="bv-table" :key="tags.tableId" v-bind="config"></component>
+</div>
+<script type="text/javascript">
+    require(['jquery', 'util', 'Const'], function ($, util, Const) {
+        var vm = util.bind({
+            container: 'dueDeductBatch',
+            data: {
+                tags: {
+                    tableId: 'dueDeductBatchTable'
+                },
+                config: {
+                    entityName: 'PlBatchDeduct',
+                    keys: 'id',
+                    filterLayout: 'filterMore',
+                    // 下面属性设置为false可以预设为隐藏查询条件
+                    // filterVisible: false,
+                    orders: 'createTime desc',
+                    select: 'checkbox',
+                    columns: [
+                        {
+                            name: 'id',
+                            head: 'id',
+                            filter: '='
+                        },
+                        {
+                            name: 'batchNo',
+                            head: '扣款批次号',
+                            filter: '='
+                        },
+                        {
+                            name: 'casBatchNo',
+                            head: '账户系统批次号',
+                            filter: '='
+                        },
+                        {
+                            name: 'inTradeStatus',
+                            head: '交易状态',
+                            filter: 'select',
+                            config: {
+                                format: 'dict',
+                                preset: 'enums',
+                                choose: Const.enums.batchDeductStatusEnum
+                            }
+                        },
+                        {
+                            name: 'inTradeCode',
+                            head: '交易返回码'
+                        },
+                        {
+                            name: 'inTradeDesc',
+                            head: '交易返回描述'
+                        },
+                        {
+                            name: 'inTradeTime',
+                            head: '交易时间'
+                        },
+                        {
+                            name: 'createTime',
+                            head: '创建时间',
+                            filter: {
+                                operate: 'between',
+                                type: 'date'
+                            },
+                            config: {
+                                format: 'datetime',
+                                defaultValueFrom: util.date()
+                            }
+                        },
+                        {
+                            name: 'updateTime',
+                            head: '修改时间',
+                            filter: {
+                                operate: 'between',
+                                type: 'date'
+                            },
+                            config: {
+                                format: 'datetime',
+                                defaultValueFrom: util.date()
+                            }
+                        }
+                    ],
+                    operates: [
+                        {
+                            text: '发送批扣',
+                            clazz: 'btn-primary',
+                            show: 'oneOrMore',
+                            loading: '处理中...',
+                            id: 'dueDeductBatch',
+                            auth: 'true',
+                            click: function ($element, name, entityName, selected) {
+                                var idList = [];
+                                for (var i = 0; i < selected.length; i++) {
+                                    idList.push(selected[i].id);
+                                }
+                                if (idList.length > 1) {
+                                    util.alert("请选择唯一的一条数据")
+                                } else {
+                                    util.post({
+                                        url: '/api/plr/deductFailReHandle',
+                                        data: idList,
+                                        refresh: true,
+                                        vm: this
+                                    })
+                                }
+
+                            }
+                        }
+                    ]
+                }
+            }
+        });
+    });
+</script>
+

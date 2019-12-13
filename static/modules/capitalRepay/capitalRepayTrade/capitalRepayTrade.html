@@ -1,0 +1,235 @@
+<div data-container="capitalRepayTrade">
+    <component is="bv-table" :key="tags.tableId" v-bind="config"></component>
+</div>
+<script type="text/javascript">
+    require(['jquery', 'util', 'Const'], function ($, util, Const) {
+        var vm = util.bind({
+            container: 'capitalRepayTrade',
+            data: {
+                tags: {
+                    tableId: 'capitalRepayTradeTable'
+                },
+                config: {
+                    entityName: 'capRepayTrade',
+                    keys: 'id',
+                    filterLayout: 'filterMore',
+                    // 下面属性设置为false可以预设为隐藏查询条件
+                    // filterVisible: false,
+                    orders: 'createTime desc',
+                    columns: [
+                        {
+                            name: 'id',
+                            head: 'id',
+                            filter: '='
+                        },
+                        {
+                            name: 'requestId',
+                            head: '还款请求ID',
+                            filter: '='
+                        },
+                        {
+                            name: 'inSetlDt',
+                            head: '内部结算业务日期'
+                        },
+                        {
+                            name: 'inSetlAmt',
+                            head: '内部入账金额（资金方核算）'
+                        },
+                        {
+                            name: 'capCode',
+                            head: '联合资金方编码',
+                            filter: '='
+                        },
+                        {
+                            name: 'capName',
+                            head: '资金方名称',
+                            filter: '='
+                        },
+                        {
+                            name: 'capSetlType',
+                            head: '资金方结算类型',
+                            filter: 'select',
+                            config: {
+                                format: 'dict',
+                                preset: 'enums',
+                                choose: Const.enums.capSetlTypeEnum
+                            }
+                        },
+                        {
+                            name: 'capSetlMode',
+                            head: '资金方结算方式',
+                            filter: 'select',
+                            config: {
+                                format: 'dict',
+                                preset: 'enums',
+                                choose: Const.enums.capSetlModeEnum
+                            }
+                        },
+                        {
+                            name: 'bankAcctNo',
+                            head: '资金方账户号',
+                            filter: '='
+                        },
+                        {
+                            name: 'bankAcctName',
+                            head: '资金方账户户名',
+                            filter: '='
+                        },
+                        {
+                            name: 'bankCardProvince',
+                            head: '卡省份',
+                            filter: '='
+                        },
+                        {
+                            name: 'bankCardCity',
+                            head: '卡市'
+                        },
+                        {
+                            name: 'bankCode',
+                            head: '银行代码',
+                            filter: '='
+                        },
+                        {
+                            name: 'bankUnionCode',
+                            head: '银行联行号',
+                            filter: '='
+                        },
+                        {
+                            name: 'capLoanNo',
+                            head: '资金方业务流水号',
+                            filter: '='
+                        },
+                        {
+                            name: 'capCalDt',
+                            head: '资金方核算日期'
+                        },
+                        {
+                            name: 'capTotalPes',
+                            head: '资金方借据总期数'
+                        },
+                        {
+                            name: 'capOverduePes',
+                            head: '资金方应还未还期数'
+                        },
+                        {
+                            name: 'capSetlPes',
+                            head: '资金方已还期数'
+                        },
+                        {
+                            name: 'capNextDueDt',
+                            head: '资金方下次还款日'
+                        },
+                        {
+                            name: 'capActvPes',
+                            head: '资金方提前还款期数'
+                        },
+                        {
+                            name: 'capOverdueTotalAmt',
+                            head: '资金方剩余应还未还合计金额'
+                        },
+                        {
+                            name: 'capOverduePrcpAmt',
+                            head: '资金方剩余应还未还本金金额'
+                        },
+                        {
+                            name: 'capOverdueIntAmt',
+                            head: '资金方剩余应还未还利息金额'
+                        },
+                        {
+                            name: 'capActvTotalAmt',
+                            head: '资金方提前本息合计金额'
+                        },
+                        {
+                            name: 'capActvPrcpAmt',
+                            head: '资金方提前还款本金金额'
+                        },
+                        {
+                            name: 'capActvIntAmt',
+                            head: '资金方提前还款利息金额'
+                        },
+                        {
+                            name: 'capActvallTotalAmt',
+                            head: '资金方提前全额本息合计金额'
+                        },
+                        {
+                            name: 'capActvallPrcpAmt',
+                            head: '资金方提前全额还款本金金额'
+                        },
+                        {
+                            name: 'capActvallIntAmt',
+                            head: '资金方提前全额还款利息金额'
+                        },
+                        {
+                            name: 'capActvFee',
+                            head: '资金方提前还款手续费'
+                        },
+                        {
+                            name: 'capRepayFee',
+                            head: '资金方应还手续费'
+                        },
+                        {
+                            name: 'capPenaltyAmt',
+                            head: '资金方违约金费用'
+                        },
+                        {
+                            name: 'capLateAmt',
+                            head: '资金方滞纳金费用'
+                        },
+                        {
+                            name: 'outTradeStatus',
+                            head: '外部交易状态（资金方）',
+                            filter: 'select',
+                            config: {
+                                format: 'dict',
+                                preset: 'enums',
+                                choose: Const.enums.handleStatusEnum
+                            }
+                        },
+                        {
+                            name: 'outTradeCode',
+                            head: '外部交易返回码'
+                        },
+                        {
+                            name: 'outTradeDesc',
+                            head: '外部交易返回描述'
+                        },
+                        {
+                            name: 'outTradeTime',
+                            head: '外部交易时间'
+                        },
+                        {
+                            name: 'checkCode',
+                            head: '安全码',
+                            hide: 'true'
+                        },
+                        {
+                            name: 'createTime',
+                            head: '创建时间',
+                            filter: {
+                                operate: 'between',
+                                type: 'date'
+                            },
+                            config: {
+                                format: 'datetime',
+                                defaultValueFrom: util.date()
+                            }
+                        },
+                        {
+                            name: 'updateTime',
+                            head: '修改时间',
+                            filter: {
+                                operate: 'between',
+                                type: 'date'
+                            },
+                            config: {
+                                format: 'datetime',
+                                defaultValueFrom: util.date()
+                            }
+                        }
+                    ]
+                }
+            }
+        });
+    });
+</script>
+

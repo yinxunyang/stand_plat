@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<!--[if lte IE 8]>
+<html class="ie8">
+<![endif]-->
+<!--[if IE 9]>
+<html class="ie9">
+<![endif]-->
+<!--[if (gte IE 10) | (!IE)]><!-->
+<html>
+<!--<![endif]-->
+<head>
+    <meta http-equiv="content-type" content="text/html;charset=utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="Cache-Control" content="no-cache" />
+    <link rel="shortcut icon" href="custom/themes/PlRepayManager02.ico" type="image/x-icon" />
+    <title>还款管理后台</title>
+    <!--[if lte IE 9]>
+    <script type="text/javascript" src="public/js/compat/base64.min.js"></script>
+    <![endif]-->
+    <style type="text/css">
+        /* 页面加载 */
+        .bv-overlay {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 13000;
+            opacity: 0;
+            background: none;
+        }
+        .bv-preloader-container {
+            position: fixed;
+            left: 50%;
+            top: 50%;
+            padding: 8px;
+            margin-left: -25px;
+            margin-top: -25px;
+            z-index: 13500;
+            border-radius: 5px;
+        }
+        .bv-preloader {
+            background: url("public/themes/default/images/loading.gif") center center no-repeat;
+            display: block;
+            width: 34px;
+            height: 34px;
+        }
+    </style>
+</head>
+<!--[if lte IE 8]>
+<body class="bv-theme">
+<div class="alert alert-warning bv-compact">
+    <p>提示: 您在使用低版本的IE浏览器，使用不兼容的浏览器可能导致浏览异常。</p>
+    <p>解决方法：</p>
+    <p>升级至IE9或更高版本；</p>
+    <p>安装Chrome(谷歌浏览器）或Firefox（火狐）浏览器来使用本系统。</p>
+</div>
+</body>
+<![endif]-->
+<!--[if (gte IE 9) | (!IE)]><!-->
+<body class="bv-theme">
+<div class="bv-preloader-container"><span class="bv-preloader"></span></div>
+<div class="bv-overlay"></div>
+<div id="mainBody" data-container="root" :class="!showNav && 'bv-hideNav'" style="display:none">
+<div class="bv-nav">
+    <div class="bv-logo">
+    </div>
+    <div class="bv-menu">
+        <component is="bv-tree" v-bind="menuConfig" @on-init="onMenuInit" @on-expand="onMenuExpand" @on-click="onMenuClick"></component>
+    </div>
+</div>
+<div class="bv-header">
+    <div class="bv-toolbar">
+        <div class="left">
+            <i id="toggleNav" class="iconfont icon-menu bv-left" data-placement="right" v-bind="{'data-title': navTitle, 'data-original-title': navTitle}"
+               @click="showNav = !showNav"></i>
+            <div class="bv-left">
+                <component is="bv-position" head="您当前位置：" :titles="position.titles"></component>
+            </div>
+        </div>
+        <div class="right">
+            <div class="operate">
+                <a href="javascript:;" class="btn btn-link left" @click="removeAllTabs"><i class="iconfont icon-cancel"></i>关闭全部标签页</a>
+            </div>
+            <div class="operate">
+                <a href="javascript:;">
+                    当前用户：<span v-text="user.userName"></span>
+                </a>
+            </div>
+            <div class="operate">
+                <a href="javascript:;" data-title="点击退出登录" data-placement="bottom" @click="doLogout">退出登录</a>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="bv-body">
+    <component is="bv-tabs" v-bind="mainTabsConfig" @on-init="onMainTabsInit"></component>
+    <div class="loading"></div>
+</div>
+</div>
+<div id="modal" class="modal"></div>
+<div id="confirm" class="modal"></div>
+<div id="alert" class="modal"></div>
+<div id="login" class="modal"></div>
+<div class="loading"></div>
+<div id="gallery"></div>
+<iframe id="download" style="display:none"></iframe>
+
+<script type="text/javascript" src="config.js"></script>
+<script type="text/javascript">
+    if (window.loader) {
+        loader.style(['/plugin/bootstrap/css/bootstrap.min.css', '/themes/iconfont/iconfont.css',
+            '/themes/default/core.css', '/themes/default/main.css', 'custom/themes/custom.css'], true, function () {
+            loader.script(['/plugin/require/require.min.js', '/common/config.js', 'custom/js/main.js']);
+        });
+    }
+</script>
+</body>
+<!--<![endif]-->
+</html>

@@ -1,0 +1,153 @@
+<div data-container="rtnTransferTradeSts">
+    <component is="bv-table" :key="tags.tableId" v-bind="config"></component>
+</div>
+<script type="text/javascript">
+    require(['jquery', 'util', 'Const'], function ($, util, Const) {
+        var vm = util.bind({
+            container: 'rtnTransferTradeSts',
+            data: {
+                tags: {
+                    tableId: 'rtnTransferTradeStsTable'
+                },
+                config: {
+                    entityName: 'rtnTransferTradeSts',
+                    keys: 'id',
+                    filterLayout: 'filterMore',
+                    // 下面属性设置为false可以预设为隐藏查询条件
+                    // filterVisible: false,
+                    orders: 'createTime desc',
+                    columns: [
+                        {
+                            name: 'id',
+                            head: 'id',
+                            filter: '='
+                        },
+                        {
+                            name: 'rtnTransferSeq',
+                            head: '退货流水号',
+                            filter: '='
+                        },
+                        {
+                            name: 'contNo',
+                            head: '合同号',
+                            width: '230px',
+                            filter: '='
+                        },
+                        {
+                            name: 'rtnLockStatus',
+                            head: '账户锁定状态',
+                            filter: 'select',
+                            config: {
+                                format: 'dict',
+                                choose: Const.enums.lockStatusEnum,
+                                preset: 'enums'
+                            }
+                        },
+                        {
+                            name: 'rtnLockCode',
+                            head: '账户锁定返回码'
+                        },
+                        {
+                            name: 'rtnLockDesc',
+                            head: '账户锁定返回描叙',
+                            title: true,
+                            config: {
+                                format: 'truncate(12)'
+                            }
+                        },
+                        {
+                            name: 'rtnLockTime',
+                            head: '账户锁定时间'
+                        },
+                        {
+                            name: 'rtnTradeStatus',
+                            head: '退货交易状态',
+                            filter: 'select',
+                            config: {
+                                format: 'dict',
+                                choose: Const.enums.handleStatusEnum,
+                                preset: 'enums'
+                            }
+                        },
+                        {
+                            name: 'rtnTradeCode',
+                            head: '退货交易返回码'
+                        },
+                        {
+                            name: 'rtnTradeDesc',
+                            head: '退货交易返回描叙',
+                            title: true,
+                            config: {
+                                format: 'truncate(12)'
+                            }
+                        },
+                        {
+                            name: 'rtnTradeTime',
+                            head: '退货交易时间'
+                        },
+                        {
+                            name: 'rtnEnterStatus',
+                            head: '退货入账状态',
+                            filter: 'select',
+                            config: {
+                                format: 'dict',
+                                choose: Const.enums.handleStatusEnum,
+                                preset: 'enums'
+                            }
+                        },
+                        {
+                            name: 'rtnEnterCode',
+                            head: '退货入账返回码'
+                        },
+                        {
+                            name: 'rtnEnterDesc',
+                            head: '退货入账返回描叙',
+                            title: true,
+                            config: {
+                                format: 'truncate(12)'
+                            }
+                        },
+                        {
+                            name: 'rtnEnterTime',
+                            head: '退货入账时间'
+                        },
+
+                        {
+                            name: 'capSetlDesc',
+                            head: '备注',
+                            title: true,
+                            config: {
+                                format: 'truncate(5)'
+                            }
+                        },
+                        {
+                            name: 'createTime',
+                            head: '创建时间',
+                            filter: {
+                                operate: 'between',
+                                type: 'date'
+                            },
+                            config: {
+                                format: 'datetime',
+                                defaultValueFrom: util.date()
+                            }
+                        },
+                        {
+                            name: 'updateTime',
+                            head: '修改时间',
+                            filter: {
+                                operate: 'between',
+                                type: 'date'
+                            },
+                            config: {
+                                format: 'datetime',
+                                defaultValueFrom: util.date()
+                            }
+                        }
+                    ]
+                }
+            }
+        });
+    });
+</script>
+
