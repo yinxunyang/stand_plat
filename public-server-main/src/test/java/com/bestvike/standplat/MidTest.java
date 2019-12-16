@@ -133,7 +133,7 @@ public class MidTest extends BaseTest {
 	}
 	@Test
 	public void test20() {
-		ClassPathResource classPathResource = new ClassPathResource("static/elasticSearch/elasticQuery.json");
+		ClassPathResource classPathResource = new ClassPathResource("elasticSearch/elasticQuery.json");
 		try {
 			InputStream inputStream = classPathResource.getInputStream();
 			BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));
@@ -157,7 +157,7 @@ public class MidTest extends BaseTest {
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 		}
-		ClassPathResource classPathResource = new ClassPathResource("static/elasticSearch/elasticQuery.json");
+		ClassPathResource classPathResource = new ClassPathResource("elasticSearch/elasticQuery.json");
 		try {
 			InputStream inputStream = classPathResource.getInputStream();
 			BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));
