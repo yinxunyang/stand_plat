@@ -94,3 +94,17 @@ esConfig:
   esIP: 192.168.237.132
   # es的port
   esPort: 9300
+
+
+
+standplatConfig:
+  # 是否启用完全匹配 Y启用，N不启用
+  isAllMatchEnable: Y
+  unCertain:
+    # 疑似匹配展示的条数
+    showNum: 3
+  bvdfToEsSchedule:
+    # 是否启用bvdfToEs定时任务 Y启用，N不启用
+    isEnable: Y
+    # 定时时间 分钟
+    time: 5
