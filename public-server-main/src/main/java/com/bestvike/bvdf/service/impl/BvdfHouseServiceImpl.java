@@ -49,7 +49,7 @@ public class BvdfHouseServiceImpl implements BvdfHouseService {
 		if (!bvdfHouseParamListForEdit.isEmpty()) {
 			// 批量更新房屋信息
 			int upNum = midHouseService.updateBvdfHouseInfoByBatch(bvdfHouseParamListForEdit);
-			if (bvdfHouseParamListForEdit.size() != upNum) {
+			if (-1 != upNum) {
 				throw new MsgException(ReturnCode.sdp_update_fail, "批量更新中间库房屋信息失败");
 			}
 		}

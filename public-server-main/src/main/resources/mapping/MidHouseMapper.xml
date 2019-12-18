@@ -33,9 +33,9 @@
         </foreach>
     </insert>
     <update id="updateBvdfHouseInfoByBatch">
-        update mid_aks.copy_houseinfo t
         <foreach collection="list" item="item" index="index" separator=";" open="begin" close=";end;">
-        set t.buycertnos = #{item.buycertnos,jdbcType=VARCHAR},
+            UPDATE mid_aks.copy_houseinfo t
+            SET t.buycertnos = #{item.buycertnos,jdbcType=VARCHAR},
         t.corpno = #{item.corpno,jdbcType=VARCHAR},
         t.projectno = #{item.projectno,jdbcType=VARCHAR},
         t.bldno=#{item.bldno,jdbcType=VARCHAR},
@@ -45,7 +45,16 @@
         t.buynames=#{item.buynames,jdbcType=VARCHAR},
         t.address= #{item.address,jdbcType=VARCHAR},
         t.housetype= #{item.housetype,jdbcType=VARCHAR}
-        where t.sysguid = #{item.sysguid,jdbcType=VARCHAR}
+            <where>
+                <choose>
+                    <when test="null != item.sysguid and '' != item.sysguid">
+                        t.sysguid = #{item.sysguid,jdbcType=VARCHAR}
+                    </when>
+                    <otherwise>
+                        0 = 1
+                    </otherwise>
+                </choose>
+            </where>
         </foreach>
     </update>
     <!--根据主键查询中间库房屋信息-->
