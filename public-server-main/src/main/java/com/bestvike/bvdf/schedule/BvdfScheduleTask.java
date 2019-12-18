@@ -8,8 +8,6 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.scheduling.support.CronTrigger;
 import org.springframework.stereotype.Service;
 
-import java.util.concurrent.ScheduledFuture;
-
 /**
  * @Author: yinxunyang
  * @Description: bvdfToEs的定时任务配置
@@ -27,7 +25,6 @@ public class BvdfScheduleTask {
 	private BvdfService bvdfService;
 	@Autowired
 	private ThreadPoolTaskScheduler threadPoolTaskScheduler;
-	private ScheduledFuture future;
 
 	/**
 	 * @Author: yinxunyang
@@ -37,7 +34,8 @@ public class BvdfScheduleTask {
 	 * @return:
 	 */
 	public void startCron() {
-		future = threadPoolTaskScheduler.schedule(new Runnable() {
+		// 默认实现只有一个线程的线程池，没有并发
+		threadPoolTaskScheduler.schedule(new Runnable() {
 			@Override
 			public void run() {
 				bvdfService.bvdfHouseToEs();
