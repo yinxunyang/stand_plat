@@ -107,6 +107,6 @@ standplatConfig:
     # 是否启用bvdfToEs定时任务 Y启用，N不启用
     isEnable: Y
     # 定时时间 每隔5分钟执行一次
-    cornTime: 0 */5 * * * ?
+    cornTime: 0 0/5 * * * ?
     # 房屋信息表(arc_houseinfo)最大查询条数,防止内存溢出
     houseMaxNum: 20000
