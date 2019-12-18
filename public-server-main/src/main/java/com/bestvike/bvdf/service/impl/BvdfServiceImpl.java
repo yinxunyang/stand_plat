@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -100,50 +101,53 @@ public class BvdfServiceImpl implements BvdfService {
 	private void addCopyHouseAndEs(List<BvdfHouseParam> bvdfHouseParamList) {
 		try (TransportClient client = new PreBuiltTransportClient(Settings.builder().put("cluster.name", esClusterName).build())
 				.addTransportAddress(new TransportAddress(InetAddress.getByName(esIP), Integer.parseInt(esPort)))) {
-			//
-			if (bvdfHouseParamList.size() <= Integer.valueOf(bvdfBatchNum)) {
-				List<BvdfHouseParam> bvdfHouseParamListForAdd = new ArrayList<>();
-				List<BvdfHouseParam> bvdfHouseParamListForEdit = new ArrayList<>();
-				List<EsHouseParam> esHouseParamList = new ArrayList<>();
-				bvdfHouseParamList.forEach(bvdfHouseParam -> {
-					// 根据主键查询中间库房屋信息
-					MidHouseInfo midHouseInfo = midHouseService.queryMidHouseInfoById(bvdfHouseParam);
-					if (null == midHouseInfo) {
-						bvdfHouseParamListForAdd.add(bvdfHouseParam);
-					} else {
-						bvdfHouseParamListForEdit.add(bvdfHouseParam);
-					}
-					// 组织往elasticSearch推送的数据
-					EsHouseParam esHouseParam = organizeEsHouseParam(bvdfHouseParam);
-					esHouseParamList.add(esHouseParam);
-				});
-				bvdfHouseService.insertCopyHouseAndEsByBatch(bvdfHouseParamListForAdd, bvdfHouseParamListForEdit, client, esHouseParamList);
-
-			} else {
-				// 分批执行
-
+			// 批量新增的数量
+			int houseMaxNumInt = Integer.parseInt(bvdfBatchNum);
+			// 分批执行
+			int numbers = bvdfHouseParamList.size();
+			int pageNum = (numbers + houseMaxNumInt - 1) / houseMaxNumInt;
+			for (int i = 1; i <= pageNum; i++) {
+				// 每批次eachBvdfHouseParamList
+				List<BvdfHouseParam> eachBvdfHouseParamList = bvdfHouseParamList.stream()
+						.skip(houseMaxNumInt * (i - 1))
+						.limit(houseMaxNumInt)
+						.collect(Collectors.toList());
+				// 批量新增房屋和es
+				addHouseAndEsByBatch(eachBvdfHouseParamList, client);
 			}
-			/*// 遍历新增房屋信息和elasticsearch
-			bvdfHouseParamList.forEach(bvdfHouseParam -> {
-				// 新增房屋信息和迁移elasticsearch
-				try {
-					// 根据主键查询中间库房屋信息
-					MidHouseInfo midHouseInfo = midHouseService.queryMidHouseInfoById(bvdfHouseParam);
-					// 组织往elasticSearch推送的数据
-					EsHouseParam esHouseParam = organizeEsHouseParam(bvdfHouseParam);
-					// 标准化处理跟es交互的数据
-					elasticSearchService.bvdfHouseParamFormat(esHouseParam);
-					bvdfHouseService.insertCopyHouseAndEs(bvdfHouseParam, client, midHouseInfo, esHouseParam);
-				} catch (MsgException e) {
-					log.error(e + "bvdfHouseParam参数为：{}", bvdfHouseParam);
-				}
-			});*/
 		} catch (UnknownHostException e) {
 			log.error("创建elasticsearch客户端连接失败" + e);
 			throw new MsgException(ReturnCode.sdp_sys_error, "创建elasticsearch客户端连接失败");
+		} catch (Exception e) {
+			log.error("批量新增房屋和es失败" + e);
 		}
 	}
 
+	/**
+	 * @Author: yinxunyang
+	 * @Description: 批量新增房屋和es
+	 * @Date: 2019/12/18 14:35
+	 * @param:
+	 * @return:
+	 */
+	private void addHouseAndEsByBatch(List<BvdfHouseParam> bvdfHouseParamList, TransportClient client) {
+		List<BvdfHouseParam> bvdfHouseParamListForAdd = new ArrayList<>();
+		List<BvdfHouseParam> bvdfHouseParamListForEdit = new ArrayList<>();
+		List<EsHouseParam> esHouseParamList = new ArrayList<>();
+		bvdfHouseParamList.forEach(bvdfHouseParam -> {
+			// 根据主键查询中间库房屋信息
+			MidHouseInfo midHouseInfo = midHouseService.queryMidHouseInfoById(bvdfHouseParam);
+			if (null == midHouseInfo) {
+				bvdfHouseParamListForAdd.add(bvdfHouseParam);
+			} else {
+				bvdfHouseParamListForEdit.add(bvdfHouseParam);
+			}
+			// 组织往elasticSearch推送的数据
+			EsHouseParam esHouseParam = organizeEsHouseParam(bvdfHouseParam);
+			esHouseParamList.add(esHouseParam);
+		});
+		bvdfHouseService.insertCopyHouseAndEsByBatch(bvdfHouseParamListForAdd, bvdfHouseParamListForEdit, client, esHouseParamList);
+	}
 	/**
 	 * @Author: yinxunyang
 	 * @Description: 组织往elasticSearch推送的数据

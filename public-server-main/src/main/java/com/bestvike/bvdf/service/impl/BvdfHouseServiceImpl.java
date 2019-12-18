@@ -53,8 +53,10 @@ public class BvdfHouseServiceImpl implements BvdfHouseService {
 				throw new MsgException(ReturnCode.sdp_update_fail, "批量更新中间库房屋信息失败");
 			}
 		}
-		// 往elasticsearch迁移一条数据，elasticsearch主键相同会覆盖原数据，该处不用判断
-		//elasticSearchService.insertElasticSearch(client, esHouseParamList);
+		esHouseParamList.forEach(esHouseParam -> {
+			// 往elasticsearch迁移一条数据，elasticsearch主键相同会覆盖原数据，该处不用判断
+			elasticSearchService.insertElasticSearch(client, esHouseParam);
+		});
 	}
 
 	/**
