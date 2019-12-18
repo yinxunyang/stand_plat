@@ -18,7 +18,6 @@ import org.elasticsearch.common.transport.TransportAddress;
 import org.elasticsearch.transport.client.PreBuiltTransportClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -49,7 +48,8 @@ public class BvdfServiceImpl implements BvdfService {
 	/**
 	 * 房屋信息表(arc_houseinfo)最大查询条数,防止内存溢出
 	 */
-	private static final Integer HOUSE_MAX_NUM = 20000;
+	@Value("${standplatConfig.bvdfToEsSchedule.houseMaxNum}")
+	private String houseMaxNum;
 	@Autowired
 	private BvdfHouseService bvdfHouseService;
 	@Autowired
@@ -67,11 +67,10 @@ public class BvdfServiceImpl implements BvdfService {
 	 * @return:
 	 */
 	@Override
-	//@Scheduled(fixedRate = 1000 * 60 * 5)
 	public void bvdfHouseToEs() {
 		try {
 			Map<String, Object> parameterMap = new HashMap<>();
-			parameterMap.put("houseMaxNum", HOUSE_MAX_NUM);
+			parameterMap.put("houseMaxNum", Integer.valueOf(houseMaxNum));
 			// 查询bvdf房屋的数据
 			List<BvdfHouseParam> bvdfHouseParamList = bvdfHouseService.queryBvdfHouseInfo(parameterMap);
 			if (bvdfHouseParamList.isEmpty()) {
