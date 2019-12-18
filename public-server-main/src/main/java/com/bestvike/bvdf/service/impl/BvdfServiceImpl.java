@@ -23,6 +23,7 @@ import org.springframework.util.StringUtils;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -50,6 +51,11 @@ public class BvdfServiceImpl implements BvdfService {
 	 */
 	@Value("${standplatConfig.bvdfToEsSchedule.houseMaxNum}")
 	private String houseMaxNum;
+	/**
+	 * 批量新增、修改bvdf表的数量
+	 */
+	@Value("${standplatConfig.bvdfToEsSchedule.bvdfBatchNum}")
+	private String bvdfBatchNum;
 	@Autowired
 	private BvdfHouseService bvdfHouseService;
 	@Autowired
@@ -94,7 +100,30 @@ public class BvdfServiceImpl implements BvdfService {
 	private void addCopyHouseAndEs(List<BvdfHouseParam> bvdfHouseParamList) {
 		try (TransportClient client = new PreBuiltTransportClient(Settings.builder().put("cluster.name", esClusterName).build())
 				.addTransportAddress(new TransportAddress(InetAddress.getByName(esIP), Integer.parseInt(esPort)))) {
-			// 遍历新增房屋信息和elasticsearch
+			//
+			if (bvdfHouseParamList.size() <= Integer.valueOf(bvdfBatchNum)) {
+				List<BvdfHouseParam> bvdfHouseParamListForAdd = new ArrayList<>();
+				List<BvdfHouseParam> bvdfHouseParamListForEdit = new ArrayList<>();
+				List<EsHouseParam> esHouseParamList = new ArrayList<>();
+				bvdfHouseParamList.forEach(bvdfHouseParam -> {
+					// 根据主键查询中间库房屋信息
+					MidHouseInfo midHouseInfo = midHouseService.queryMidHouseInfoById(bvdfHouseParam);
+					if (null == midHouseInfo) {
+						bvdfHouseParamListForAdd.add(bvdfHouseParam);
+					} else {
+						bvdfHouseParamListForEdit.add(bvdfHouseParam);
+					}
+					// 组织往elasticSearch推送的数据
+					EsHouseParam esHouseParam = organizeEsHouseParam(bvdfHouseParam);
+					esHouseParamList.add(esHouseParam);
+				});
+				bvdfHouseService.insertCopyHouseAndEsByBatch(bvdfHouseParamListForAdd, bvdfHouseParamListForEdit, client, esHouseParamList);
+
+			} else {
+				// 分批执行
+
+			}
+			/*// 遍历新增房屋信息和elasticsearch
 			bvdfHouseParamList.forEach(bvdfHouseParam -> {
 				// 新增房屋信息和迁移elasticsearch
 				try {
@@ -104,12 +133,11 @@ public class BvdfServiceImpl implements BvdfService {
 					EsHouseParam esHouseParam = organizeEsHouseParam(bvdfHouseParam);
 					// 标准化处理跟es交互的数据
 					elasticSearchService.bvdfHouseParamFormat(esHouseParam);
-					log.info("推送es的esHouseParam参数为：{}",esHouseParam);
 					bvdfHouseService.insertCopyHouseAndEs(bvdfHouseParam, client, midHouseInfo, esHouseParam);
 				} catch (MsgException e) {
 					log.error(e + "bvdfHouseParam参数为：{}", bvdfHouseParam);
 				}
-			});
+			});*/
 		} catch (UnknownHostException e) {
 			log.error("创建elasticsearch客户端连接失败" + e);
 			throw new MsgException(ReturnCode.sdp_sys_error, "创建elasticsearch客户端连接失败");
@@ -176,6 +204,8 @@ public class BvdfServiceImpl implements BvdfService {
 			esHouseParam.setBuyCertNos(bvdfHouseParam.getBuycertnos());
 			esHouseParam.setBuyNames(bvdfHouseParam.getBuynames());
 			esHouseParam.setHouseAddress(bvdfHouseParam.getAddress());
+			// 标准化处理跟es交互的数据
+			elasticSearchService.bvdfHouseParamFormat(esHouseParam);
 			return esHouseParam;
 		} catch (Exception e) {
 			log.error("组织往elasticSearch推送的数据失败" + e);

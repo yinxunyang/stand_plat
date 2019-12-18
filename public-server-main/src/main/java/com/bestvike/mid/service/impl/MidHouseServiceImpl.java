@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @Slf4j
 public class MidHouseServiceImpl implements MidHouseService {
@@ -19,20 +21,20 @@ public class MidHouseServiceImpl implements MidHouseService {
 
 	/**
 	 * @Author: yinxunyang
-	 * @Description: 往中间库新增房屋信息
+	 * @Description: 批量往中间库新增房屋信息
 	 * @Date: 2019/12/9 13:52
 	 * @param:
 	 * @return:
 	 */
 	@Override
 	@Transactional(rollbackFor = Exception.class)
-	public int insertBvdfHouseInfo(BvdfHouseParam bvdfHouseParam) {
+	public int insertBvdfHouseInfoByBatch(List<BvdfHouseParam> bvdfHouseParamListForAdd) {
 		int inNum;
 		try {
-			inNum = midHouseDao.insertBvdfHouseInfo(bvdfHouseParam);
+			inNum = midHouseDao.insertBvdfHouseInfoByBatch(bvdfHouseParamListForAdd);
 		} catch (Exception e) {
-			log.error("往中间库新增房屋信息失败" + e);
-			throw new MsgException(ReturnCode.sdp_insert_fail, "往中间库新增房屋信息失败");
+			log.error("批量往中间库新增房屋信息失败" + e);
+			throw new MsgException(ReturnCode.sdp_insert_fail, "批量往中间库新增房屋信息失败");
 		}
 		return inNum;
 	}

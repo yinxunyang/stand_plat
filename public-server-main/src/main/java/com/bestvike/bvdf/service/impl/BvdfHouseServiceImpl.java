@@ -7,7 +7,6 @@ import com.bestvike.commons.enums.ReturnCode;
 import com.bestvike.commons.exception.MsgException;
 import com.bestvike.elastic.param.EsHouseParam;
 import com.bestvike.elastic.service.ElasticSearchService;
-import com.bestvike.mid.entity.MidHouseInfo;
 import com.bestvike.mid.service.MidHouseService;
 import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.client.transport.TransportClient;
@@ -31,30 +30,31 @@ public class BvdfHouseServiceImpl implements BvdfHouseService {
 
 	/**
 	 * @Author: yinxunyang
-	 * @Description: 新增房屋信息和迁移elasticsearch
+	 * @Description: 批量新增房屋信息和迁移elasticsearch
 	 * @Date: 2019/12/6 14:40
 	 * @param:
 	 * @return:
 	 */
 	@Override
 	@Transactional(rollbackFor = Exception.class)
-	public void insertCopyHouseAndEs(BvdfHouseParam bvdfHouseParam, TransportClient client, MidHouseInfo midHouseInfo, EsHouseParam esHouseParam) throws MsgException {
-		// midHouseInfo为空的话新增一条midHouseInfo，否则更新
-		if (null == midHouseInfo) {
-			// 新增房屋信息
-			int inNum = midHouseService.insertBvdfHouseInfo(bvdfHouseParam);
-			if (1 != inNum) {
-				throw new MsgException(ReturnCode.sdp_insert_fail, "新增中间库房屋信息失败");
-			}
-		} else {
-			// 更新房屋信息
-			int upNum = midHouseService.updateBvdfHouseInfoById(bvdfHouseParam);
-			if (1 != upNum) {
-				throw new MsgException(ReturnCode.sdp_update_fail, "更新中间库房屋信息失败");
+	public void insertCopyHouseAndEsByBatch(List<BvdfHouseParam> bvdfHouseParamListForAdd, List<BvdfHouseParam> bvdfHouseParamListForEdit,
+	                                        TransportClient client, List<EsHouseParam> esHouseParamList) throws MsgException {
+		if (!bvdfHouseParamListForAdd.isEmpty()) {
+			// 批量新增房屋信息
+			int inNum = midHouseService.insertBvdfHouseInfoByBatch(bvdfHouseParamListForAdd);
+			if (bvdfHouseParamListForAdd.size() != inNum) {
+				throw new MsgException(ReturnCode.sdp_insert_fail, "批量新增中间库房屋信息失败");
 			}
 		}
+		if (!bvdfHouseParamListForEdit.isEmpty()) {
+			// 批量更新房屋信息
+			/*int upNum = midHouseService.updateBvdfHouseInfoById(bvdfHouseParam);
+			if (bvdfHouseParamListForEdit.size() != upNum) {
+				throw new MsgException(ReturnCode.sdp_update_fail, "批量更新中间库房屋信息失败");
+			}*/
+		}
 		// 往elasticsearch迁移一条数据，elasticsearch主键相同会覆盖原数据，该处不用判断
-		elasticSearchService.insertElasticSearch(client, esHouseParam);
+		//elasticSearchService.insertElasticSearch(client, esHouseParamList);
 	}
 
 	/**

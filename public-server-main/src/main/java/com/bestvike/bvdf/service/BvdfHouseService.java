@@ -3,7 +3,6 @@ package com.bestvike.bvdf.service;
 import com.bestvike.bvdf.param.BvdfHouseParam;
 import com.bestvike.commons.exception.MsgException;
 import com.bestvike.elastic.param.EsHouseParam;
-import com.bestvike.mid.entity.MidHouseInfo;
 import org.elasticsearch.client.transport.TransportClient;
 
 import java.util.List;
@@ -12,12 +11,13 @@ import java.util.Map;
 public interface BvdfHouseService {
 	/**
 	 * @Author: yinxunyang
-	 * @Description: 新增房屋信息和迁移elasticsearch
+	 * @Description: 批量新增房屋信息和迁移elasticsearch
 	 * @Date: 2019/12/5 18:12
 	 * @param:
 	 * @return:
 	 */
-	void insertCopyHouseAndEs(BvdfHouseParam bvdfHouseParam, TransportClient client, MidHouseInfo midHouseInfo, EsHouseParam esHouseParam) throws MsgException;
+	void insertCopyHouseAndEsByBatch(List<BvdfHouseParam> bvdfHouseParamListForAdd, List<BvdfHouseParam> bvdfHouseParamListForEdit,
+	                                 TransportClient client, List<EsHouseParam> esHouseParamList) throws MsgException;
 
 	/**
 	 * @Author: yinxunyang

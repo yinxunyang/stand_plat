@@ -5,6 +5,8 @@ import com.bestvike.bvdf.param.BvdfHouseParam;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 /**
  * @Author: yinxunyang
  * @Description: 中间库房屋信息Dao
@@ -16,12 +18,12 @@ import org.springframework.stereotype.Repository;
 public interface MidHouseDao {
 	/**
 	 * @Author: yinxunyang
-	 * @Description: 插入房屋信息
+	 * @Description: 批量插入房屋信息
 	 * @Date: 2019/12/5 11:34
 	 * @param:
 	 * @return:
 	 */
-	int insertBvdfHouseInfo(@Param("param") BvdfHouseParam bvdfHouseParam);
+	int insertBvdfHouseInfoByBatch(List<BvdfHouseParam> bvdfHouseParamListForAdd);
 
 	/**
 	 * @Author: yinxunyang
