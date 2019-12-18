@@ -1,7 +1,7 @@
 package com.bestvike.mid.dao;
 
-import com.bestvike.mid.entity.MidHouseInfo;
 import com.bestvike.bvdf.param.BvdfHouseParam;
+import com.bestvike.mid.entity.MidHouseInfo;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
@@ -27,12 +27,12 @@ public interface MidHouseDao {
 
 	/**
 	 * @Author: yinxunyang
-	 * @Description: 根据主键往中间库更新房屋信息
+	 * @Description: 批量更新房屋信息
 	 * @Date: 2019/12/5 11:34
 	 * @param:
 	 * @return:
 	 */
-	int updateBvdfHouseInfoById(@Param("param") BvdfHouseParam bvdfHouseParam);
+	int updateBvdfHouseInfoByBatch(List<BvdfHouseParam> bvdfHouseParamListForEdit);
 
 	/**
 	 * @Author: yinxunyang

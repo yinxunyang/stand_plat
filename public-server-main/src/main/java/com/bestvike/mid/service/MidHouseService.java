@@ -16,12 +16,12 @@ public interface MidHouseService {
 	int insertBvdfHouseInfoByBatch(List<BvdfHouseParam> bvdfHouseParamListForAdd);
 	/**
 	 * @Author: yinxunyang
-	 * @Description: 根据主键往中间库更新房屋信息
+	 * @Description: 批量更新房屋信息
 	 * @Date: 2019/12/9 13:56
 	 * @param:
 	 * @return:
 	 */
-	int updateBvdfHouseInfoById(BvdfHouseParam bvdfHouseParam);
+	int updateBvdfHouseInfoByBatch(List<BvdfHouseParam> bvdfHouseParamListForEdit);
 
 	/**
 	 * @Author: yinxunyang

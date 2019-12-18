@@ -32,19 +32,21 @@
             FROM dual
         </foreach>
     </insert>
-    <update id="updateBvdfHouseInfoById">
+    <update id="updateBvdfHouseInfoByBatch">
         update mid_aks.copy_houseinfo t
-        set t.buycertnos = #{param.buycertnos,jdbcType=VARCHAR},
-        t.corpno = #{param.corpno,jdbcType=VARCHAR},
-        t.projectno = #{param.projectno,jdbcType=VARCHAR},
-        t.bldno=#{param.bldno,jdbcType=VARCHAR},
-        t.cellno=#{param.cellno,jdbcType=VARCHAR},
-        t.floorname =  #{param.floorname,jdbcType=VARCHAR},
-        t.roomno = #{param.roomno,jdbcType=VARCHAR},
-        t.buynames=#{param.buynames,jdbcType=VARCHAR},
-        t.address= #{param.address,jdbcType=VARCHAR},
-        t.housetype= #{param.housetype,jdbcType=VARCHAR}
-        where t.sysguid = #{param.sysguid,jdbcType=VARCHAR}
+        <foreach collection="list" item="item" index="index" separator=";" open="begin" close=";end;">
+        set t.buycertnos = #{item.buycertnos,jdbcType=VARCHAR},
+        t.corpno = #{item.corpno,jdbcType=VARCHAR},
+        t.projectno = #{item.projectno,jdbcType=VARCHAR},
+        t.bldno=#{item.bldno,jdbcType=VARCHAR},
+        t.cellno=#{item.cellno,jdbcType=VARCHAR},
+        t.floorname =  #{item.floorname,jdbcType=VARCHAR},
+        t.roomno = #{item.roomno,jdbcType=VARCHAR},
+        t.buynames=#{item.buynames,jdbcType=VARCHAR},
+        t.address= #{item.address,jdbcType=VARCHAR},
+        t.housetype= #{item.housetype,jdbcType=VARCHAR}
+        where t.sysguid = #{item.sysguid,jdbcType=VARCHAR}
+        </foreach>
     </update>
     <!--根据主键查询中间库房屋信息-->
     <select id="queryMidHouseInfoById" resultType="com.bestvike.mid.entity.MidHouseInfo">

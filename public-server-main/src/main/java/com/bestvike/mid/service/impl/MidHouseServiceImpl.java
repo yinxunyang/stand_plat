@@ -41,17 +41,17 @@ public class MidHouseServiceImpl implements MidHouseService {
 
 	/**
 	 * @Author: yinxunyang
-	 * @Description: 根据主键往中间库更新房屋信息
+	 * @Description: 批量更新房屋信息
 	 * @Date: 2019/12/9 17:22
 	 * @param:
 	 * @return:
 	 */
 	@Override
 	@Transactional(rollbackFor = Exception.class)
-	public int updateBvdfHouseInfoById(BvdfHouseParam bvdfHouseParam) {
+	public int updateBvdfHouseInfoByBatch(List<BvdfHouseParam> bvdfHouseParamListForEdit) {
 		int upNum;
 		try {
-			upNum = midHouseDao.updateBvdfHouseInfoById(bvdfHouseParam);
+			upNum = midHouseDao.updateBvdfHouseInfoByBatch(bvdfHouseParamListForEdit);
 		} catch (Exception e) {
 			log.error("往中间库新增房屋信息失败" + e);
 			throw new MsgException(ReturnCode.sdp_insert_fail, "往中间库新增房屋信息失败");
