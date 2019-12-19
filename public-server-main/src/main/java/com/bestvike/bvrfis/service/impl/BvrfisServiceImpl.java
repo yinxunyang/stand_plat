@@ -11,6 +11,7 @@ import com.bestvike.bvrfis.param.BvrfisShareOwnerInfoParam;
 import com.bestvike.bvrfis.service.BvrfisCorpService;
 import com.bestvike.bvrfis.service.BvrfisHouseService;
 import com.bestvike.bvrfis.service.BvrfisService;
+import com.bestvike.commons.enums.MatchTypeEnum;
 import com.bestvike.commons.enums.ReturnCode;
 import com.bestvike.commons.exception.MsgException;
 import com.bestvike.commons.utils.UtilTool;
@@ -156,9 +157,12 @@ public class BvrfisServiceImpl implements BvrfisService {
 				// 如果返回唯一一条数据，说明完全匹配
 				if (hits.length == 1) {
 					for (SearchHit hit : hits) {
+						// 返回内容
 						String content = hit.getSourceAsString();
 						BmatchAnResultInfo bmatchAnResultInfo = new BmatchAnResultInfo();
 						bmatchAnResultInfo.setMatchid(UtilTool.UUID());
+						// 单位信息表
+						bmatchAnResultInfo.setMatchtype(MatchTypeEnum.DEVELOP.getCode());
 						bmatchAnResultInfo.setInuser("123");
 						String indate = df.format(LocalDateTime.now());
 						bmatchAnResultInfo.setIndate(indate);
