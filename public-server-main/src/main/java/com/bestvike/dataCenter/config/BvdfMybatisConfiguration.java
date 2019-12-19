@@ -1,4 +1,4 @@
-package com.bestvike.bvdf.config;
+package com.bestvike.dataCenter.config;
 
 import com.github.pagehelper.PageInterceptor;
 import org.apache.commons.logging.Log;
@@ -24,7 +24,7 @@ import javax.sql.DataSource;
 import java.util.Properties;
 
 @Configuration
-@MapperScan(value = "com.bestvike.bvdf.dao")
+@MapperScan(value = "com.bestvike.dataCenter.dao")
 public class BvdfMybatisConfiguration implements ApplicationContextAware {
 
 	protected Log logger = LogFactory.getLog(this.getClass());
@@ -34,7 +34,7 @@ public class BvdfMybatisConfiguration implements ApplicationContextAware {
 	}
 
 	@Bean(name = "bvdfDataSource")
-	@ConfigurationProperties(prefix = "datasources.bvdf")
+	@ConfigurationProperties(prefix = "datasources.dataCenter")
 	@Primary
 	public DataSource dataSource() {
 		return DataSourceBuilder.create().build();
@@ -45,7 +45,7 @@ public class BvdfMybatisConfiguration implements ApplicationContextAware {
 	public SqlSessionFactory sqlSessionFactoryBean() throws Exception {
 		SqlSessionFactoryBean sqlSessionFactoryBean = new SqlSessionFactoryBean();
 		sqlSessionFactoryBean.setDataSource(dataSource());
-		sqlSessionFactoryBean.setTypeAliasesPackage("com.bestvike.bvdf.entity");
+		sqlSessionFactoryBean.setTypeAliasesPackage("com.bestvike.dataCenter.entity");
 		sqlSessionFactoryBean.setMapperLocations(new PathMatchingResourcePatternResolver().getResources("classpath*:mapping/*.xml"));
 		tk.mybatis.mapper.session.Configuration configuration = new tk.mybatis.mapper.session.Configuration();
 		configuration.setMapUnderscoreToCamelCase(true);

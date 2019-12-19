@@ -1,4 +1,4 @@
-package com.bestvike.bvdf.config;
+package com.bestvike.dataCenter.config;
 
 import org.springframework.context.annotation.Configuration;
 

@@ -1,4 +1,4 @@
-package com.bestvike.bvdf.service;
+package com.bestvike.dataCenter.service;
 
 public interface BvdfService {
 	/**

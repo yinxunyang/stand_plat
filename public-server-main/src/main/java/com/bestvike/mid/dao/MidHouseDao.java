@@ -1,6 +1,6 @@
 package com.bestvike.mid.dao;
 
-import com.bestvike.bvdf.param.BvdfHouseParam;
+import com.bestvike.dataCenter.param.BvdfHouseParam;
 import com.bestvike.mid.entity.MidHouseInfo;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;

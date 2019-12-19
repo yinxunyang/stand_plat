@@ -1,4 +1,4 @@
-package com.bestvike.bvdf.schedule;
+package com.bestvike.dataCenter.schedule;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

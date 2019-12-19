@@ -1,4 +1,4 @@
-package com.bestvike.bvdf.entity;
+package com.bestvike.dataCenter.entity;
 
 import com.bestvike.portal.data.BaseData;
 

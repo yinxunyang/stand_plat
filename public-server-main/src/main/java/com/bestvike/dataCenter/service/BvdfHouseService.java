@@ -1,6 +1,6 @@
-package com.bestvike.bvdf.service;
+package com.bestvike.dataCenter.service;
 
-import com.bestvike.bvdf.param.BvdfHouseParam;
+import com.bestvike.dataCenter.param.BvdfHouseParam;
 import com.bestvike.commons.exception.MsgException;
 import com.bestvike.elastic.param.EsHouseParam;
 import org.elasticsearch.client.transport.TransportClient;

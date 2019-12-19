@@ -5,7 +5,7 @@ import com.bestvike.mid.entity.MidHouseInfo;
 import com.bestvike.mid.service.MidHouseService;
 import com.bestvike.commons.enums.ReturnCode;
 import com.bestvike.commons.exception.MsgException;
-import com.bestvike.bvdf.param.BvdfHouseParam;
+import com.bestvike.dataCenter.param.BvdfHouseParam;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

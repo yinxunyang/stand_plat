@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.bestvike.bvdf.dao.BvdfHouseDao">
-	<select id="queryBvdfHouseInfo" resultType="com.bestvike.bvdf.param.BvdfHouseParam">
+<mapper namespace="com.bestvike.dataCenter.dao.BvdfHouseDao">
+	<select id="queryBvdfHouseInfo" resultType="com.bestvike.dataCenter.param.BvdfHouseParam">
 			select * from (select  t1.sysguid,
 		        t1.buycertnos,
 		        t1.corpno,
@@ -32,7 +32,7 @@
 		where rownum <= #{houseMaxNum}
 		]]>
 	</select>
-	<select id="selectCorpNameByCorpNo" resultType="com.bestvike.bvdf.param.BvdfCorpParam">
+	<select id="selectCorpNameByCorpNo" resultType="com.bestvike.dataCenter.param.BvdfCorpParam">
 		select corpName, licenseNo from arc_corpinfo where corpNo = #{corpNo,jdbcType=VARCHAR}
 	</select>
 	<select id="selectBldNameByBldNo" resultType="java.lang.String">

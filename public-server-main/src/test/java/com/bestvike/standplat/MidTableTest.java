@@ -1,7 +1,7 @@
 package com.bestvike.standplat;
 
-import com.bestvike.bvdf.dao.BvdfHouseDao;
-import com.bestvike.bvdf.param.BvdfHouseParam;
+import com.bestvike.dataCenter.dao.BvdfHouseDao;
+import com.bestvike.dataCenter.param.BvdfHouseParam;
 import org.elasticsearch.action.get.GetResponse;
 import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.client.transport.TransportClient;

@@ -1,7 +1,7 @@
-package com.bestvike.bvdf.dao;
+package com.bestvike.dataCenter.dao;
 
-import com.bestvike.bvdf.param.BvdfCorpParam;
-import com.bestvike.bvdf.param.BvdfHouseParam;
+import com.bestvike.dataCenter.param.BvdfCorpParam;
+import com.bestvike.dataCenter.param.BvdfHouseParam;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;

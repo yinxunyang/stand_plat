@@ -1,8 +1,8 @@
-package com.bestvike.bvdf.service.impl;
+package com.bestvike.dataCenter.service.impl;
 
-import com.bestvike.bvdf.dao.BvdfHouseDao;
-import com.bestvike.bvdf.param.BvdfHouseParam;
-import com.bestvike.bvdf.service.BvdfHouseService;
+import com.bestvike.dataCenter.dao.BvdfHouseDao;
+import com.bestvike.dataCenter.param.BvdfHouseParam;
+import com.bestvike.dataCenter.service.BvdfHouseService;
 import com.bestvike.commons.enums.ReturnCode;
 import com.bestvike.commons.exception.MsgException;
 import com.bestvike.elastic.param.EsHouseParam;

@@ -1,6 +1,6 @@
 package com.bestvike.mid.service;
 
-import com.bestvike.bvdf.param.BvdfHouseParam;
+import com.bestvike.dataCenter.param.BvdfHouseParam;
 import com.bestvike.mid.entity.MidHouseInfo;
 
 import java.util.List;

@@ -1,9 +1,9 @@
 package com.bestvike.standplat;
 
-import com.bestvike.bvdf.dao.BvdfHouseDao;
-import com.bestvike.bvdf.param.BvdfCorpParam;
-import com.bestvike.bvdf.param.BvdfHouseParam;
-import com.bestvike.bvdf.service.impl.BvdfServiceImpl;
+import com.bestvike.dataCenter.dao.BvdfHouseDao;
+import com.bestvike.dataCenter.param.BvdfCorpParam;
+import com.bestvike.dataCenter.param.BvdfHouseParam;
+import com.bestvike.dataCenter.service.impl.BvdfServiceImpl;
 import com.bestvike.mid.dao.MidHouseDao;
 import com.bestvike.mid.entity.MidHouseInfo;
 import com.bestvike.mid.service.MidHouseService;
