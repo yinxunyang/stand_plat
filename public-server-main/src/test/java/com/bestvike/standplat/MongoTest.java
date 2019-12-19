@@ -18,8 +18,8 @@ public class MongoTest extends BaseTest {
 	@Test
 	public void test1() {
 		BvdfToEsRecordTime bvdfToEsRecordTime =new BvdfToEsRecordTime();
-		bvdfToEsRecordTime.setId("123");
-		bvdfToEsRecordTime.setCorpLastExcuteTime("2019-12-19 10:53:01");
+		bvdfToEsRecordTime.setId("bvdfCorp");
+		bvdfToEsRecordTime.setCorpLastExcuteTime("2018-12-19 10:53:01");
 		mongoTemplate.save(bvdfToEsRecordTime);
 		int i = 0;
 	}

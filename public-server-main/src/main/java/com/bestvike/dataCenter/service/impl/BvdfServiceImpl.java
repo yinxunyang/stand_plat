@@ -3,6 +3,7 @@ package com.bestvike.dataCenter.service.impl;
 import com.bestvike.commons.enums.ReturnCode;
 import com.bestvike.commons.exception.MsgException;
 import com.bestvike.dataCenter.dao.BvdfHouseDao;
+import com.bestvike.dataCenter.entity.BvdfToEsRecordTime;
 import com.bestvike.dataCenter.param.BvdfCorpParam;
 import com.bestvike.dataCenter.param.BvdfHouseParam;
 import com.bestvike.dataCenter.service.BvdfCorpService;
@@ -19,12 +20,18 @@ import org.elasticsearch.common.transport.TransportAddress;
 import org.elasticsearch.transport.client.PreBuiltTransportClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -69,7 +76,9 @@ public class BvdfServiceImpl implements BvdfService {
 	private ElasticSearchService elasticSearchService;
 	@Autowired
 	private BvdfCorpService bvdfCorpService;
-
+	@Autowired
+	private MongoTemplate mongoTemplate;
+	private static final DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 	/**
 	 * @Author: yinxunyang
 	 * @Description: 将bvdf开发公司信息迁移至elasticsearch
@@ -81,14 +90,25 @@ public class BvdfServiceImpl implements BvdfService {
 	@Scheduled(cron = "${standplatConfig.corpToEsSchedule.cronTime}")
 	public void bvdfCorpToEs() {
 		BvdfCorpParam queryParam = new BvdfCorpParam();
-		// 状态正常
+		// 状态正
 		queryParam.setState("normal");
 		queryParam.setAppcode("BVDF");
+		Query query = new Query(Criteria.where("_id").is("bvdfCorp"));
+		BvdfToEsRecordTime bvdfToEsRecordTime = mongoTemplate.findOne(query, BvdfToEsRecordTime.class);
+		// 开始时间取上一次执行的最后时间
+		String scopeBeginTime = bvdfToEsRecordTime.getCorpLastExcuteTime();
+		queryParam.setScopeBeginTime(scopeBeginTime);
+		String scopeEndTime = df.format(LocalDateTime.now());
+		queryParam.setScopeEndTime(scopeEndTime);
 		List<BvdfCorpParam> bvdfCorpParamList = bvdfCorpService.queryBvdfCorpInfo(queryParam);
 		int i = 0;
 		bvdfCorpParamList.forEach(bvdfCorpParam -> {
 
 		});
+		Query queryupdate = new Query(Criteria.where("id").is("bvdfCorp"));
+		Update update = new Update().set("corpLastExcuteTime", scopeEndTime);
+		mongoTemplate.updateFirst(queryupdate, update, BvdfToEsRecordTime.class);
+
 	}
 
 	/**

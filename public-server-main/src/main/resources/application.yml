@@ -114,5 +114,5 @@ standplatConfig:
     bvdfBatchNum: 1
   corpToEsSchedule:
     # 定时时间 每隔5分钟执行一次,cornTime为“-”是停止定时
-    cronTime: 0 0/5 * * * ?
+    cronTime: 0 0/1 * * * ?
 

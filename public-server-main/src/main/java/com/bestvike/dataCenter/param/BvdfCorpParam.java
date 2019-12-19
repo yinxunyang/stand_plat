@@ -30,6 +30,14 @@ public class BvdfCorpParam {
 	private String state;
 
 	private String appcode;
+	/**
+	 * 开始时间
+	 */
+	private String scopeBeginTime;
+	/**
+	 * 结束时间
+	 */
+	private String scopeEndTime;
 
 	@Override
 	public String toString() {
