@@ -14,15 +14,24 @@ import com.bestvike.commons.exception.MsgException;
 import com.bestvike.elastic.param.EsHouseParam;
 import com.bestvike.elastic.service.ElasticSearchService;
 import lombok.extern.slf4j.Slf4j;
+import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.TransportAddress;
+import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.index.query.WrapperQueryBuilder;
+import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.transport.client.PreBuiltTransportClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
@@ -58,6 +67,16 @@ public class BvrfisServiceImpl implements BvrfisService {
 	 */
 	@Value("${esConfig.esPort}")
 	private String esPort;
+	/**
+	 * es开发企业的索引
+	 */
+	@Value("${esConfig.corpindex}")
+	private String corpindex;
+	/**
+	 * es开发企业的映射
+	 */
+	@Value("${esConfig.corptype}")
+	private String corptype;
 	@Autowired
 	private BvrfisHouseService bvrfisHouseService;
 	@Autowired
@@ -87,7 +106,58 @@ public class BvrfisServiceImpl implements BvrfisService {
 			log.info("bvrfis没有需要跟elasticsearch匹配的开发企业数据");
 			return;
 		}
+		// 跟es匹配和跟开发企业建立关联关系
+		matchEsAndRelationCorp(bvrfisCorpInfoParamList);
+	}
 
+	/**
+	 * @Author: yinxunyang
+	 * @Description: 跟es匹配和跟开发企业建立关联关系
+	 * @Date: 2019/12/19 16:47
+	 * @param:
+	 * @return:
+	 */
+	private void matchEsAndRelationCorp(List<BvrfisCorpInfoParam> bvrfisCorpInfoParamList) {
+		try (TransportClient client = new PreBuiltTransportClient(Settings.builder().put("cluster.name", esClusterName).build())
+				.addTransportAddress(new TransportAddress(InetAddress.getByName(esIP), Integer.parseInt(esPort)))) {
+			ClassPathResource classPathResource = new ClassPathResource("elasticSearch/uniqueMatchCorpQuery.json");
+			// 遍历开发企业信息和elasticsearch
+			bvrfisCorpInfoParamList.forEach(bvrfisCorpInfoParam -> {
+				try {
+					InputStream inputStream = classPathResource.getInputStream();
+					BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));
+					StringBuffer sb = new StringBuffer();
+					String line;
+					while ((line = br.readLine()) != null) {
+						sb.append(line);
+					}
+					String corpQueryParam = sb.toString().replace("certificateNoValue", bvrfisCorpInfoParam.getLicenseNo());
+					log.info(corpQueryParam);
+					WrapperQueryBuilder wqb = QueryBuilders.wrapperQuery(corpQueryParam);
+					SearchResponse searchResponse = client.prepareSearch(corpindex)
+							.setTypes(corptype).setQuery(wqb).setSize(1).get();
+					SearchHit[] hits = searchResponse.getHits().getHits();
+					for (SearchHit hit : hits) {
+						String content = hit.getSourceAsString();
+						// 房屋主键
+						log.info(hit.getId());
+						log.info(content);
+					}
+					// todo 替换es查询的值str.replace
+					// todo 1 完全匹配
+					// todo 2 疑似匹配
+
+
+				} catch (MsgException e) {
+					log.error(e + "bvrfisCorpInfoParam参数为：{}", bvrfisCorpInfoParam);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			});
+		} catch (UnknownHostException e) {
+			log.error("创建elasticsearch客户端连接失败" + e);
+			throw new MsgException(ReturnCode.sdp_sys_error, "创建elasticsearch客户端连接失败");
+		}
 	}
 
 	/**

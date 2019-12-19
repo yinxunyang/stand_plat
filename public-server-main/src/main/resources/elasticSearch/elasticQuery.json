@@ -2,7 +2,7 @@
   "function_score": {
     "query": {
       "match": {
-        "licenseNoForKey": "916529015605416063"
+        "licenseNo": "LicenseNoValue"
       }
     },
     "functions": [

@@ -70,12 +70,12 @@ public class BvdfServiceImpl implements BvdfService {
 	@Value("${standplatConfig.bvdfToEsSchedule.bvdfBatchNum}")
 	private String bvdfBatchNum;
 	/**
-	 * es公司的索引
+	 * es开发企业的索引
 	 */
 	@Value("${esConfig.corpindex}")
 	private String corpindex;
 	/**
-	 * es公司的映射
+	 * es开发企业的映射
 	 */
 	@Value("${esConfig.corptype}")
 	private String corptype;
