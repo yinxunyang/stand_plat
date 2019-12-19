@@ -6,6 +6,7 @@ import com.bestvike.bvrfis.param.BvrfisCorpInfoParam;
 import com.bestvike.bvrfis.param.BvrfisHouseParam;
 import com.bestvike.bvrfis.param.BvrfisOwnerInfoParam;
 import com.bestvike.bvrfis.param.BvrfisShareOwnerInfoParam;
+import com.bestvike.bvrfis.service.BvrfisCorpService;
 import com.bestvike.bvrfis.service.BvrfisHouseService;
 import com.bestvike.bvrfis.service.BvrfisService;
 import com.bestvike.commons.enums.ReturnCode;
@@ -63,6 +64,31 @@ public class BvrfisServiceImpl implements BvrfisService {
 	private BvrfisHouseDao bvrfisHouseDao;
 	@Autowired
 	private ElasticSearchService elasticSearchService;
+	@Autowired
+	private BvrfisCorpService bvrfisCorpService;
+
+	/**
+	 * @Author: yinxunyang
+	 * @Description: 将bvrfis公司信息跟es中的匹配
+	 * @Date: 2019/12/19 15:51
+	 * @param:
+	 * @return:
+	 */
+	@Override
+	public void bvrfisCorpMatchEs() throws MsgException {
+		BvrfisCorpInfoParam queryParam = new BvrfisCorpInfoParam();
+		// 0正常
+		queryParam.setState("0");
+		// 开发企业
+		queryParam.setCorptype("01");
+		queryParam.setDatacenterid("isNUll");
+		List<BvrfisCorpInfoParam> bvrfisCorpInfoParamList = bvrfisCorpService.queryBvrfisCorpInfo(queryParam);
+		if (bvrfisCorpInfoParamList.isEmpty()) {
+			log.info("bvrfis没有需要跟elasticsearch匹配的开发企业数据");
+			return;
+		}
+
+	}
 
 	/**
 	 * @Author: yinxunyang

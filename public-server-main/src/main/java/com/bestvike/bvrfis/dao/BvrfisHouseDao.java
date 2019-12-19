@@ -5,6 +5,7 @@ import com.bestvike.bvrfis.param.BvrfisCorpInfoParam;
 import com.bestvike.bvrfis.param.BvrfisHouseParam;
 import com.bestvike.bvrfis.param.BvrfisOwnerInfoParam;
 import com.bestvike.bvrfis.param.BvrfisShareOwnerInfoParam;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -19,6 +20,15 @@ import java.util.Map;
  */
 @Repository
 public interface BvrfisHouseDao {
+	/**
+	 * @Author: yinxunyang
+	 * @Description: 查询bvrfis开发企业的数据
+	 * @Date: 2019/12/10 17:25
+	 * @param:
+	 * @return:
+	 */
+	List<BvrfisCorpInfoParam> queryBvrfisCorpInfo(@Param("param") BvrfisCorpInfoParam queryParam);
+
 	/**
 	 * @Author: yinxunyang
 	 * @Description: 查询bvrfis房屋的数据

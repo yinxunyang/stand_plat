@@ -1,8 +1,8 @@
 package com.bestvike.bvrfis.service.impl;
 
 import com.bestvike.bvrfis.dao.BvrfisHouseDao;
-import com.bestvike.bvrfis.param.BvrfisHouseParam;
-import com.bestvike.bvrfis.service.BvrfisHouseService;
+import com.bestvike.bvrfis.param.BvrfisCorpInfoParam;
+import com.bestvike.bvrfis.service.BvrfisCorpService;
 import com.bestvike.commons.enums.ReturnCode;
 import com.bestvike.commons.exception.MsgException;
 import lombok.extern.slf4j.Slf4j;
@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * @Author: yinxunyang
@@ -19,26 +18,26 @@ import java.util.Map;
  */
 @Service
 @Slf4j
-public class BvrfisHouseServiceImpl implements BvrfisHouseService {
+public class BvrfisCorpServiceImpl implements BvrfisCorpService {
 	@Autowired
 	private BvrfisHouseDao bvrfisHouseDao;
 
 	/**
 	 * @Author: yinxunyang
-	 * @Description: 查询bvrfis房屋的数据
+	 * @Description: 查询bvrfis开发企业的数据
 	 * @Date: 2019/12/10 13:15
 	 * @param:
 	 * @return:
 	 */
 	@Override
-	public List<BvrfisHouseParam> queryBvrfisHouseInfo(Map<String, Object> parameterMap) throws MsgException {
-		List<BvrfisHouseParam> bvrfisHouseParamList;
+	public List<BvrfisCorpInfoParam> queryBvrfisCorpInfo(BvrfisCorpInfoParam queryParam) throws MsgException {
+		List<BvrfisCorpInfoParam> bvrfisCorpInfoParamList;
 		try {
-			bvrfisHouseParamList = bvrfisHouseDao.queryBvrfisHouseInfo(parameterMap);
+			bvrfisCorpInfoParamList = bvrfisHouseDao.queryBvrfisCorpInfo(queryParam);
 		} catch (Exception e) {
-			log.error("查询bvrfis房屋的数据失败" + e);
-			throw new MsgException(ReturnCode.sdp_select_fail, "查询bvrfis房屋的数据失败");
+			log.error("查询bvrfis开发企业的数据失败" + e);
+			throw new MsgException(ReturnCode.sdp_select_fail, "查询bvrfis开发企业的数据失败");
 		}
-		return bvrfisHouseParamList;
+		return bvrfisCorpInfoParamList;
 	}
 }

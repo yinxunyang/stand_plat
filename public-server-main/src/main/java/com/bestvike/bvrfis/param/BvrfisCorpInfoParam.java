@@ -20,6 +20,18 @@ public class BvrfisCorpInfoParam {
 	 * 营业执照编号
 	 */
 	private String licenseNo;
+	/**
+	 * 状态 0正常
+	 */
+	private String state;
+	/**
+	 * 类型 01开发企业
+	 */
+	private String corptype;
+	/**
+	 * 数据中心Id
+	 */
+	private String datacenterid;
 
 	@Override
 	public String toString() {

@@ -7,6 +7,7 @@ import com.bestvike.bvrfis.param.BvrfisHouseParam;
 import com.bestvike.bvrfis.param.BvrfisOwnerInfoParam;
 import com.bestvike.bvrfis.param.BvrfisShareOwnerInfoParam;
 import com.bestvike.bvrfis.service.BvrfisHouseService;
+import com.bestvike.bvrfis.service.BvrfisService;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -26,6 +27,8 @@ public class BvrfisTest extends BaseTest {
 	private BvrfisHouseService bvrfisHouseService;
 	@Autowired
 	private BvrfisHouseDao bvrfisHouseDao;
+	@Autowired
+	private BvrfisService bvrfisService;
 
 	@Test
 	public void test1() {
@@ -77,6 +80,10 @@ public class BvrfisTest extends BaseTest {
 		// 查询共有人
 		List<BvrfisShareOwnerInfoParam> bvrfisShareOwnerInfoList = bvrfisHouseDao.selectShareOwnerInfoByHouseId("190814001375");
 		int i = 0;
+	}
+	@Test
+	public void test8(){
+		 bvrfisService.bvrfisCorpMatchEs();
 	}
 
 
