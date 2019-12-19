@@ -1,6 +1,8 @@
 package com.bestvike.bvrfis.service.impl;
 
+import com.bestvike.bvrfis.dao.BmatchAnResultDao;
 import com.bestvike.bvrfis.dao.BvrfisHouseDao;
+import com.bestvike.bvrfis.entity.BmatchAnResultInfo;
 import com.bestvike.bvrfis.param.BvrfisBldParam;
 import com.bestvike.bvrfis.param.BvrfisCorpInfoParam;
 import com.bestvike.bvrfis.param.BvrfisHouseParam;
@@ -11,6 +13,7 @@ import com.bestvike.bvrfis.service.BvrfisHouseService;
 import com.bestvike.bvrfis.service.BvrfisService;
 import com.bestvike.commons.enums.ReturnCode;
 import com.bestvike.commons.exception.MsgException;
+import com.bestvike.commons.utils.UtilTool;
 import com.bestvike.elastic.param.EsHouseParam;
 import com.bestvike.elastic.service.ElasticSearchService;
 import lombok.extern.slf4j.Slf4j;
@@ -34,6 +37,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -85,6 +90,9 @@ public class BvrfisServiceImpl implements BvrfisService {
 	private ElasticSearchService elasticSearchService;
 	@Autowired
 	private BvrfisCorpService bvrfisCorpService;
+	@Autowired
+	private BmatchAnResultDao bmatchAnResultDao;
+	private static final DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
 	/**
 	 * @Author: yinxunyang
@@ -120,6 +128,7 @@ public class BvrfisServiceImpl implements BvrfisService {
 	private void matchEsAndRelationCorp(List<BvrfisCorpInfoParam> bvrfisCorpInfoParamList) {
 		try (TransportClient client = new PreBuiltTransportClient(Settings.builder().put("cluster.name", esClusterName).build())
 				.addTransportAddress(new TransportAddress(InetAddress.getByName(esIP), Integer.parseInt(esPort)))) {
+			// 完全匹配开发企业信息
 			ClassPathResource classPathResource = new ClassPathResource("elasticSearch/uniqueMatchCorpQuery.json");
 			// 遍历开发企业信息和elasticsearch
 			bvrfisCorpInfoParamList.forEach(bvrfisCorpInfoParam -> {
@@ -137,13 +146,23 @@ public class BvrfisServiceImpl implements BvrfisService {
 					SearchResponse searchResponse = client.prepareSearch(corpindex)
 							.setTypes(corptype).setQuery(wqb).setSize(1).get();
 					SearchHit[] hits = searchResponse.getHits().getHits();
+					// 如果返回唯一一条数据，说明完全匹配
+					if (hits.length == 1) {
+						BmatchAnResultInfo bmatchAnResultInfo = new BmatchAnResultInfo();
+						bmatchAnResultInfo.setMatchid(UtilTool.UUID());
+						bmatchAnResultInfo.setInuser("123");
+						String indate = df.format(LocalDateTime.now());
+						bmatchAnResultInfo.setIndate(indate);
+						List<BmatchAnResultInfo> bmatchAnResultInfoList = new ArrayList<>();
+						bmatchAnResultInfoList.add(bmatchAnResultInfo);
+						bmatchAnResultDao.insertBmatchAnResult(bmatchAnResultInfoList);
+					}
 					for (SearchHit hit : hits) {
 						String content = hit.getSourceAsString();
 						// 房屋主键
 						log.info(hit.getId());
 						log.info(content);
 					}
-					// todo 替换es查询的值str.replace
 					// todo 1 完全匹配
 					// todo 2 疑似匹配
 
