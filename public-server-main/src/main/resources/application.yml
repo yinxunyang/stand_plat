@@ -94,6 +94,10 @@ esConfig:
   esIP: 192.168.237.132
   # es的port
   esPort: 9300
+  # es数据库公司的索引
+  corpindex: corp_index
+  # es数据库公司的映射
+  corptype: corp_type
 
 
 
@@ -114,5 +118,5 @@ standplatConfig:
     bvdfBatchNum: 1
   corpToEsSchedule:
     # 定时时间 每隔5分钟执行一次,cornTime为“-”是停止定时
-    cronTime: 0 0/1 * * * ?
+    cronTime: 0/5 * * * * ?
 

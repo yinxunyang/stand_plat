@@ -13,6 +13,10 @@ import lombok.Setter;
 @Setter
 public class BvdfCorpParam {
 	/**
+	 * id
+	 */
+	private String corpId;
+	/**
 	 * 企业名称
 	 */
 	private String corpName;

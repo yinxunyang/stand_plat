@@ -3,6 +3,7 @@ package com.bestvike.elastic.service;
 import com.bestvike.commons.exception.MsgException;
 import com.bestvike.elastic.param.EsHouseParam;
 import org.elasticsearch.client.transport.TransportClient;
+import org.elasticsearch.common.xcontent.XContentBuilder;
 
 /**
  * @Author: yinxunyang
@@ -17,7 +18,7 @@ public interface ElasticSearchService {
 	 * @param:
 	 * @return:
 	 */
-	void insertElasticSearch(TransportClient client, EsHouseParam esHouseParam) throws MsgException;
+	void insertElasticSearch(TransportClient client, XContentBuilder doc, String index, String type, String id) throws MsgException;
 
 	/**
 	 * @Author: yinxunyang

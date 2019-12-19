@@ -17,6 +17,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.TransportAddress;
+import org.elasticsearch.common.xcontent.XContentBuilder;
+import org.elasticsearch.common.xcontent.XContentFactory;
 import org.elasticsearch.transport.client.PreBuiltTransportClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -28,6 +30,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.time.LocalDateTime;
@@ -66,6 +69,16 @@ public class BvdfServiceImpl implements BvdfService {
 	 */
 	@Value("${standplatConfig.bvdfToEsSchedule.bvdfBatchNum}")
 	private String bvdfBatchNum;
+	/**
+	 * es公司的索引
+	 */
+	@Value("${esConfig.corpindex}")
+	private String corpindex;
+	/**
+	 * es公司的映射
+	 */
+	@Value("${esConfig.corptype}")
+	private String corptype;
 	@Autowired
 	private BvdfHouseService bvdfHouseService;
 	@Autowired
@@ -101,16 +114,45 @@ public class BvdfServiceImpl implements BvdfService {
 		String scopeEndTime = df.format(LocalDateTime.now());
 		queryParam.setScopeEndTime(scopeEndTime);
 		List<BvdfCorpParam> bvdfCorpParamList = bvdfCorpService.queryBvdfCorpInfo(queryParam);
-		int i = 0;
-		bvdfCorpParamList.forEach(bvdfCorpParam -> {
-
-		});
+		try (TransportClient client = new PreBuiltTransportClient(Settings.builder().put("cluster.name", esClusterName).build())
+				.addTransportAddress(new TransportAddress(InetAddress.getByName(esIP), Integer.parseInt(esPort)))) {
+			bvdfCorpParamList.forEach(bvdfCorpParam -> {
+				// 拼装新增es的数据
+				XContentBuilder doc = organizeCorpToEsData(bvdfCorpParam);
+				// 往elasticsearch迁移一条数据，elasticsearch主键相同会覆盖原数据，该处不用判断
+				elasticSearchService.insertElasticSearch(client, doc, corpindex, corptype, bvdfCorpParam.getCorpId());
+			});
+		} catch (UnknownHostException e) {
+			log.error("创建elasticsearch客户端连接失败" + e);
+			throw new MsgException(ReturnCode.sdp_sys_error, "创建elasticsearch客户端连接失败");
+		}
 		Query queryupdate = new Query(Criteria.where("id").is("bvdfCorp"));
 		Update update = new Update().set("corpLastExcuteTime", scopeEndTime);
 		mongoTemplate.updateFirst(queryupdate, update, BvdfToEsRecordTime.class);
 
 	}
 
+	/**
+	 * @Author: yinxunyang
+	 * @Description: 拼装corpToElasticSearch的数据
+	 * @Date: 2019/12/19 14:23
+	 * @param:
+	 * @return:
+	 */
+	private XContentBuilder organizeCorpToEsData(BvdfCorpParam bvdfCorpParam) {
+		XContentBuilder doc;
+		try {
+			doc = XContentFactory.jsonBuilder()
+					.startObject()
+					.field("corpName", bvdfCorpParam.getCorpName())
+					.field("certificateNo", bvdfCorpParam.getCertificateNo())
+					.endObject();
+		} catch (IOException e) {
+			log.error("拼装corpToElasticSearch的数据失败" + e);
+			throw new MsgException(ReturnCode.fail, "拼装corpToElasticSearch的数据失败");
+		}
+		return doc;
+	}
 	/**
 	 * @Author: yinxunyang
 	 * @Description: 将bvdf房屋信息迁移至elasticsearch
