@@ -75,7 +75,7 @@ public class MidTest extends BaseTest {
 		midHouseInfo.setProjectno("123");
 		midHouseInfo.setRoomno("77");
 		midHouseInfo.setAddress("123");
-		midHouseDao.insertBvdfHouseInfo(midHouseInfo);
+		//midHouseDao.insertBvdfHouseInfo(midHouseInfo);
 	}
 	@Test
 	public void test13() {
@@ -96,7 +96,7 @@ public class MidTest extends BaseTest {
 		bvdfHouseParam.setBuynames("测试");
 		bvdfHouseParam.setBuycertnos("测试");
 		bvdfHouseParam.setAddress("测试");
-		int ss  = midHouseService.updateBvdfHouseInfoById(bvdfHouseParam);
+		//int ss  = midHouseService.updateBvdfHouseInfoById(bvdfHouseParam);
 		int i = 0;
 	}
 	@Test

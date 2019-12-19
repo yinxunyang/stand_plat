@@ -53,9 +53,9 @@ spring:
         max-active: 100
   data:
     mongodb:
-      uri: mongodb://website:website@10.10.12.1:27017/website
+      uri: mongodb://bvdf:123456@127.0.0.1:27017/bvdfMongo
 datasources:
-  bvdf:
+  datacenter:
     #jdbc-url: jdbc:mariadb://192.168.2.21:3306/hmis
     jdbc-url: jdbc:oracle:thin:@127.0.0.1:1521/orcl
     driver-class-name: oracle.jdbc.driver.OracleDriver
