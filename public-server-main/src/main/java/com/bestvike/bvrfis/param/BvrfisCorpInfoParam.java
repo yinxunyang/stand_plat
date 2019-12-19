@@ -13,6 +13,10 @@ import lombok.Setter;
 @Setter
 public class BvrfisCorpInfoParam {
 	/**
+	 * 主键
+	 */
+	private String corpNo;
+	/**
 	 * 单位名称
 	 */
 	private String corpName;

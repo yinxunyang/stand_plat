@@ -12,6 +12,7 @@ import com.bestvike.bvrfis.service.BvrfisCorpService;
 import com.bestvike.bvrfis.service.BvrfisHouseService;
 import com.bestvike.bvrfis.service.BvrfisService;
 import com.bestvike.commons.enums.MatchTypeEnum;
+import com.bestvike.commons.enums.RelStateEnum;
 import com.bestvike.commons.enums.ReturnCode;
 import com.bestvike.commons.exception.MsgException;
 import com.bestvike.commons.utils.UtilTool;
@@ -36,6 +37,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.math.BigDecimal;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.time.LocalDateTime;
@@ -161,11 +163,34 @@ public class BvrfisServiceImpl implements BvrfisService {
 						String content = hit.getSourceAsString();
 						BmatchAnResultInfo bmatchAnResultInfo = new BmatchAnResultInfo();
 						bmatchAnResultInfo.setMatchid(UtilTool.UUID());
+						bmatchAnResultInfo.setLogid(null);
+						// 维修资金数据ID
+						bmatchAnResultInfo.setWxbusiid(bvrfisCorpInfoParam.getCorpNo());
+						// todo 数据中心id
+						bmatchAnResultInfo.setCenterid("");
+						// todo 网签数据ID
+						bmatchAnResultInfo.setWqbusiid("");
+						// 该条数据匹配率 完全匹配是100
+						bmatchAnResultInfo.setPercent(new BigDecimal("100.00"));
+						// 匹配情况分析
+						bmatchAnResultInfo.setResult("匹配度高");
+						// 匹配状态 匹配成功
+						bmatchAnResultInfo.setRelstate(RelStateEnum.MATCH_SUCCESS.getCode());
+						// 匹配情况说明
+						bmatchAnResultInfo.setDescribe(null);
+						// 备注
+						bmatchAnResultInfo.setRemark(null);
 						// 单位信息表
 						bmatchAnResultInfo.setMatchtype(MatchTypeEnum.DEVELOP.getCode());
+						// 创建人
 						bmatchAnResultInfo.setInuser("123");
 						String indate = df.format(LocalDateTime.now());
 						bmatchAnResultInfo.setIndate(indate);
+						// 修改人
+						bmatchAnResultInfo.setEdituser(null);
+						bmatchAnResultInfo.setEditdate(null);
+						// todo 版本号
+						bmatchAnResultInfo.setVersion(new BigDecimal(""));
 						List<BmatchAnResultInfo> bmatchAnResultInfoList = new ArrayList<>();
 						bmatchAnResultInfoList.add(bmatchAnResultInfo);
 						bmatchAnResultDao.insertBmatchAnResult(bmatchAnResultInfoList);
