@@ -1,12 +1,13 @@
 package com.bestvike.dataCenter.service.impl;
 
+import com.bestvike.commons.enums.ReturnCode;
+import com.bestvike.commons.exception.MsgException;
 import com.bestvike.dataCenter.dao.BvdfHouseDao;
 import com.bestvike.dataCenter.param.BvdfCorpParam;
 import com.bestvike.dataCenter.param.BvdfHouseParam;
+import com.bestvike.dataCenter.service.BvdfCorpService;
 import com.bestvike.dataCenter.service.BvdfHouseService;
 import com.bestvike.dataCenter.service.BvdfService;
-import com.bestvike.commons.enums.ReturnCode;
-import com.bestvike.commons.exception.MsgException;
 import com.bestvike.elastic.param.EsHouseParam;
 import com.bestvike.elastic.service.ElasticSearchService;
 import com.bestvike.mid.entity.MidHouseInfo;
@@ -18,6 +19,7 @@ import org.elasticsearch.common.transport.TransportAddress;
 import org.elasticsearch.transport.client.PreBuiltTransportClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -65,6 +67,30 @@ public class BvdfServiceImpl implements BvdfService {
 	private BvdfHouseDao bvdfHouseDao;
 	@Autowired
 	private ElasticSearchService elasticSearchService;
+	@Autowired
+	private BvdfCorpService bvdfCorpService;
+
+	/**
+	 * @Author: yinxunyang
+	 * @Description: 将bvdf开发公司信息迁移至elasticsearch
+	 * @Date: 2019/12/19 11:25
+	 * @param:
+	 * @return:
+	 */
+	@Override
+	@Scheduled(cron = "${standplatConfig.corpToEsSchedule.cronTime}")
+	public void bvdfCorpToEs() {
+		BvdfCorpParam queryParam = new BvdfCorpParam();
+		// 状态正常
+		queryParam.setState("normal");
+		queryParam.setAppcode("BVDF");
+		List<BvdfCorpParam> bvdfCorpParamList = bvdfCorpService.queryBvdfCorpInfo(queryParam);
+		int i = 0;
+		bvdfCorpParamList.forEach(bvdfCorpParam -> {
+
+		});
+	}
+
 	/**
 	 * @Author: yinxunyang
 	 * @Description: 将bvdf房屋信息迁移至elasticsearch

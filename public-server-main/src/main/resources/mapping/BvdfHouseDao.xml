@@ -1,6 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.bestvike.dataCenter.dao.BvdfHouseDao">
+	<select id="queryBvdfCorpInfo" resultType="com.bestvike.dataCenter.param.BvdfCorpParam">
+		SELECT t.corpName, t.licenseNo, t.certificateNo FROM datasource_xjws.REV_CORP_INFO t
+		<where>
+			<if test="null != param.state and '' != param.state">
+				t.state = #{param.state,jdbcType=VARCHAR}
+			</if>
+			<if test="null != param.appcode and '' != param.appcode">
+				AND t.appcode = #{param.appcode,jdbcType=VARCHAR}
+			</if>
+		</where>
+	</select>
 	<select id="queryBvdfHouseInfo" resultType="com.bestvike.dataCenter.param.BvdfHouseParam">
 			select * from (select  t1.sysguid,
 		        t1.buycertnos,

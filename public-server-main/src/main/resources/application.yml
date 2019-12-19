@@ -57,10 +57,10 @@ spring:
 datasources:
   datacenter:
     #jdbc-url: jdbc:mariadb://192.168.2.21:3306/hmis
-    jdbc-url: jdbc:oracle:thin:@127.0.0.1:1521/orcl
+    jdbc-url: jdbc:oracle:thin:@172.10.11.5:1521/orcl
     driver-class-name: oracle.jdbc.driver.OracleDriver
-    username: bvdf_aks
-    password: bvdf_aks
+    username: datasource_xjws
+    password: datasource_xjws
     hikari:
       minimum-idle: 2
       maximum-pool-size: 5
@@ -112,3 +112,7 @@ standplatConfig:
     houseMaxNum: 20000
     # 批量新增、修改bvdf表的数量
     bvdfBatchNum: 1
+  corpToEsSchedule:
+    # 定时时间 每隔5分钟执行一次,cornTime为“-”是停止定时
+    cronTime: 0 0/5 * * * ?
+
