@@ -2,6 +2,8 @@ package com.bestvike.bvrfis.service;
 
 import com.bestvike.commons.exception.MsgException;
 
+import javax.servlet.http.HttpSession;
+
 /**
  * @Author: yinxunyang
  * @Description: 维修资金的service
@@ -15,7 +17,7 @@ public interface BvrfisService {
 	 * @param:
 	 * @return:
 	 */
-	void bvrfisCorpMatchEs() throws MsgException;
+	void bvrfisCorpMatchEs(HttpSession httpSession) throws MsgException;
 	/**
 	 * @Author: yinxunyang
 	 * @Description: 将bvrfis房屋信息跟es中的匹配

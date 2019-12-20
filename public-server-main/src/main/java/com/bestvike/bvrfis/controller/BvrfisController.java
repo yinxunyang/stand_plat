@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpSession;
+
 @RestController
 public class BvrfisController extends BaseController {
 	@Autowired
@@ -15,9 +17,9 @@ public class BvrfisController extends BaseController {
 
 	@ApiOperation(value = "将bvrfis公司信息跟es中的匹配", notes = "将bvrfis公司信息跟es中的匹配")
 	@GetMapping("/api/bvrfis/bvrfisCorpMatchEs")
-	public void bvrfisCorpMatchEs() {
+	public void bvrfisCorpMatchEs(HttpSession httpSession) {
 		try {
-			bvrfisService.bvrfisCorpMatchEs();
+			bvrfisService.bvrfisCorpMatchEs(httpSession);
 		} catch (MsgException e) {
 			logger.error("将bvrfis公司信息跟es中的匹配失败");
 		}

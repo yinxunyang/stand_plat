@@ -15,6 +15,7 @@ import com.bestvike.commons.enums.MatchTypeEnum;
 import com.bestvike.commons.enums.RelStateEnum;
 import com.bestvike.commons.enums.ReturnCode;
 import com.bestvike.commons.exception.MsgException;
+import com.bestvike.commons.utils.GCC;
 import com.bestvike.commons.utils.UtilTool;
 import com.bestvike.elastic.param.EsHouseParam;
 import com.bestvike.elastic.service.ElasticSearchService;
@@ -33,6 +34,7 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import javax.servlet.http.HttpSession;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -105,7 +107,7 @@ public class BvrfisServiceImpl implements BvrfisService {
 	 * @return:
 	 */
 	@Override
-	public void bvrfisCorpMatchEs() throws MsgException {
+	public void bvrfisCorpMatchEs(HttpSession httpSession) throws MsgException {
 		BvrfisCorpInfoParam queryParam = new BvrfisCorpInfoParam();
 		// 0正常
 		queryParam.setState("0");
@@ -120,7 +122,7 @@ public class BvrfisServiceImpl implements BvrfisService {
 		try (TransportClient client = new PreBuiltTransportClient(Settings.builder().put("cluster.name", esClusterName).build())
 				.addTransportAddress(new TransportAddress(InetAddress.getByName(esIP), Integer.parseInt(esPort)))) {
 			// 开发企业根据组织机构代码完全匹配
-			uniqueMatchCorp(bvrfisCorpInfoParamList, client);
+			uniqueMatchCorp(bvrfisCorpInfoParamList, client,httpSession);
 			// TODO 开发企业根据单位名称完全匹配
 
 			// TODO 开发企业根据单位名称疑似匹配
@@ -137,7 +139,7 @@ public class BvrfisServiceImpl implements BvrfisService {
 	 * @param:
 	 * @return:
 	 */
-	private void uniqueMatchCorp(List<BvrfisCorpInfoParam> bvrfisCorpInfoParamList, TransportClient client) {
+	private void uniqueMatchCorp(List<BvrfisCorpInfoParam> bvrfisCorpInfoParamList, TransportClient client,HttpSession httpSession) {
 		// 完全匹配开发企业信息
 		ClassPathResource classPathResource = new ClassPathResource("elasticSearch/uniqueMatchCorpQuery.json");
 		// 遍历开发企业信息和elasticsearch
@@ -183,7 +185,7 @@ public class BvrfisServiceImpl implements BvrfisService {
 						// 单位信息表
 						bmatchAnResultInfo.setMatchtype(MatchTypeEnum.DEVELOP.getCode());
 						// 创建人
-						bmatchAnResultInfo.setInuser("123");
+						bmatchAnResultInfo.setInuser(httpSession.getAttribute(GCC.SESSION_KEY_USERNAME).toString());
 						String indate = df.format(LocalDateTime.now());
 						bmatchAnResultInfo.setIndate(indate);
 						// 修改人

@@ -144,6 +144,7 @@ public class BvdfServiceImpl implements BvdfService {
 		try {
 			doc = XContentFactory.jsonBuilder()
 					.startObject()
+					.field("corpId", bvdfCorpParam.getCorpId())
 					.field("corpName", bvdfCorpParam.getCorpName())
 					.field("certificateNo", bvdfCorpParam.getCertificateNo())
 					.endObject();

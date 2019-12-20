@@ -29,6 +29,10 @@ public class BvdfCorpParam {
 	 */
 	private String certificateNo;
 	/**
+	 * 版本号
+	 */
+	private String versionnumber;
+	/**
 	 * 状态
 	 */
 	private String state;
