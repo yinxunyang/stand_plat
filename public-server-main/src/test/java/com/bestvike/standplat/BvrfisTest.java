@@ -8,6 +8,8 @@ import com.bestvike.bvrfis.param.BvrfisOwnerInfoParam;
 import com.bestvike.bvrfis.param.BvrfisShareOwnerInfoParam;
 import com.bestvike.bvrfis.service.BvrfisHouseService;
 import com.bestvike.bvrfis.service.BvrfisService;
+import com.bestvike.commons.utils.UtilTool;
+import com.bestvike.dataCenter.param.BvdfCorpParam;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -177,5 +179,12 @@ public class BvrfisTest extends BaseTest {
 		 bvrfisService.bvrfisCorpMatchEs(httpSession);
 	}
 
+	@Test
+	public void test9() {
+		String json = "{\"corpId\":\"BVDF109569\",\"corpName\":\"乌苏市塞维斯房地产开发有限公司\",\"certificateNo\":\"654202050009030\"}";
+		BvdfCorpParam bvdfCorpParam = (BvdfCorpParam) UtilTool.jsonToObj(json, BvdfCorpParam.class);
+		int i = 0;
+
+	}
 
 }

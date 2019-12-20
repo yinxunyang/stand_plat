@@ -108,8 +108,11 @@ public class BvdfServiceImpl implements BvdfService {
 		queryParam.setAppcode("BVDF");
 		Query query = new Query(Criteria.where("_id").is("bvdfCorp"));
 		BvdfToEsRecordTime bvdfToEsRecordTime = mongoTemplate.findOne(query, BvdfToEsRecordTime.class);
-		// 开始时间取上一次执行的最后时间
-		String scopeBeginTime = bvdfToEsRecordTime.getCorpLastExcuteTime();
+		String scopeBeginTime = null;
+		if (null != bvdfToEsRecordTime) {
+			// 开始时间取上一次执行的最后时间
+			scopeBeginTime = bvdfToEsRecordTime.getCorpLastExcuteTime();
+		}
 		queryParam.setScopeBeginTime(scopeBeginTime);
 		String scopeEndTime = df.format(LocalDateTime.now());
 		queryParam.setScopeEndTime(scopeEndTime);
@@ -126,9 +129,17 @@ public class BvdfServiceImpl implements BvdfService {
 			log.error("创建elasticsearch客户端连接失败" + e);
 			throw new MsgException(ReturnCode.sdp_sys_error, "创建elasticsearch客户端连接失败");
 		}
-		Query queryupdate = new Query(Criteria.where("id").is("bvdfCorp"));
-		Update update = new Update().set("corpLastExcuteTime", scopeEndTime);
-		mongoTemplate.updateFirst(queryupdate, update, BvdfToEsRecordTime.class);
+		// bvdfToEsRecordTime为空时新增一条数据
+		if (null == bvdfToEsRecordTime) {
+			BvdfToEsRecordTime bvdfToEsForAdd = new BvdfToEsRecordTime();
+			bvdfToEsForAdd.setId("bvdfCorp");
+			bvdfToEsForAdd.setCorpLastExcuteTime(scopeEndTime);
+			mongoTemplate.insert(bvdfToEsForAdd);
+		} else {
+			Query queryupdate = new Query(Criteria.where("id").is("bvdfCorp"));
+			Update update = new Update().set("corpLastExcuteTime", scopeEndTime);
+			mongoTemplate.updateFirst(queryupdate, update, BvdfToEsRecordTime.class);
+		}
 
 	}
 

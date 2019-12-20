@@ -1,5 +1,6 @@
 package com.bestvike.bvrfis.service.impl;
 
+import com.alibaba.fastjson.JSONObject;
 import com.bestvike.bvrfis.dao.BmatchAnResultDao;
 import com.bestvike.bvrfis.dao.BvrfisHouseDao;
 import com.bestvike.bvrfis.entity.BmatchAnResultInfo;
@@ -17,6 +18,7 @@ import com.bestvike.commons.enums.ReturnCode;
 import com.bestvike.commons.exception.MsgException;
 import com.bestvike.commons.utils.GCC;
 import com.bestvike.commons.utils.UtilTool;
+import com.bestvike.dataCenter.param.BvdfCorpParam;
 import com.bestvike.elastic.param.EsHouseParam;
 import com.bestvike.elastic.service.ElasticSearchService;
 import lombok.extern.slf4j.Slf4j;
@@ -162,7 +164,8 @@ public class BvrfisServiceImpl implements BvrfisService {
 				if (hits.length == 1) {
 					for (SearchHit hit : hits) {
 						// 返回内容
-						String content = hit.getSourceAsString();
+						String bvdfCorpJson = hit.getSourceAsString();
+						BvdfCorpParam bvdfCorpParam = (BvdfCorpParam) UtilTool.jsonToObj(bvdfCorpJson, BvdfCorpParam.class);
 						BmatchAnResultInfo bmatchAnResultInfo = new BmatchAnResultInfo();
 						bmatchAnResultInfo.setMatchid(UtilTool.UUID());
 						bmatchAnResultInfo.setLogid(null);
@@ -170,8 +173,7 @@ public class BvrfisServiceImpl implements BvrfisService {
 						bmatchAnResultInfo.setWxbusiid(bvrfisCorpInfoParam.getCorpNo());
 						// todo 数据中心id
 						bmatchAnResultInfo.setCenterid("");
-						// todo 网签数据ID
-						bmatchAnResultInfo.setWqbusiid("");
+						bmatchAnResultInfo.setWqbusiid(bvdfCorpParam.getCorpId());
 						// 该条数据匹配率 完全匹配是100
 						bmatchAnResultInfo.setPercent(new BigDecimal("100.00"));
 						// 匹配情况分析
@@ -191,8 +193,8 @@ public class BvrfisServiceImpl implements BvrfisService {
 						// 修改人
 						bmatchAnResultInfo.setEdituser(null);
 						bmatchAnResultInfo.setEditdate(null);
-						// todo 版本号
-						bmatchAnResultInfo.setVersion(new BigDecimal(""));
+						// todo 待确认
+						bmatchAnResultInfo.setVersion(new BigDecimal(bvdfCorpParam.getVersionnumber()));
 						List<BmatchAnResultInfo> bmatchAnResultInfoList = new ArrayList<>();
 						bmatchAnResultInfoList.add(bmatchAnResultInfo);
 						bmatchAnResultDao.insertBmatchAnResult(bmatchAnResultInfoList);
