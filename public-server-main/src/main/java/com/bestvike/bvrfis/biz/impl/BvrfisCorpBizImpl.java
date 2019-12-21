@@ -97,9 +97,9 @@ public class BvrfisCorpBizImpl implements BvrfisCorpBiz {
 		try (TransportClient client = new PreBuiltTransportClient(Settings.builder().put("cluster.name", esClusterName).build())
 				.addTransportAddress(new TransportAddress(InetAddress.getByName(esIP), Integer.parseInt(esPort)))) {
 			// 开发企业根据组织机构代码完全匹配
-			uniqueMatchCorp(bvrfisCorpInfoParamList, client, httpSession);
-			// TODO 开发企业根据单位名称完全匹配
-
+			//uniqueMatchCorp(bvrfisCorpInfoParamList, client, httpSession);
+			// 开发企业根据单位名称完全匹配
+			uniqueMatchCorpByCorpName(bvrfisCorpInfoParamList, client, httpSession);
 			// TODO 开发企业根据单位名称疑似匹配
 		} catch (UnknownHostException e) {
 			log.error("创建elasticsearch客户端连接失败" + e);
@@ -135,6 +135,8 @@ public class BvrfisCorpBizImpl implements BvrfisCorpBiz {
 				SearchHit[] hits = searchResponse.getHits().getHits();
 				// 如果返回唯一一条数据，说明完全匹配
 				if (hits.length == 1) {
+					// 根据单位名称完全匹配成功后，在list移除这条数据，剩下的根据单位名称完全匹配
+					bvrfisCorpInfoParamList.remove(bvrfisCorpInfoParam);
 					for (SearchHit hit : hits) {
 						// 返回内容
 						String bvdfCorpJson = hit.getSourceAsString();
@@ -157,6 +159,80 @@ public class BvrfisCorpBizImpl implements BvrfisCorpBiz {
 						bmatchAnResultInfo.setDescribe(null);
 						// 备注
 						bmatchAnResultInfo.setRemark(null);
+						// 单位信息表
+						bmatchAnResultInfo.setMatchtype(MatchTypeEnum.DEVELOP.getCode());
+						// todo 创建人 待确定
+						//bmatchAnResultInfo.setInuser(httpSession.getAttribute(GCC.SESSION_KEY_USERNAME).toString());
+						bmatchAnResultInfo.setIndate(UtilTool.nowTime());
+						// 修改人
+						bmatchAnResultInfo.setEdituser(null);
+						bmatchAnResultInfo.setEditdate(null);
+						bmatchAnResultInfo.setVersion(new BigDecimal(bvdfCorpParam.getVersionnumber()));
+						List<BmatchAnResultInfo> bmatchAnResultInfoList = new ArrayList<>();
+						bmatchAnResultInfoList.add(bmatchAnResultInfo);
+						bmatchAnResultDao.insertBmatchAnResult(bmatchAnResultInfoList);
+					}
+				}
+			} catch (MsgException e) {
+				log.error(e + "bvrfisCorpInfoParam参数为：{}", bvrfisCorpInfoParam);
+			} catch (IOException e) {
+				log.error(e + "bvrfisCorpInfoParam参数为：{}", bvrfisCorpInfoParam);
+			}
+		});
+	}
+
+	/**
+	 * @Author: yinxunyang
+	 * @Description: 开发企业根据企业名称完全匹配
+	 * @Date: 2019/12/19 19:15
+	 * @param:
+	 * @return:
+	 */
+	private void uniqueMatchCorpByCorpName(List<BvrfisCorpInfoParam> bvrfisCorpInfoParamList, TransportClient client, HttpSession httpSession) {
+		// 完全匹配开发企业信息
+		ClassPathResource classPathResource = new ClassPathResource("elasticSearch/uniqueMatchbyCorpName.json");
+		// 遍历开发企业信息和elasticsearch
+		bvrfisCorpInfoParamList.forEach(bvrfisCorpInfoParam -> {
+			try {
+				InputStream inputStream = classPathResource.getInputStream();
+				BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));
+				StringBuilder sb = new StringBuilder();
+				String line;
+				while ((line = br.readLine()) != null) {
+					sb.append(line);
+				}
+				String corpQueryParam = sb.toString().replace("corpNameValue", bvrfisCorpInfoParam.getCorpName());
+				log.info(corpQueryParam);
+				WrapperQueryBuilder wqb = QueryBuilders.wrapperQuery(corpQueryParam);
+				SearchResponse searchResponse = client.prepareSearch(corpindex)
+						.setTypes(corptype).setQuery(wqb).setSize(1).get();
+				SearchHit[] hits = searchResponse.getHits().getHits();
+				// 如果返回唯一一条数据，说明完全匹配
+				if (hits.length == 1) {
+					// 根据单位名称完全匹配成功后，在list移除这条数据，剩下的根据单位名称完全匹配
+					bvrfisCorpInfoParamList.remove(bvrfisCorpInfoParam);
+					for (SearchHit hit : hits) {
+						// 返回内容
+						String bvdfCorpJson = hit.getSourceAsString();
+						BvdfCorpParam bvdfCorpParam = (BvdfCorpParam) UtilTool.jsonToObj(bvdfCorpJson, BvdfCorpParam.class);
+						BmatchAnResultInfo bmatchAnResultInfo = new BmatchAnResultInfo();
+						bmatchAnResultInfo.setMatchid(UtilTool.UUID());
+						// todo 待确定
+						bmatchAnResultInfo.setLogid(null);
+						// 维修资金数据ID
+						bmatchAnResultInfo.setWxbusiid(bvrfisCorpInfoParam.getCorpNo());
+						bmatchAnResultInfo.setCenterid(bvdfCorpParam.getDataCenterId());
+						bmatchAnResultInfo.setWqbusiid(bvdfCorpParam.getCorpId());
+						// 该条数据匹配率 完全匹配是100
+						bmatchAnResultInfo.setPercent(new BigDecimal("100.00"));
+						// 匹配情况分析
+						bmatchAnResultInfo.setResult("匹配度高");
+						// 匹配状态 匹配成功
+						bmatchAnResultInfo.setRelstate(RelStateEnum.MATCH_SUCCESS.getCode());
+						// 匹配情况说明
+						bmatchAnResultInfo.setDescribe(null);
+						// 备注
+						bmatchAnResultInfo.setRemark("开发企业根据企业名称完全匹配");
 						// 单位信息表
 						bmatchAnResultInfo.setMatchtype(MatchTypeEnum.DEVELOP.getCode());
 						// todo 创建人 待确定
