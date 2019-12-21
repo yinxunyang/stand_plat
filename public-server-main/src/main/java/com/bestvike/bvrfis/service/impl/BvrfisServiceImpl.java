@@ -1,6 +1,5 @@
 package com.bestvike.bvrfis.service.impl;
 
-import com.alibaba.fastjson.JSONObject;
 import com.bestvike.bvrfis.dao.BmatchAnResultDao;
 import com.bestvike.bvrfis.dao.BvrfisHouseDao;
 import com.bestvike.bvrfis.entity.BmatchAnResultInfo;
@@ -44,8 +43,6 @@ import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -99,7 +96,6 @@ public class BvrfisServiceImpl implements BvrfisService {
 	private BvrfisCorpService bvrfisCorpService;
 	@Autowired
 	private BmatchAnResultDao bmatchAnResultDao;
-	private static final DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
 	/**
 	 * @Author: yinxunyang
@@ -171,8 +167,7 @@ public class BvrfisServiceImpl implements BvrfisService {
 						bmatchAnResultInfo.setLogid(null);
 						// 维修资金数据ID
 						bmatchAnResultInfo.setWxbusiid(bvrfisCorpInfoParam.getCorpNo());
-						// todo 数据中心id
-						bmatchAnResultInfo.setCenterid("");
+						bmatchAnResultInfo.setCenterid(bvdfCorpParam.getDataCenterId());
 						bmatchAnResultInfo.setWqbusiid(bvdfCorpParam.getCorpId());
 						// 该条数据匹配率 完全匹配是100
 						bmatchAnResultInfo.setPercent(new BigDecimal("100.00"));
@@ -186,14 +181,12 @@ public class BvrfisServiceImpl implements BvrfisService {
 						bmatchAnResultInfo.setRemark(null);
 						// 单位信息表
 						bmatchAnResultInfo.setMatchtype(MatchTypeEnum.DEVELOP.getCode());
-						// 创建人
-						bmatchAnResultInfo.setInuser(httpSession.getAttribute(GCC.SESSION_KEY_USERNAME).toString());
-						String indate = df.format(LocalDateTime.now());
-						bmatchAnResultInfo.setIndate(indate);
+						// todo 创建人 待确定
+						//bmatchAnResultInfo.setInuser(httpSession.getAttribute(GCC.SESSION_KEY_USERNAME).toString());
+						bmatchAnResultInfo.setIndate(UtilTool.nowTime());
 						// 修改人
 						bmatchAnResultInfo.setEdituser(null);
 						bmatchAnResultInfo.setEditdate(null);
-						// todo 待确认
 						bmatchAnResultInfo.setVersion(new BigDecimal(bvdfCorpParam.getVersionnumber()));
 						List<BmatchAnResultInfo> bmatchAnResultInfoList = new ArrayList<>();
 						bmatchAnResultInfoList.add(bmatchAnResultInfo);

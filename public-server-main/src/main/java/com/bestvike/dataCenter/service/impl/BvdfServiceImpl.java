@@ -117,6 +117,10 @@ public class BvdfServiceImpl implements BvdfService {
 		String scopeEndTime = df.format(LocalDateTime.now());
 		queryParam.setScopeEndTime(scopeEndTime);
 		List<BvdfCorpParam> bvdfCorpParamList = bvdfCorpService.queryBvdfCorpInfo(queryParam);
+		if(bvdfCorpParamList.isEmpty()){
+			log.info("没有bvdfCorpToEs的数据");
+			return;
+		}
 		try (TransportClient client = new PreBuiltTransportClient(Settings.builder().put("cluster.name", esClusterName).build())
 				.addTransportAddress(new TransportAddress(InetAddress.getByName(esIP), Integer.parseInt(esPort)))) {
 			bvdfCorpParamList.forEach(bvdfCorpParam -> {
@@ -155,9 +159,11 @@ public class BvdfServiceImpl implements BvdfService {
 		try {
 			doc = XContentFactory.jsonBuilder()
 					.startObject()
+					.field("dataCenterId", bvdfCorpParam.getDataCenterId())
 					.field("corpId", bvdfCorpParam.getCorpId())
 					.field("corpName", bvdfCorpParam.getCorpName())
 					.field("certificateNo", bvdfCorpParam.getCertificateNo())
+					.field("versionnumber", bvdfCorpParam.getVersionnumber())
 					.endObject();
 		} catch (IOException e) {
 			log.error("拼装corpToElasticSearch的数据失败" + e);

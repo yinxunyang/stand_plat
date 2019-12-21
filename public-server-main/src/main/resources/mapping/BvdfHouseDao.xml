@@ -2,7 +2,8 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.bestvike.dataCenter.dao.BvdfHouseDao">
 	<select id="queryBvdfCorpInfo" resultType="com.bestvike.dataCenter.param.BvdfCorpParam">
-		SELECT t.corpid, t.corpName, t.licenseNo, t.certificateNo, t.versionnumber FROM datasource_xjws.REV_CORP_INFO t
+		SELECT t.sysGuid as dataCenterId,t.corpid, t.corpName, t.licenseNo, t.certificateNo, t.versionnumber FROM
+		datasource_xjws.REV_CORP_INFO t
 		<where>
 			<if test="null != param.state and '' != param.state">
 				t.state = #{param.state,jdbcType=VARCHAR}
