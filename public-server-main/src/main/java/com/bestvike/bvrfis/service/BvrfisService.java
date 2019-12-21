@@ -12,14 +12,6 @@ import javax.servlet.http.HttpSession;
 public interface BvrfisService {
 	/**
 	 * @Author: yinxunyang
-	 * @Description: 将bvrfis公司信息跟es中的匹配
-	 * @Date: 2019/12/11 13:14
-	 * @param:
-	 * @return:
-	 */
-	void bvrfisCorpMatchEs(HttpSession httpSession) throws MsgException;
-	/**
-	 * @Author: yinxunyang
 	 * @Description: 将bvrfis房屋信息跟es中的匹配
 	 * @Date: 2019/12/11 13:14
 	 * @param:
