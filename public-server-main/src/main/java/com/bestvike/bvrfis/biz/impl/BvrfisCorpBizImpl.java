@@ -10,6 +10,7 @@ import com.bestvike.commons.enums.MatchTypeEnum;
 import com.bestvike.commons.enums.RelStateEnum;
 import com.bestvike.commons.enums.ReturnCode;
 import com.bestvike.commons.exception.MsgException;
+import com.bestvike.commons.utils.StringUtils;
 import com.bestvike.commons.utils.UtilTool;
 import com.bestvike.dataCenter.param.BvdfCorpParam;
 import lombok.extern.slf4j.Slf4j;
@@ -73,8 +74,6 @@ public class BvrfisCorpBizImpl implements BvrfisCorpBiz {
 	@Autowired
 	private BvrfisCorpService bvrfisCorpService;
 	@Autowired
-	private BmatchAnResultDao bmatchAnResultDao;
-	@Autowired
 	private BmatchAnResultService bmatchAnResultService;
 
 	/**
@@ -100,7 +99,7 @@ public class BvrfisCorpBizImpl implements BvrfisCorpBiz {
 		try (TransportClient client = new PreBuiltTransportClient(Settings.builder().put("cluster.name", esClusterName).build())
 				.addTransportAddress(new TransportAddress(InetAddress.getByName(esIP), Integer.parseInt(esPort)))) {
 			// 开发企业根据组织机构代码完全匹配
-			//uniqueMatchCorp(bvrfisCorpInfoParamList, client, httpSession);
+			uniqueMatchCorp(bvrfisCorpInfoParamList, client, httpSession);
 			// 开发企业根据单位名称完全匹配
 			uniqueMatchCorpByCorpName(bvrfisCorpInfoParamList, client, httpSession);
 			// TODO 开发企业根据单位名称疑似匹配
@@ -120,6 +119,8 @@ public class BvrfisCorpBizImpl implements BvrfisCorpBiz {
 	private void uniqueMatchCorp(List<BvrfisCorpInfoParam> bvrfisCorpInfoParamList, TransportClient client, HttpSession httpSession) {
 		// 完全匹配开发企业信息
 		ClassPathResource classPathResource = new ClassPathResource("elasticSearch/uniqueMatchCorpQuery.json");
+		// 匹配成功后需要从bvrfisCorpInfoParamList移除的List
+		List<BvrfisCorpInfoParam> paramListForDelByCertNo = new ArrayList<>();
 		// 遍历开发企业信息和elasticsearch
 		bvrfisCorpInfoParamList.forEach(bvrfisCorpInfoParam -> {
 			try {
@@ -130,7 +131,12 @@ public class BvrfisCorpBizImpl implements BvrfisCorpBiz {
 				while ((line = br.readLine()) != null) {
 					sb.append(line);
 				}
-				String corpQueryParam = sb.toString().replace("certificateNoValue", bvrfisCorpInfoParam.getLicenseNo());
+				String licenseNo = bvrfisCorpInfoParam.getLicenseNo();
+				// licenseNo如果为空，跳高该笔查询
+				if (StringUtils.isEmpty(licenseNo)) {
+					return;
+				}
+				String corpQueryParam = sb.toString().replace("certificateNoValue", licenseNo);
 				log.info(corpQueryParam);
 				WrapperQueryBuilder wqb = QueryBuilders.wrapperQuery(corpQueryParam);
 				SearchResponse searchResponse = client.prepareSearch(corpindex)
@@ -138,8 +144,6 @@ public class BvrfisCorpBizImpl implements BvrfisCorpBiz {
 				SearchHit[] hits = searchResponse.getHits().getHits();
 				// 如果返回唯一一条数据，说明完全匹配
 				if (hits.length == 1) {
-					// 根据单位名称完全匹配成功后，在list移除这条数据，剩下的根据单位名称完全匹配
-					bvrfisCorpInfoParamList.remove(bvrfisCorpInfoParam);
 					for (SearchHit hit : hits) {
 						// 返回内容
 						String bvdfCorpJson = hit.getSourceAsString();
@@ -161,7 +165,7 @@ public class BvrfisCorpBizImpl implements BvrfisCorpBiz {
 						// 匹配情况说明
 						bmatchAnResultInfo.setDescribe(null);
 						// 备注
-						bmatchAnResultInfo.setRemark(null);
+						bmatchAnResultInfo.setRemark("开发企业根据组织机构代码完全匹配");
 						// 单位信息表
 						bmatchAnResultInfo.setMatchtype(MatchTypeEnum.DEVELOP.getCode());
 						// todo 创建人 待确定
@@ -174,7 +178,8 @@ public class BvrfisCorpBizImpl implements BvrfisCorpBiz {
 						bmatchAnResultInfo.setVersion(new BigDecimal(bvdfCorpParam.getVersionnumber()));
 						List<BmatchAnResultInfo> bmatchAnResultInfoList = new ArrayList<>();
 						bmatchAnResultInfoList.add(bmatchAnResultInfo);
-						bmatchAnResultDao.insertBmatchAnResult(bmatchAnResultInfoList);
+						bmatchAnResultService.insertBmatchAnResultByBatch(bmatchAnResultInfoList);
+						paramListForDelByCertNo.add(bvrfisCorpInfoParam);
 					}
 				}
 			} catch (MsgException e) {
@@ -183,6 +188,7 @@ public class BvrfisCorpBizImpl implements BvrfisCorpBiz {
 				log.error(e + "bvrfisCorpInfoParam参数为：{}", bvrfisCorpInfoParam);
 			}
 		});
+		bvrfisCorpInfoParamList.removeAll(paramListForDelByCertNo);
 	}
 
 	/**
