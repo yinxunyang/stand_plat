@@ -7,7 +7,6 @@ import com.bestvike.dataCenter.param.BvdfHouseParam;
 import com.bestvike.dataCenter.service.BvdfHouseService;
 import com.bestvike.elastic.param.EsHouseParam;
 import com.bestvike.elastic.service.ElasticSearchService;
-import com.bestvike.mid.service.MidHouseService;
 import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.xcontent.XContentBuilder;
@@ -25,8 +24,6 @@ import java.util.Map;
 @Slf4j
 public class BvdfHouseServiceImpl implements BvdfHouseService {
 
-	@Autowired
-	private MidHouseService midHouseService;
 	@Autowired
 	private ElasticSearchService elasticSearchService;
 	@Autowired
@@ -52,20 +49,6 @@ public class BvdfHouseServiceImpl implements BvdfHouseService {
 	@Transactional(rollbackFor = Exception.class)
 	public void insertCopyHouseAndEsByBatch(List<BvdfHouseParam> bvdfHouseParamListForAdd, List<BvdfHouseParam> bvdfHouseParamListForEdit,
 	                                        TransportClient client, List<EsHouseParam> esHouseParamList) throws MsgException {
-		if (!bvdfHouseParamListForAdd.isEmpty()) {
-			// 批量新增房屋信息
-			int inNum = midHouseService.insertBvdfHouseInfoByBatch(bvdfHouseParamListForAdd);
-			if (bvdfHouseParamListForAdd.size() != inNum) {
-				throw new MsgException(ReturnCode.sdp_insert_fail, "批量新增中间库房屋信息失败");
-			}
-		}
-		if (!bvdfHouseParamListForEdit.isEmpty()) {
-			// 批量更新房屋信息
-			int upNum = midHouseService.updateBvdfHouseInfoByBatch(bvdfHouseParamListForEdit);
-			if (-1 != upNum) {
-				throw new MsgException(ReturnCode.sdp_update_fail, "批量更新中间库房屋信息失败");
-			}
-		}
 		esHouseParamList.forEach(esHouseParam -> {
 			// 拼装新增es的数据
 			XContentBuilder doc = organizeEsData(esHouseParam);

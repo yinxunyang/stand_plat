@@ -65,20 +65,11 @@ datasources:
       minimum-idle: 2
       maximum-pool-size: 5
       connection-test-query: select 1
-  mid:
-    jdbc-url: jdbc:oracle:thin:@127.0.0.1:1521/orcl
-    driver-class-name: oracle.jdbc.driver.OracleDriver
-    username: mid_aks
-    password: mid_aks
-    hikari:
-      minimum-idle: 2
-      maximum-pool-size: 5
-      connection-test-query: select 1
   bvrfis:
     jdbc-url: jdbc:oracle:thin:@127.0.0.1:1521/orcl
     driver-class-name: oracle.jdbc.driver.OracleDriver
-    username: bvrfis_aks
-    password: bvrfis_aks
+    username: bvrfis_xjws
+    password: bvrfis_xjws
     hikari:
       minimum-idle: 2
       maximum-pool-size: 5

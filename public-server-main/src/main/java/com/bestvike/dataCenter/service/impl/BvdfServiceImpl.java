@@ -11,8 +11,6 @@ import com.bestvike.dataCenter.service.BvdfHouseService;
 import com.bestvike.dataCenter.service.BvdfService;
 import com.bestvike.elastic.param.EsHouseParam;
 import com.bestvike.elastic.service.ElasticSearchService;
-import com.bestvike.mid.entity.MidHouseInfo;
-import com.bestvike.mid.service.MidHouseService;
 import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.Settings;
@@ -81,8 +79,6 @@ public class BvdfServiceImpl implements BvdfService {
 	private String corptype;
 	@Autowired
 	private BvdfHouseService bvdfHouseService;
-	@Autowired
-	private MidHouseService midHouseService;
 	@Autowired
 	private BvdfHouseDao bvdfHouseDao;
 	@Autowired
@@ -243,12 +239,7 @@ public class BvdfServiceImpl implements BvdfService {
 		List<EsHouseParam> esHouseParamList = new ArrayList<>();
 		bvdfHouseParamList.forEach(bvdfHouseParam -> {
 			// 根据主键查询中间库房屋信息
-			MidHouseInfo midHouseInfo = midHouseService.queryMidHouseInfoById(bvdfHouseParam);
-			if (null == midHouseInfo) {
-				bvdfHouseParamListForAdd.add(bvdfHouseParam);
-			} else {
-				bvdfHouseParamListForEdit.add(bvdfHouseParam);
-			}
+
 			// 组织往elasticSearch推送的数据
 			EsHouseParam esHouseParam = organizeEsHouseParam(bvdfHouseParam);
 			esHouseParamList.add(esHouseParam);

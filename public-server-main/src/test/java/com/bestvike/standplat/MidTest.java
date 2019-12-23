@@ -4,9 +4,6 @@ import com.bestvike.dataCenter.dao.BvdfHouseDao;
 import com.bestvike.dataCenter.param.BvdfCorpParam;
 import com.bestvike.dataCenter.param.BvdfHouseParam;
 import com.bestvike.dataCenter.service.impl.BvdfServiceImpl;
-import com.bestvike.mid.dao.MidHouseDao;
-import com.bestvike.mid.entity.MidHouseInfo;
-import com.bestvike.mid.service.MidHouseService;
 import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.transport.TransportClient;
@@ -40,11 +37,7 @@ import java.util.Map;
 @Slf4j
 public class MidTest extends BaseTest {
 	@Autowired
-	private MidHouseDao midHouseDao;
-	@Autowired
 	private BvdfServiceImpl bvdfServiceImpl;
-	@Autowired
-	private MidHouseService midHouseService;
 	@Autowired
 	private BvdfHouseDao bvdfHouseDao;
 	/**
@@ -76,13 +69,6 @@ public class MidTest extends BaseTest {
 		midHouseInfo.setRoomno("77");
 		midHouseInfo.setAddress("123");
 		//midHouseDao.insertBvdfHouseInfo(midHouseInfo);
-	}
-	@Test
-	public void test13() {
-		BvdfHouseParam bvdfHouseParam = new BvdfHouseParam();
-		bvdfHouseParam.setSysguid("42f089a6-18dd-4756-9c31-7aa6ed7210b6");
-		MidHouseInfo midHouseInfo = midHouseService.queryMidHouseInfoById(bvdfHouseParam);
-		int i = 0;
 	}
 	@Test
 	public void test15() {

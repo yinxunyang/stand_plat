@@ -162,6 +162,7 @@ public class BvrfisCorpBizImpl implements BvrfisCorpBiz {
 						// 单位信息表
 						bmatchAnResultInfo.setMatchtype(MatchTypeEnum.DEVELOP.getCode());
 						// todo 创建人 待确定
+						bmatchAnResultInfo.setInuser("无");
 						//bmatchAnResultInfo.setInuser(httpSession.getAttribute(GCC.SESSION_KEY_USERNAME).toString());
 						bmatchAnResultInfo.setIndate(UtilTool.nowTime());
 						// 修改人
@@ -191,6 +192,8 @@ public class BvrfisCorpBizImpl implements BvrfisCorpBiz {
 	private void uniqueMatchCorpByCorpName(List<BvrfisCorpInfoParam> bvrfisCorpInfoParamList, TransportClient client, HttpSession httpSession) {
 		// 完全匹配开发企业信息
 		ClassPathResource classPathResource = new ClassPathResource("elasticSearch/uniqueMatchbyCorpName.json");
+		// 匹配成功后需要从bvrfisCorpInfoParamList移除的List
+		List<BvrfisCorpInfoParam> paramListForDelByCorpName = new ArrayList<>();
 		// 遍历开发企业信息和elasticsearch
 		bvrfisCorpInfoParamList.forEach(bvrfisCorpInfoParam -> {
 			try {
@@ -205,12 +208,10 @@ public class BvrfisCorpBizImpl implements BvrfisCorpBiz {
 				log.info(corpQueryParam);
 				WrapperQueryBuilder wqb = QueryBuilders.wrapperQuery(corpQueryParam);
 				SearchResponse searchResponse = client.prepareSearch(corpindex)
-						.setTypes(corptype).setQuery(wqb).setSize(1).get();
+						.setTypes(corptype).setQuery(wqb).get();
 				SearchHit[] hits = searchResponse.getHits().getHits();
 				// 如果返回唯一一条数据，说明完全匹配
 				if (hits.length == 1) {
-					// 根据单位名称完全匹配成功后，在list移除这条数据，剩下的根据单位名称完全匹配
-					bvrfisCorpInfoParamList.remove(bvrfisCorpInfoParam);
 					for (SearchHit hit : hits) {
 						// 返回内容
 						String bvdfCorpJson = hit.getSourceAsString();
@@ -236,6 +237,7 @@ public class BvrfisCorpBizImpl implements BvrfisCorpBiz {
 						// 单位信息表
 						bmatchAnResultInfo.setMatchtype(MatchTypeEnum.DEVELOP.getCode());
 						// todo 创建人 待确定
+						bmatchAnResultInfo.setInuser("无");
 						//bmatchAnResultInfo.setInuser(httpSession.getAttribute(GCC.SESSION_KEY_USERNAME).toString());
 						bmatchAnResultInfo.setIndate(UtilTool.nowTime());
 						// 修改人
@@ -245,6 +247,7 @@ public class BvrfisCorpBizImpl implements BvrfisCorpBiz {
 						List<BmatchAnResultInfo> bmatchAnResultInfoList = new ArrayList<>();
 						bmatchAnResultInfoList.add(bmatchAnResultInfo);
 						bmatchAnResultDao.insertBmatchAnResult(bmatchAnResultInfoList);
+						paramListForDelByCorpName.add(bvrfisCorpInfoParam);
 					}
 				}
 			} catch (MsgException e) {
@@ -253,5 +256,6 @@ public class BvrfisCorpBizImpl implements BvrfisCorpBiz {
 				log.error(e + "bvrfisCorpInfoParam参数为：{}", bvrfisCorpInfoParam);
 			}
 		});
+		bvrfisCorpInfoParamList.removeAll(paramListForDelByCorpName);
 	}
 }
