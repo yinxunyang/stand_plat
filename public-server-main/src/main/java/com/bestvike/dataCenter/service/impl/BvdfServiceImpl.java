@@ -162,6 +162,7 @@ public class BvdfServiceImpl implements BvdfService {
 					.field("dataCenterId", bvdfCorpParam.getDataCenterId())
 					.field("corpId", bvdfCorpParam.getCorpId())
 					.field("corpName", bvdfCorpParam.getCorpName())
+					.field("corpNameForKey", bvdfCorpParam.getCorpName())
 					.field("certificateNo", bvdfCorpParam.getCertificateNo())
 					.field("versionnumber", bvdfCorpParam.getVersionnumber())
 					.endObject();
