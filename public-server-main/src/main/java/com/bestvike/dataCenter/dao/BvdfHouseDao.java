@@ -2,6 +2,7 @@ package com.bestvike.dataCenter.dao;
 
 import com.bestvike.dataCenter.param.BvdfCorpParam;
 import com.bestvike.dataCenter.param.BvdfHouseParam;
+import com.bestvike.dataCenter.param.BvdfRegionParam;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
@@ -26,6 +27,14 @@ public interface BvdfHouseDao {
 	 */
 	List<BvdfCorpParam> queryBvdfCorpInfo(@Param("param") BvdfCorpParam queryParam);
 
+	/**
+	 * @Author: yinxunyang
+	 * @Description: 查询小区信息
+	 * @Date: 2019/12/5 11:34
+	 * @param:
+	 * @return:
+	 */
+	List<BvdfRegionParam> queryBvdfRegionInfo(@Param("param") BvdfRegionParam queryParam);
 	/**
 	 * @Author: yinxunyang
 	 * @Description: 查询房屋信息
