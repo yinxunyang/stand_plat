@@ -176,9 +176,7 @@ public class BvrfisCorpBizImpl implements BvrfisCorpBiz {
 						bmatchAnResultInfo.setEdituser(null);
 						bmatchAnResultInfo.setEditdate(null);
 						bmatchAnResultInfo.setVersion(new BigDecimal(bvdfCorpParam.getVersionnumber()));
-						List<BmatchAnResultInfo> bmatchAnResultInfoList = new ArrayList<>();
-						bmatchAnResultInfoList.add(bmatchAnResultInfo);
-						bmatchAnResultService.insertBmatchAnResultByBatch(bmatchAnResultInfoList);
+						bmatchAnResultService.insertBmatchAnResult(bmatchAnResultInfo);
 						paramListForDelByCertNo.add(bvrfisCorpInfoParam);
 					}
 				}
@@ -253,9 +251,7 @@ public class BvrfisCorpBizImpl implements BvrfisCorpBiz {
 						bmatchAnResultInfo.setEdituser(null);
 						bmatchAnResultInfo.setEditdate(null);
 						bmatchAnResultInfo.setVersion(new BigDecimal(bvdfCorpParam.getVersionnumber()));
-						List<BmatchAnResultInfo> bmatchAnResultInfoList = new ArrayList<>();
-						bmatchAnResultInfoList.add(bmatchAnResultInfo);
-						bmatchAnResultService.insertBmatchAnResultByBatch(bmatchAnResultInfoList);
+						bmatchAnResultService.insertBmatchAnResult(bmatchAnResultInfo);
 						paramListForDelByCorpName.add(bvrfisCorpInfoParam);
 					}
 				}

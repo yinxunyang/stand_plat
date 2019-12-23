@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.bestvike.bvrfis.dao.BmatchAnResultDao">
-	<insert id="insertBmatchAnResult">
+	<insert id="insertBmatchAnResultByBatch">
 		insert into bvrfis_xjws.b_matchAnResult
 		(
 		matchid,
@@ -41,5 +41,44 @@
 			#{item.version,jdbcType=DECIMAL}
 			FROM dual
 		</foreach>
+	</insert>
+	<insert id="insertBmatchAnResult">
+		insert into bvrfis_xjws.b_matchAnResult
+		(
+		matchid,
+		logid,
+		wxbusiid,
+		centerid,
+		wqbusiid,
+		percent,
+		result,
+		relstate,
+		describe,
+		remark,
+		inuser,
+		indate,
+		edituser,
+		editdate,
+		matchtype,
+		version
+		)
+		values(
+			#{param.matchid,jdbcType=VARCHAR},
+			#{param.logid,jdbcType=VARCHAR},
+			#{param.wxbusiid,jdbcType=VARCHAR},
+			#{param.centerid,jdbcType=VARCHAR},
+			#{param.wqbusiid,jdbcType=VARCHAR},
+			#{param.percent,jdbcType=DECIMAL},
+			#{param.result,jdbcType=VARCHAR},
+			#{param.relstate,jdbcType=VARCHAR},
+			#{param.describe,jdbcType=VARCHAR},
+			#{param.remark,jdbcType=VARCHAR},
+			#{param.inuser,jdbcType=VARCHAR},
+			#{param.indate,jdbcType=VARCHAR},
+			#{param.edituser,jdbcType=VARCHAR},
+			#{param.editdate,jdbcType=VARCHAR},
+			#{param.matchtype,jdbcType=VARCHAR},
+			#{param.version,jdbcType=DECIMAL}
+			)
 	</insert>
 </mapper>

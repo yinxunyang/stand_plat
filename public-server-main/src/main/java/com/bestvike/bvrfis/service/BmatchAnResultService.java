@@ -19,4 +19,12 @@ public interface BmatchAnResultService {
 	 * @return:
 	 */
 	void insertBmatchAnResultByBatch(List<BmatchAnResultInfo> bmatchAnResultInfoList);
+	/**
+	 * @Author: yinxunyang
+	 * @Description: 新增匹配分析表
+	 * @Date: 2019/12/9 13:56
+	 * @param:
+	 * @return:
+	 */
+	void insertBmatchAnResult(BmatchAnResultInfo bmatchAnResultInfo);
 }

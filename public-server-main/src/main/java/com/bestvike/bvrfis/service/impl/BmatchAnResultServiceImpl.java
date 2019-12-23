@@ -35,9 +35,27 @@ public class BmatchAnResultServiceImpl implements BmatchAnResultService {
 	public void insertBmatchAnResultByBatch(List<BmatchAnResultInfo> bmatchAnResultInfoList) throws MsgException {
 		if (!bmatchAnResultInfoList.isEmpty()) {
 			// 批量匹配分析表
-			int inNum = bmatchAnResultDao.insertBmatchAnResult(bmatchAnResultInfoList);
+			int inNum = bmatchAnResultDao.insertBmatchAnResultByBatch(bmatchAnResultInfoList);
 			if (bmatchAnResultInfoList.size() != inNum) {
 				throw new MsgException(ReturnCode.sdp_insert_fail, "批量新增匹配分析表失败");
+			}
+		}
+	}
+	/**
+	 * @Author: yinxunyang
+	 * @Description: 新增匹配分析表
+	 * @Date: 2019/12/6 14:40
+	 * @param:
+	 * @return:
+	 */
+	@Override
+	@Transactional(rollbackFor = Exception.class)
+	public void insertBmatchAnResult(BmatchAnResultInfo bmatchAnResultInfo) throws MsgException {
+		if (null != bmatchAnResultInfo) {
+			// 批量匹配分析表
+			int inNum = bmatchAnResultDao.insertBmatchAnResult(bmatchAnResultInfo);
+			if (1 != inNum) {
+				throw new MsgException(ReturnCode.sdp_insert_fail, "新增匹配分析表失败");
 			}
 		}
 	}
