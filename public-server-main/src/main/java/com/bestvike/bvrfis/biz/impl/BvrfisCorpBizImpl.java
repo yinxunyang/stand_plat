@@ -4,6 +4,7 @@ import com.bestvike.bvrfis.biz.BvrfisCorpBiz;
 import com.bestvike.bvrfis.dao.BmatchAnResultDao;
 import com.bestvike.bvrfis.entity.BmatchAnResultInfo;
 import com.bestvike.bvrfis.param.BvrfisCorpInfoParam;
+import com.bestvike.bvrfis.service.BmatchAnResultService;
 import com.bestvike.bvrfis.service.BvrfisCorpService;
 import com.bestvike.commons.enums.MatchTypeEnum;
 import com.bestvike.commons.enums.RelStateEnum;
@@ -73,6 +74,8 @@ public class BvrfisCorpBizImpl implements BvrfisCorpBiz {
 	private BvrfisCorpService bvrfisCorpService;
 	@Autowired
 	private BmatchAnResultDao bmatchAnResultDao;
+	@Autowired
+	private BmatchAnResultService bmatchAnResultService;
 
 	/**
 	 * @Author: yinxunyang
@@ -246,7 +249,7 @@ public class BvrfisCorpBizImpl implements BvrfisCorpBiz {
 						bmatchAnResultInfo.setVersion(new BigDecimal(bvdfCorpParam.getVersionnumber()));
 						List<BmatchAnResultInfo> bmatchAnResultInfoList = new ArrayList<>();
 						bmatchAnResultInfoList.add(bmatchAnResultInfo);
-						bmatchAnResultDao.insertBmatchAnResult(bmatchAnResultInfoList);
+						bmatchAnResultService.insertBmatchAnResultByBatch(bmatchAnResultInfoList);
 						paramListForDelByCorpName.add(bvrfisCorpInfoParam);
 					}
 				}
