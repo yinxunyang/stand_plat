@@ -89,6 +89,10 @@ esConfig:
   corpindex: corp_index
   # es数据库公司的映射
   corptype: corp_type
+  # es数据库小区的索引
+  regionindex: region_index
+  # es数据库小区的映射
+  regiontype: region_type
 
 
 

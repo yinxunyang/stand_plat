@@ -2,6 +2,7 @@ package com.bestvike.bvrfis.controller;
 
 import com.bestvike.bvrfis.biz.BDataRelationBiz;
 import com.bestvike.bvrfis.biz.BvrfisCorpBiz;
+import com.bestvike.bvrfis.biz.BvrfisRegionBiz;
 import com.bestvike.bvrfis.service.BvrfisService;
 import com.bestvike.commons.enums.MatchTypeEnum;
 import com.bestvike.commons.exception.MsgException;
@@ -21,6 +22,8 @@ public class BvrfisController extends BaseController {
 	private BvrfisService bvrfisService;
 	@Autowired
 	private BDataRelationBiz bDataRelationBiz;
+	@Autowired
+	private BvrfisRegionBiz bvrfisRegionBiz;
 
 	@ApiOperation(value = "将bvrfis公司信息跟es中的匹配", notes = "将bvrfis公司信息跟es中的匹配")
 	@GetMapping("/api/bvrfis/bvrfisCorpMatchEs")
@@ -29,6 +32,16 @@ public class BvrfisController extends BaseController {
 			bvrfisCorpBiz.bvrfisCorpMatchEs(httpSession);
 		} catch (MsgException e) {
 			logger.error("将bvrfis公司信息跟es中的匹配失败");
+		}
+	}
+
+	@ApiOperation(value = "将bvrfis小区信息跟es中的匹配", notes = "将bvrfis小区信息跟es中的匹配")
+	@GetMapping("/api/bvrfis/bvrfisRegionMatchEs")
+	public void bvrfisRegionMatchEs(HttpSession httpSession) {
+		try {
+			bvrfisRegionBiz.bvrfisRegionMatchEs(httpSession);
+		} catch (MsgException e) {
+			logger.error("将bvrfis小区信息跟es中的匹配失败");
 		}
 	}
 	@ApiOperation(value = "将bvrfis房屋信息跟es中的匹配", notes = "将bvrfis房屋信息跟es中的匹配")

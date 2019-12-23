@@ -15,6 +15,17 @@
 			</if>
 		</where>
 	</select>
+	<select id="queryBvrfisRegionInfo" resultType="com.bestvike.bvrfis.param.BvrfisRegionParam">
+		select t2.corpNo, t1.regionName, t1.divisionCode, t1.address
+		from bvrfis_xjws.arc_regioninfo t1
+		left join bvrfis_xjws.arc_regioncorplist t2
+		on t1.regionno = t2.regionno
+		<where>
+			<if test="null != param.state and '' != param.state">
+				t1.state = #{param.state,jdbcType=VARCHAR}
+			</if>
+		</where>
+	</select>
 	<select id="queryBvrfisHouseInfo" resultType="com.bestvike.bvrfis.param.BvrfisHouseParam">
 			select * from (select
 							t1.sysGuid,

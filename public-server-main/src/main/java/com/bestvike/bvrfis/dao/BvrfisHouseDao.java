@@ -4,6 +4,7 @@ import com.bestvike.bvrfis.param.BvrfisBldParam;
 import com.bestvike.bvrfis.param.BvrfisCorpInfoParam;
 import com.bestvike.bvrfis.param.BvrfisHouseParam;
 import com.bestvike.bvrfis.param.BvrfisOwnerInfoParam;
+import com.bestvike.bvrfis.param.BvrfisRegionParam;
 import com.bestvike.bvrfis.param.BvrfisShareOwnerInfoParam;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
@@ -28,6 +29,15 @@ public interface BvrfisHouseDao {
 	 * @return:
 	 */
 	List<BvrfisCorpInfoParam> queryBvrfisCorpInfo(@Param("param") BvrfisCorpInfoParam queryParam);
+
+	/**
+	 * @Author: yinxunyang
+	 * @Description: 查询bvrfis小区的数据
+	 * @Date: 2019/12/10 17:25
+	 * @param:
+	 * @return:
+	 */
+	List<BvrfisRegionParam> queryBvrfisRegionInfo(@Param("param") BvrfisRegionParam queryParam);
 
 	/**
 	 * @Author: yinxunyang
