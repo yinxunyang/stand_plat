@@ -35,13 +35,13 @@ public class BvdfMybatisConfiguration implements ApplicationContextAware {
 
 	@Bean(name = "bvdfDataSource")
 	@ConfigurationProperties(prefix = "datasources.datacenter")
-	@Primary
+	//@Primary
 	public DataSource dataSource() {
 		return DataSourceBuilder.create().build();
 	}
 
 	@Bean(name = "bvdfSqlSessionFactory")
-	@Primary
+	//@Primary
 	public SqlSessionFactory sqlSessionFactoryBean() throws Exception {
 		SqlSessionFactoryBean sqlSessionFactoryBean = new SqlSessionFactoryBean();
 		sqlSessionFactoryBean.setDataSource(dataSource());
@@ -70,13 +70,13 @@ public class BvdfMybatisConfiguration implements ApplicationContextAware {
 	}
 
 	@Bean(name = "bvdfSqlSessionTemplate")
-	@Primary
+	//@Primary
 	public SqlSessionTemplate sqlSessionTemplate(SqlSessionFactory sqlSessionFactory) {
 		return new SqlSessionTemplate(sqlSessionFactory);
 	}
 
 	@Bean(name = "bvdfTransactionManager")
-	@Primary
+	//@Primary
 	public PlatformTransactionManager annotationDrivenTransactionManager() {
 		return new DataSourceTransactionManager(dataSource());
 	}

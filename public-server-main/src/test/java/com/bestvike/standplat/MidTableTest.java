@@ -1,5 +1,7 @@
 package com.bestvike.standplat;
 
+import com.bestvike.bvrfis.dao.BmatchAnResultDao;
+import com.bestvike.bvrfis.entity.BmatchAnResultInfo;
 import com.bestvike.dataCenter.dao.BvdfHouseDao;
 import com.bestvike.dataCenter.param.BvdfHouseParam;
 import org.elasticsearch.action.get.GetResponse;
@@ -13,6 +15,7 @@ import org.elasticsearch.transport.client.PreBuiltTransportClient;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.math.BigDecimal;
 import java.net.InetAddress;
 import java.util.HashMap;
 import java.util.List;
@@ -29,6 +32,8 @@ public class MidTableTest extends BaseTest {
 
 	@Autowired
 	private BvdfHouseDao bvdfHouseDao;
+	@Autowired
+	private BmatchAnResultDao bmatchAnResultDao;
 
 	@Test
 	public void test2() {
@@ -102,6 +107,24 @@ public class MidTableTest extends BaseTest {
 		}
 		System.out.println("=============" + response.status());
 	}
+/*@Test
+	public void test12(){
+	BmatchAnResultInfo bmatchAnResultInfo = new BmatchAnResultInfo();
+	bmatchAnResultInfo.setMatchid("12");
+	bmatchAnResultInfo.setWqbusiid("12");
+	bmatchAnResultInfo.setCenterid("12");
+	bmatchAnResultInfo.setWxbusiid("12");
+	bmatchAnResultInfo.setPercent(new BigDecimal("40.5"));
+	bmatchAnResultInfo.setResult("12");
+	bmatchAnResultInfo.setRelstate("12");
+	bmatchAnResultInfo.setDescribe("12");
+	bmatchAnResultInfo.setRemark("12");
+	bmatchAnResultInfo.setInuser("12");
+	bmatchAnResultInfo.setIndate("12");
+	bmatchAnResultInfo.setMatchtype("12");
+	bmatchAnResultInfo.setVersion(new BigDecimal("2"));
+	bmatchAnResultDao.insertBmatch(bmatchAnResultInfo);
 
+}*/
 
 }

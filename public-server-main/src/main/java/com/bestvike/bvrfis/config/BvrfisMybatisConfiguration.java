@@ -14,6 +14,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -34,11 +35,13 @@ public class BvrfisMybatisConfiguration implements ApplicationContextAware {
 
 	@Bean(name = "bvrfisDataSource")
 	@ConfigurationProperties(prefix = "datasources.bvrfis")
+	@Primary
 	public DataSource dataSource() {
 		return DataSourceBuilder.create().build();
 	}
 
 	@Bean(name = "bvrfisSqlSessionFactory")
+	@Primary
 	public SqlSessionFactory sqlSessionFactoryBean() throws Exception {
 		SqlSessionFactoryBean sqlSessionFactoryBean = new SqlSessionFactoryBean();
 		sqlSessionFactoryBean.setDataSource(dataSource());
@@ -67,11 +70,13 @@ public class BvrfisMybatisConfiguration implements ApplicationContextAware {
 	}
 
 	@Bean(name = "bvrfisSqlSessionTemplate")
+	@Primary
 	public SqlSessionTemplate sqlSessionTemplate(SqlSessionFactory sqlSessionFactory) {
 		return new SqlSessionTemplate(sqlSessionFactory);
 	}
 
 	@Bean(name = "bvrfisTransactionManager")
+	@Primary
 	public PlatformTransactionManager annotationDrivenTransactionManager() {
 		return new DataSourceTransactionManager(dataSource());
 	}
