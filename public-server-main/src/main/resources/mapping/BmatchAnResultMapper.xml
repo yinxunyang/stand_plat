@@ -81,4 +81,26 @@
 			#{param.version,jdbcType=DECIMAL}
 			)
 	</insert>
+	<select id="selectBmatchAnResultById" resultType="com.bestvike.bvrfis.entity.BmatchAnResultInfo">
+		SELECT
+		matchid,
+		logid,
+		wxbusiid,
+		centerid,
+		wqbusiid,
+		percent,
+		result,
+		relstate,
+		describe,
+		remark,
+		inuser,
+		indate,
+		edituser,
+		editdate,
+		matchtype,
+		version
+		FROM
+		bvrfis_xjws.b_matchAnResult
+		WHERE matchid = #{matchId,jdbcType=VARCHAR}
+	</select>
 </mapper>

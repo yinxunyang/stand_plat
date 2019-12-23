@@ -27,4 +27,13 @@ public interface BmatchAnResultService {
 	 * @return:
 	 */
 	void insertBmatchAnResult(BmatchAnResultInfo bmatchAnResultInfo);
+
+	/**
+	 * @Author: yinxunyang
+	 * @Description: 查询b_matchAnResult
+	 * @Date: 2019/12/23 13:18
+	 * @param:
+	 * @return:
+	 */
+	BmatchAnResultInfo selectBmatchAnResultById(String matchId);
 }

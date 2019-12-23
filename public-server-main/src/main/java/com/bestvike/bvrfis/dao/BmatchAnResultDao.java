@@ -31,4 +31,13 @@ public interface BmatchAnResultDao {
 	 * @return:
 	 */
 	int insertBmatchAnResult(@Param("param") BmatchAnResultInfo bmatchAnResultInfo);
+
+	/**
+	 * @Author: yinxunyang
+	 * @Description: 查询b_matchAnResult
+	 * @Date: 2019/12/23 13:21
+	 * @param:
+	 * @return:
+	 */
+	BmatchAnResultInfo selectBmatchAnResultById(String matchId);
 }

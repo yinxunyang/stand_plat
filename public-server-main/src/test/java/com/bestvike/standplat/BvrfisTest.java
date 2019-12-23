@@ -1,5 +1,6 @@
 package com.bestvike.standplat;
 
+import com.bestvike.bvrfis.biz.BDataRelationBiz;
 import com.bestvike.bvrfis.biz.impl.BvrfisCorpBizImpl;
 import com.bestvike.bvrfis.dao.BvrfisHouseDao;
 import com.bestvike.bvrfis.param.BvrfisBldParam;
@@ -9,6 +10,7 @@ import com.bestvike.bvrfis.param.BvrfisOwnerInfoParam;
 import com.bestvike.bvrfis.param.BvrfisShareOwnerInfoParam;
 import com.bestvike.bvrfis.service.BvrfisHouseService;
 import com.bestvike.bvrfis.service.BvrfisService;
+import com.bestvike.commons.enums.MatchTypeEnum;
 import com.bestvike.commons.utils.UtilTool;
 import com.bestvike.dataCenter.param.BvdfCorpParam;
 import org.junit.Test;
@@ -38,6 +40,8 @@ public class BvrfisTest extends BaseTest {
 	private BvrfisService bvrfisService;
 	@Autowired
 	private BvrfisCorpBizImpl bvrfisCorpBizImpl;
+	@Autowired
+	private BDataRelationBiz bDataRelationBiz;
 
 	@Test
 	public void test1() {
@@ -279,6 +283,13 @@ public class BvrfisTest extends BaseTest {
 		};
 
 		bvrfisCorpBizImpl.bvrfisCorpMatchEs(httpSession);
+	}
+
+	@Test
+	public void Test11() {
+		String matchType = MatchTypeEnum.DEVELOP.getCode();
+		String matchId = "8C1872507E4B4C97898E682B2AA6AB5D";
+		bDataRelationBiz.generateRelation(matchType, matchId);
 	}
 
 }

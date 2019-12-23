@@ -59,4 +59,16 @@ public class BmatchAnResultServiceImpl implements BmatchAnResultService {
 			}
 		}
 	}
+
+	/**
+	 * @Author: yinxunyang
+	 * @Description: 查询b_matchAnResult
+	 * @Date: 2019/12/23 13:20
+	 * @param:
+	 * @return:
+	 */
+	@Override
+	public BmatchAnResultInfo selectBmatchAnResultById(String matchId) {
+		return bmatchAnResultDao.selectBmatchAnResultById(matchId);
+	}
 }
