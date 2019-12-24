@@ -17,6 +17,10 @@ public class BvrfisRegionParam {
 	 */
 	private String corpNo;
 	/**
+	 * 单位编号
+	 */
+	private String regionNo;
+	/**
 	 * 单位名称
 	 */
 	private String regionName;
@@ -28,6 +32,10 @@ public class BvrfisRegionParam {
 	 * 地址
 	 */
 	private String address;
+	/**
+	 * 占地面积
+	 */
+	private String floorArea;
 	/**
 	 * 状态 0正常
 	 */

@@ -44,6 +44,18 @@
 				AND to_date(t.modifydate,'yyyy-mm-dd hh24:mi:ss') < to_date(#{param.scopeEndTime},'yyyy-mm-dd hh24:mi:ss')
                 ]]>
 			</if>
+			<if test="null != param.corpNo and '' != param.corpNo">
+				AND t.developid = #{param.corpNo,jdbcType=VARCHAR}
+			</if>
+			<if test="null != param.regionNo and '' != param.regionNo">
+				AND t.projectid = #{param.regionNo,jdbcType=VARCHAR}
+			</if>
+			<if test="null != param.divisionCode and '' != param.divisionCode">
+				AND t.divisionCode = #{param.divisionCode,jdbcType=VARCHAR}
+			</if>
+			<if test="null != param.floorArea and '' != param.floorArea">
+				AND t.coverarea = #{param.floorArea,jdbcType=DECIMAL}
+			</if>
 		</where>
 	</select>
 	<select id="queryBvdfHouseInfo" resultType="com.bestvike.dataCenter.param.BvdfHouseParam">
