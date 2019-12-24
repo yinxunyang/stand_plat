@@ -32,4 +32,29 @@
 			#{param.editDate,jdbcType=VARCHAR}
 			)
 	</insert>
+	<select id="selectBDataRelation" resultType="com.bestvike.bvrfis.entity.BDataRelation">
+		SELECT
+		relationid,
+		linktype,
+		wxbusiid,
+		centerid,
+		wqbusiid,
+		busid,
+		version,
+		matchid,
+		inuser,
+		indate,
+		edituser,
+		editdate
+		FROM
+		bvrfis_xjws.b_dataRelation t
+		<where>
+			<if test="null != param.wxBusiId and '' != param.wxBusiId">
+				t.wxBusiId = #{param.wxBusiId,jdbcType=VARCHAR}
+			</if>
+			<if test="null != param.linkType and '' != param.linkType">
+				AND t.linkType = #{param.linkType,jdbcType=VARCHAR}
+			</if>
+		</where>
+	</select>
 </mapper>

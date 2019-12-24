@@ -9,14 +9,6 @@
       {
         "weight": 5,
         "filter": {
-          "term": {
-            "regionNo": "regionNoValue"
-          }
-        }
-      },
-      {
-        "weight": 5,
-        "filter": {
           "match": {
             "regionName": "regionNameValue"
           }

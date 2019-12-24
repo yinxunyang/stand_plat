@@ -1,6 +1,7 @@
 package com.bestvike.bvrfis.service;
 
 import com.bestvike.bvrfis.entity.BmatchAnResultInfo;
+import com.bestvike.bvrfis.param.BmatchAnResultParam;
 
 import java.util.List;
 
@@ -36,4 +37,13 @@ public interface BmatchAnResultService {
 	 * @return:
 	 */
 	BmatchAnResultInfo selectBmatchAnResultById(String matchId);
+
+	/**
+	 * @Author: yinxunyang
+	 * @Description: 查询b_matchAnResult
+	 * @Date: 2019/12/23 13:18
+	 * @param:
+	 * @return:
+	 */
+	BmatchAnResultInfo selectBmatchAnResult(BmatchAnResultParam bmatchAnResultParam);
 }

@@ -2,6 +2,7 @@ package com.bestvike.bvrfis.service.impl;
 
 import com.bestvike.bvrfis.dao.BmatchAnResultDao;
 import com.bestvike.bvrfis.entity.BmatchAnResultInfo;
+import com.bestvike.bvrfis.param.BmatchAnResultParam;
 import com.bestvike.bvrfis.service.BmatchAnResultService;
 import com.bestvike.commons.enums.ReturnCode;
 import com.bestvike.commons.exception.MsgException;
@@ -70,5 +71,17 @@ public class BmatchAnResultServiceImpl implements BmatchAnResultService {
 	@Override
 	public BmatchAnResultInfo selectBmatchAnResultById(String matchId) {
 		return bmatchAnResultDao.selectBmatchAnResultById(matchId);
+	}
+
+	/**
+	 * @Author: yinxunyang
+	 * @Description: 查询b_matchAnResult
+	 * @Date: 2019/12/23 13:20
+	 * @param:
+	 * @return:
+	 */
+	@Override
+	public BmatchAnResultInfo selectBmatchAnResult(BmatchAnResultParam bmatchAnResultParam) {
+		return bmatchAnResultDao.selectBmatchAnResult(bmatchAnResultParam);
 	}
 }

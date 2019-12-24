@@ -2,6 +2,8 @@ package com.bestvike.bvrfis.service.impl;
 
 import com.bestvike.bvrfis.dao.BDataRelationDao;
 import com.bestvike.bvrfis.entity.BDataRelation;
+import com.bestvike.bvrfis.entity.BmatchAnResultInfo;
+import com.bestvike.bvrfis.param.BDataRelationParam;
 import com.bestvike.bvrfis.service.BDataRelationService;
 import com.bestvike.commons.enums.ReturnCode;
 import com.bestvike.commons.exception.MsgException;
@@ -38,5 +40,17 @@ public class BDataRelationServiceImpl implements BDataRelationService {
 				throw new MsgException(ReturnCode.sdp_insert_fail, "新增挂接关系表失败");
 			}
 		}
+	}
+
+	/**
+	 * @Author: yinxunyang
+	 * @Description: 查询挂接关系
+	 * @Date: 2019/12/23 13:20
+	 * @param:
+	 * @return:
+	 */
+	@Override
+	public BDataRelation selectBDataRelation(BDataRelationParam bDataRelationParam) {
+		return bDataRelationDao.selectBDataRelation(bDataRelationParam);
 	}
 }

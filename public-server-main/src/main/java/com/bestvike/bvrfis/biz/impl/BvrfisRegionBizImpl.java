@@ -1,8 +1,11 @@
 package com.bestvike.bvrfis.biz.impl;
 
 import com.bestvike.bvrfis.biz.BvrfisRegionBiz;
+import com.bestvike.bvrfis.entity.BDataRelation;
 import com.bestvike.bvrfis.entity.BmatchAnResultInfo;
+import com.bestvike.bvrfis.param.BDataRelationParam;
 import com.bestvike.bvrfis.param.BvrfisRegionParam;
+import com.bestvike.bvrfis.service.BDataRelationService;
 import com.bestvike.bvrfis.service.BmatchAnResultService;
 import com.bestvike.bvrfis.service.BvrfisRegionService;
 import com.bestvike.commons.enums.MatchTypeEnum;
@@ -81,6 +84,8 @@ public class BvrfisRegionBizImpl implements BvrfisRegionBiz {
 	private BmatchAnResultService bmatchAnResultService;
 	@Autowired
 	private BvdfRegionService bvdfRegionService;
+	@Autowired
+	private BDataRelationService bDataRelationService;
 
 	/**
 	 * @Author: yinxunyang
@@ -202,8 +207,18 @@ public class BvrfisRegionBizImpl implements BvrfisRegionBiz {
 				if (StringUtils.isEmpty(corpNo)) {
 					return;
 				}
-				corpNo = "BVDF" + corpNo;
-				String regionNo = "BVDF" + bvrfisRegionParam.getRegionNo();
+				BDataRelationParam bDataRelationParam = new BDataRelationParam();
+				bDataRelationParam.setWxBusiId(corpNo);
+				bDataRelationParam.setLinkType(MatchTypeEnum.DEVELOP.getCode());
+				// 根据匹配结果表查询
+				BDataRelation bDataRelation = bDataRelationService.selectBDataRelation(bDataRelationParam);
+				if (null != bDataRelation) {
+					corpNo = bDataRelation.getWqBusiId();
+				}
+				// corpNo如果为空，跳过该笔查询
+				if (StringUtils.isEmpty(corpNo)) {
+					return;
+				}
 				String regionName = bvrfisRegionParam.getRegionName();
 				if (StringUtils.isEmpty(regionName)) {
 					regionName = "无";
@@ -222,7 +237,7 @@ public class BvrfisRegionBizImpl implements BvrfisRegionBiz {
 				}
 				String corpQueryParam = sb.toString()
 						.replace("corpNoValue", corpNo)
-						.replace("regionNoValue", regionNo)
+						//.replace("regionNoValue", regionNo)
 						.replace("regionNameValue", regionName)
 						.replace("divisionCodeValue", divisionCode)
 						.replace("addressValue", address)

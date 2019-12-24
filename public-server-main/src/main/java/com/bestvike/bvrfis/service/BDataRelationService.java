@@ -1,6 +1,7 @@
 package com.bestvike.bvrfis.service;
 
 import com.bestvike.bvrfis.entity.BDataRelation;
+import com.bestvike.bvrfis.param.BDataRelationParam;
 
 /**
  * @Author: yinxunyang
@@ -16,4 +17,13 @@ public interface BDataRelationService {
 	 * @return:
 	 */
 	void insertBDataRelation(BDataRelation bDataRelation);
+
+	/**
+	 * @Author: yinxunyang
+	 * @Description: 查询挂接关系表
+	 * @Date: 2019/12/9 13:56
+	 * @param:
+	 * @return:
+	 */
+	BDataRelation selectBDataRelation(BDataRelationParam bDataRelationParam);
 }
