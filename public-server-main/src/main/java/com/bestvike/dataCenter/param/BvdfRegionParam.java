@@ -45,6 +45,10 @@ public class BvdfRegionParam {
 	 */
 	private String versionnumber;
 	/**
+	 * 占地面积
+	 */
+	private String floorArea;
+	/**
 	 * appCode
 	 */
 	private String appcode;

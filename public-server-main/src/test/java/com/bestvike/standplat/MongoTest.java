@@ -31,4 +31,12 @@ public class MongoTest extends BaseTest {
 		log.info(""+System.currentTimeMillis());
 		int i = 0;
 	}
+	@Test
+	public void test3() {
+		BvdfToEsRecordTime bvdfToEsRecordTime =new BvdfToEsRecordTime();
+		bvdfToEsRecordTime.setId("bvdfRegion");
+		bvdfToEsRecordTime.setCorpLastExcuteTime("2000-12-19 10:53:01");
+		mongoTemplate.save(bvdfToEsRecordTime);
+		int i = 0;
+	}
 }

@@ -25,7 +25,7 @@
 	</select>
 	<select id="queryBvdfRegionInfo" resultType="com.bestvike.dataCenter.param.BvdfRegionParam">
 		select t.sysguid as dataCenterId,t.developid as corpNo,t.projectid as regionNo,t.projectname as
-		regionName,t.divisionCode,t.address,t.versionnumber from
+		regionName,t.divisionCode,t.address,t.versionnumber,t.coverarea as floorArea from
 		datasource_xjws.REV_PROJECT_INFO t
 		<where>
 			<if test="null != param.state and '' != param.state">

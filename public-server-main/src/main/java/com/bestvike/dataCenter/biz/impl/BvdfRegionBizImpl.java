@@ -153,9 +153,12 @@ public class BvdfRegionBizImpl implements BvdfRegionBiz {
 					.field("corpNo", bvdfRegionParam.getCorpNo())
 					.field("regionNo", bvdfRegionParam.getRegionNo())
 					.field("regionName", bvdfRegionParam.getRegionName())
+					.field("regionNameForKey", bvdfRegionParam.getRegionName())
 					.field("divisionCode", bvdfRegionParam.getDivisionCode())
 					.field("address", bvdfRegionParam.getAddress())
+					.field("addressForKey", bvdfRegionParam.getAddress())
 					.field("versionnumber", bvdfRegionParam.getVersionnumber())
+					.field("floorArea", bvdfRegionParam.getFloorArea())
 					.endObject();
 		} catch (IOException e) {
 			log.error("拼装regionToElasticSearch的数据失败" + e);
