@@ -13,15 +13,24 @@ import com.bestvike.commons.utils.UtilTool;
 import com.bestvike.dataCenter.param.BvdfRegionParam;
 import com.bestvike.dataCenter.service.BvdfRegionService;
 import lombok.extern.slf4j.Slf4j;
+import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.TransportAddress;
+import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.index.query.WrapperQueryBuilder;
+import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.transport.client.PreBuiltTransportClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import javax.servlet.http.HttpSession;
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -94,8 +103,8 @@ public class BvrfisRegionBizImpl implements BvrfisRegionBiz {
 		uniqueMatchCorp(bvrfisRegionParamList, httpSession);
 		try (TransportClient client = new PreBuiltTransportClient(Settings.builder().put("cluster.name", esClusterName).build())
 				.addTransportAddress(new TransportAddress(InetAddress.getByName(esIP), Integer.parseInt(esPort)))) {
-			// 开发企业根据组织机构代码完全匹配
-			//uniqueMatchCorp(bvrfisCorpInfoParamList, client, httpSession);
+			// 疑似匹配
+			unCertainMatchCorp(bvrfisRegionParamList, client, httpSession);
 		} catch (UnknownHostException e) {
 			log.error("创建elasticsearch客户端连接失败" + e);
 			throw new MsgException(ReturnCode.sdp_sys_error, "创建elasticsearch客户端连接失败");
@@ -164,81 +173,105 @@ public class BvrfisRegionBizImpl implements BvrfisRegionBiz {
 	}
 	/**
 	 * @Author: yinxunyang
-	 * @Description: 开发企业根据组织机构代码完全匹配
+	 * @Description: 小区匹配
 	 * @Date: 2019/12/19 19:15
 	 * @param:
 	 * @return:
-	 *//*
-	private void uniqueMatchCorp(List<BvrfisCorpInfoParam> bvrfisCorpInfoParamList, TransportClient client, HttpSession httpSession) {
+	 */
+	private void unCertainMatchCorp(List<BvrfisRegionParam> bvrfisRegionParamList, TransportClient client, HttpSession httpSession) {
 		// 完全匹配开发企业信息
-		ClassPathResource classPathResource = new ClassPathResource("elasticSearch/uniqueMatchCorpQuery.json");
-		// 匹配成功后需要从bvrfisCorpInfoParamList移除的List
-		List<BvrfisCorpInfoParam> paramListForDelByCertNo = new ArrayList<>();
+		ClassPathResource classPathResource = new ClassPathResource("elasticSearch/region/unCertainRegion.json");
+		StringBuilder sb = new StringBuilder();
+		try {
+			InputStream inputStream = classPathResource.getInputStream();
+			BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));
+			String line;
+			while ((line = br.readLine()) != null) {
+				sb.append(line);
+			}
+		} catch (Exception e) {
+			log.error("完全匹配小区信息失败");
+		}
+		// 匹配成功后需要从bvrfisRegionParamList移除的List
+		List<BvrfisRegionParam> paramListForDel = new ArrayList<>();
 		// 遍历开发企业信息和elasticsearch
-		bvrfisCorpInfoParamList.forEach(bvrfisCorpInfoParam -> {
+		bvrfisRegionParamList.forEach(bvrfisRegionParam -> {
 			try {
-				InputStream inputStream = classPathResource.getInputStream();
-				BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));
-				StringBuilder sb = new StringBuilder();
-				String line;
-				while ((line = br.readLine()) != null) {
-					sb.append(line);
-				}
-				String licenseNo = bvrfisCorpInfoParam.getLicenseNo();
-				// licenseNo如果为空，跳过该笔查询
-				if (StringUtils.isEmpty(licenseNo)) {
+				String corpNo = bvrfisRegionParam.getCorpNo();
+				// corpNo如果为空，跳过该笔查询
+				if (StringUtils.isEmpty(corpNo)) {
 					return;
 				}
-				String corpQueryParam = sb.toString().replace("certificateNoValue", licenseNo);
+				corpNo = "BVDF" + corpNo;
+				String regionNo = "BVDF" + bvrfisRegionParam.getRegionNo();
+				String regionName = bvrfisRegionParam.getRegionName();
+				if (StringUtils.isEmpty(regionName)) {
+					regionName = "无";
+				}
+				String divisionCode = bvrfisRegionParam.getDivisionCode();
+				if (StringUtils.isEmpty(divisionCode)) {
+					divisionCode = "无";
+				}
+				String address = bvrfisRegionParam.getAddress();
+				if (StringUtils.isEmpty(address)) {
+					address = "无";
+				}
+				String floorArea = bvrfisRegionParam.getFloorArea();
+				if (StringUtils.isEmpty(floorArea)) {
+					floorArea = "无";
+				}
+				String corpQueryParam = sb.toString()
+						.replace("corpNoValue", corpNo)
+						.replace("regionNoValue", regionNo)
+						.replace("regionNameValue", regionName)
+						.replace("divisionCodeValue", divisionCode)
+						.replace("addressValue", address)
+						.replace("floorAreaValue", floorArea);
 				log.info(corpQueryParam);
 				WrapperQueryBuilder wqb = QueryBuilders.wrapperQuery(corpQueryParam);
-				SearchResponse searchResponse = client.prepareSearch(regionindex)
+				SearchResponse searchResponse = client.prepareSearch(regionindex).setSize(Integer.parseInt(unCertainSize))
 						.setTypes(regiontype).setQuery(wqb).get();
 				SearchHit[] hits = searchResponse.getHits().getHits();
-				// 如果返回唯一一条数据，说明完全匹配
-				if (hits.length == 1) {
-					for (SearchHit hit : hits) {
-						// 返回内容
-						String bvdfCorpJson = hit.getSourceAsString();
-						BvdfCorpParam bvdfCorpParam = (BvdfCorpParam) UtilTool.jsonToObj(bvdfCorpJson, BvdfCorpParam.class);
-						BmatchAnResultInfo bmatchAnResultInfo = new BmatchAnResultInfo();
-						bmatchAnResultInfo.setMatchid(UtilTool.UUID());
-						// todo 待确定
-						bmatchAnResultInfo.setLogid(null);
-						// 维修资金数据ID
-						bmatchAnResultInfo.setWxbusiid(bvrfisCorpInfoParam.getCorpNo());
-						bmatchAnResultInfo.setCenterid(bvdfCorpParam.getDataCenterId());
-						bmatchAnResultInfo.setWqbusiid(bvdfCorpParam.getCorpId());
-						// 该条数据匹配率 完全匹配是100
-						bmatchAnResultInfo.setPercent(new BigDecimal("100.00"));
-						// 匹配情况分析
-						bmatchAnResultInfo.setResult("匹配度高");
-						// 匹配状态 匹配成功
-						bmatchAnResultInfo.setRelstate(RelStateEnum.MATCH_SUCCESS.getCode());
-						// 匹配情况说明
-						bmatchAnResultInfo.setDescribe(null);
-						// 备注
-						bmatchAnResultInfo.setRemark("开发企业根据组织机构代码完全匹配");
-						// 单位信息表
-						bmatchAnResultInfo.setMatchtype(MatchTypeEnum.DEVELOP.getCode());
-						// todo 创建人 待确定
-						bmatchAnResultInfo.setInuser("无");
-						//bmatchAnResultInfo.setInuser(httpSession.getAttribute(GCC.SESSION_KEY_USERNAME).toString());
-						bmatchAnResultInfo.setIndate(UtilTool.nowTime());
-						// 修改人
-						bmatchAnResultInfo.setEdituser(null);
-						bmatchAnResultInfo.setEditdate(null);
-						bmatchAnResultInfo.setVersion(new BigDecimal(bvdfCorpParam.getVersionnumber()));
-						bmatchAnResultService.insertBmatchAnResult(bmatchAnResultInfo);
-						paramListForDelByCertNo.add(bvrfisCorpInfoParam);
-					}
+				for (SearchHit hit : hits) {
+					// 返回内容
+					String bvdfRegionJson = hit.getSourceAsString();
+					BvdfRegionParam bvdfRegionParam = (BvdfRegionParam) UtilTool.jsonToObj(bvdfRegionJson, BvdfRegionParam.class);
+					BmatchAnResultInfo bmatchAnResultInfo = new BmatchAnResultInfo();
+					bmatchAnResultInfo.setMatchid(UtilTool.UUID());
+					// todo 待确定
+					bmatchAnResultInfo.setLogid(null);
+					// 维修资金数据ID
+					bmatchAnResultInfo.setWxbusiid(bvrfisRegionParam.getCorpNo());
+					bmatchAnResultInfo.setCenterid(bvdfRegionParam.getDataCenterId());
+					bmatchAnResultInfo.setWqbusiid(bvdfRegionParam.getCorpNo());
+					String score = Float.toString(hit.getScore());
+					// 该条数据匹配率
+					bmatchAnResultInfo.setPercent(new BigDecimal(score));
+					// 匹配情况分析
+					bmatchAnResultInfo.setResult("匹配度低");
+					// 匹配状态 匹配成功
+					bmatchAnResultInfo.setRelstate(RelStateEnum.MATCH_SUCCESS.getCode());
+					// 匹配情况说明
+					bmatchAnResultInfo.setDescribe(null);
+					// 备注
+					bmatchAnResultInfo.setRemark("小区信息疑似匹配");
+					// 单位信息表
+					bmatchAnResultInfo.setMatchtype(MatchTypeEnum.REGION.getCode());
+					// todo 创建人 待确定
+					bmatchAnResultInfo.setInuser("无");
+					//bmatchAnResultInfo.setInuser(httpSession.getAttribute(GCC.SESSION_KEY_USERNAME).toString());
+					bmatchAnResultInfo.setIndate(UtilTool.nowTime());
+					// 修改人
+					bmatchAnResultInfo.setEdituser(null);
+					bmatchAnResultInfo.setEditdate(null);
+					bmatchAnResultInfo.setVersion(new BigDecimal(bvdfRegionParam.getVersionnumber()));
+					bmatchAnResultService.insertBmatchAnResult(bmatchAnResultInfo);
+					paramListForDel.add(bvrfisRegionParam);
 				}
 			} catch (MsgException e) {
-				log.error(e + "bvrfisCorpInfoParam参数为：{}", bvrfisCorpInfoParam);
-			} catch (IOException e) {
-				log.error(e + "bvrfisCorpInfoParam参数为：{}", bvrfisCorpInfoParam);
+				log.error(e + "bvrfisRegionParam参数为：{}", bvrfisRegionParam);
 			}
 		});
-		bvrfisCorpInfoParamList.removeAll(paramListForDelByCertNo);
-	}*/
+		bvrfisRegionParamList.removeAll(paramListForDel);
+	}
 }

@@ -1,0 +1,52 @@
+{
+  "function_score": {
+    "query": {
+      "term": {
+        "corpNo": "corpNoValue"
+      }
+    },
+    "functions": [
+      {
+        "weight": 5,
+        "filter": {
+          "term": {
+            "regionNo": "regionNoValue"
+          }
+        }
+      },
+      {
+        "weight": 5,
+        "filter": {
+          "match": {
+            "regionName": "regionNameValue"
+          }
+        }
+      },
+      {
+        "weight": 5,
+        "filter": {
+          "term": {
+            "divisionCode": "divisionCodeValue"
+          }
+        }
+      },
+      {
+        "weight": 5,
+        "filter": {
+          "match": {
+            "address": "addressValue"
+          }
+        }
+      },
+      {
+        "weight": 5,
+        "filter": {
+          "term": {
+            "floorArea": "floorAreaValue"
+          }
+        }
+      }
+    ],
+    "boost_mode": "sum"
+  }
+}

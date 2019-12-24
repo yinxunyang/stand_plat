@@ -82,7 +82,7 @@ esConfig:
   # es集群的名称
   esClusterName: docker-cluster
   # es的IP
-  esIP: 192.168.12.129
+  esIP: 192.168.12.131
   # es的port
   esPort: 9300
   # es数据库公司的索引
