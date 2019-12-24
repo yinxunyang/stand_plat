@@ -34,7 +34,7 @@ public class BvdfMybatisConfiguration implements ApplicationContextAware {
 	}
 
 	@Bean(name = "bvdfDataSource")
-	@ConfigurationProperties(prefix = "datasources.datacenter")
+	@ConfigurationProperties(prefix = "datasources.center")
 	//@Primary
 	public DataSource dataSource() {
 		return DataSourceBuilder.create().build();

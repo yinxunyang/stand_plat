@@ -55,9 +55,9 @@ spring:
     mongodb:
       uri: mongodb://bvdf:123456@127.0.0.1:27017/bvdfMongo
 datasources:
-  datacenter:
+  center:
     #jdbc-url: jdbc:mariadb://192.168.2.21:3306/hmis
-    jdbc-url: jdbc:oracle:thin:@172.10.11.5:1521/orcl
+    jdbc-url: jdbc:oracle:thin:@127.0.0.1:1521/orcl
     driver-class-name: oracle.jdbc.driver.OracleDriver
     username: datasource_xjws
     password: datasource_xjws

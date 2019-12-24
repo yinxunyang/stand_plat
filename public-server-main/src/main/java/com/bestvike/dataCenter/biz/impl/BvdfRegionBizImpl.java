@@ -90,7 +90,7 @@ public class BvdfRegionBizImpl implements BvdfRegionBiz {
 	 * @return:
 	 */
 	@Override
-	@Scheduled(cron = "${standplatConfig.corpToEsSchedule.cronTime}")
+	//@Scheduled(cron = "${standplatConfig.corpToEsSchedule.cronTime}")
 	public void bvdfRegionToEs() {
 		BvdfCorpParam queryParam = new BvdfCorpParam();
 		// 状态正

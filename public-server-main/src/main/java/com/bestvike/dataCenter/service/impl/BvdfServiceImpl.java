@@ -96,7 +96,7 @@ public class BvdfServiceImpl implements BvdfService {
 	 * @return:
 	 */
 	@Override
-	//@Scheduled(cron = "${standplatConfig.corpToEsSchedule.cronTime}")
+	@Scheduled(cron = "${standplatConfig.corpToEsSchedule.cronTime}")
 	public void bvdfCorpToEs() {
 		BvdfCorpParam queryParam = new BvdfCorpParam();
 		// 状态正
