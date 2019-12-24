@@ -29,6 +29,14 @@ public interface BvrfisHouseDao {
 	 * @return:
 	 */
 	List<BvrfisCorpInfoParam> queryBvrfisCorpInfo(@Param("param") BvrfisCorpInfoParam queryParam);
+	/**
+	 * @Author: yinxunyang
+	 * @Description: 查询bvrfis开发企业的数据
+	 * @Date: 2019/12/10 17:25
+	 * @param:
+	 * @return:
+	 */
+	BvrfisCorpInfoParam selectBvrfisCorpInfo(@Param("param") BvrfisCorpInfoParam queryParam);
 
 	/**
 	 * @Author: yinxunyang

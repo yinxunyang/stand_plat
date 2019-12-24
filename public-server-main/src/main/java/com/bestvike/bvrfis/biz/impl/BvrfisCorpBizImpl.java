@@ -1,9 +1,12 @@
 package com.bestvike.bvrfis.biz.impl;
 
 import com.bestvike.bvrfis.biz.BvrfisCorpBiz;
+import com.bestvike.bvrfis.entity.BDataRelation;
 import com.bestvike.bvrfis.entity.BLogOper;
 import com.bestvike.bvrfis.entity.BmatchAnResultInfo;
+import com.bestvike.bvrfis.param.BDataRelationParam;
 import com.bestvike.bvrfis.param.BvrfisCorpInfoParam;
+import com.bestvike.bvrfis.service.BDataRelationService;
 import com.bestvike.bvrfis.service.BLogOperService;
 import com.bestvike.bvrfis.service.BmatchAnResultService;
 import com.bestvike.bvrfis.service.BvrfisCorpService;
@@ -81,6 +84,8 @@ public class BvrfisCorpBizImpl implements BvrfisCorpBiz {
 	private BvrfisService bvrfisService;
 	@Autowired
 	private BLogOperService bLogOperService;
+	@Autowired
+	private BDataRelationService bDataRelationService;
 
 	/**
 	 * @Author: yinxunyang
@@ -102,6 +107,17 @@ public class BvrfisCorpBizImpl implements BvrfisCorpBiz {
 			log.info("bvrfis没有需要跟elasticsearch匹配的开发企业数据");
 			return;
 		}
+		List<BvrfisCorpInfoParam> bvrfisCorpExists = new ArrayList<>();
+		bvrfisCorpInfoParamList.forEach(bvrfisCorpInfoParam->{
+			// 如果该条数据已经存在挂接关系，不再新增匹配结果表
+			BDataRelationParam bDataRelationParam = new BDataRelationParam();
+			bDataRelationParam.setWxBusiId(bvrfisCorpInfoParam.getCorpNo());
+			BDataRelation bDataRelation = bDataRelationService.selectBDataRelation(bDataRelationParam);
+			if (null != bDataRelation) {
+				bvrfisCorpExists.add(bvrfisCorpInfoParam);
+			}
+		});
+		bvrfisCorpInfoParamList.removeAll(bvrfisCorpExists);
 		// 新增操作日志
 		BLogOper bLogOper = new BLogOper();
 		String logId = UtilTool.UUID();

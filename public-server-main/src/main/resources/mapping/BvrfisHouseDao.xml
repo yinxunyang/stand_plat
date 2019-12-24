@@ -15,6 +15,20 @@
 			</if>
 		</where>
 	</select>
+	<select id="selectBvrfisCorpInfo" resultType="com.bestvike.bvrfis.param.BvrfisCorpInfoParam">
+		select t.corpNo, t.corpName,t.licenseNo from bvrfis_xjws.arc_corpinfo t
+		<where>
+			<if test="null != param.corptype and '' != param.corptype">
+				t.corptype = #{param.corptype,jdbcType=VARCHAR}
+			</if>
+			<if test="null != param.state and '' != param.state">
+				AND t.state = #{param.state,jdbcType=VARCHAR}
+			</if>
+			<if test="null != param.datacenterid and '' != param.datacenterid">
+				AND t.datacenterid IS NULL
+			</if>
+		</where>
+	</select>
 	<select id="queryBvrfisRegionInfo" resultType="com.bestvike.bvrfis.param.BvrfisRegionParam">
 		select t2.corpNo, t1.regionName, t1.regionNo, t1.divisionCode, t1.address, t1.floorArea
 		from bvrfis_xjws.arc_regioninfo t1

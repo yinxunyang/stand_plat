@@ -107,6 +107,17 @@ public class BvrfisRegionBizImpl implements BvrfisRegionBiz {
 			log.info("bvrfis没有需要跟elasticsearch匹配的小区数据");
 			return;
 		}
+		List<BvrfisRegionParam> bvrfisRegionExists = new ArrayList<>();
+		bvrfisRegionParamList.forEach(bvrfisRegionParam -> {
+			// 如果该条数据已经存在挂接关系，不再新增匹配结果表
+			BDataRelationParam bDataRelationParam = new BDataRelationParam();
+			bDataRelationParam.setWxBusiId(bvrfisRegionParam.getRegionNo());
+			BDataRelation bDataRelation = bDataRelationService.selectBDataRelation(bDataRelationParam);
+			if (null != bDataRelation) {
+				bvrfisRegionExists.add(bvrfisRegionParam);
+			}
+		});
+		bvrfisRegionParamList.removeAll(bvrfisRegionExists);
 		// 新增操作日志
 		BLogOper bLogOper = new BLogOper();
 		String logId = UtilTool.UUID();
