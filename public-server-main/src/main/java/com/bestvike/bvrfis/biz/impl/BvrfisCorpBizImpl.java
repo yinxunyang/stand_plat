@@ -1,8 +1,10 @@
 package com.bestvike.bvrfis.biz.impl;
 
 import com.bestvike.bvrfis.biz.BvrfisCorpBiz;
+import com.bestvike.bvrfis.entity.BLogOper;
 import com.bestvike.bvrfis.entity.BmatchAnResultInfo;
 import com.bestvike.bvrfis.param.BvrfisCorpInfoParam;
+import com.bestvike.bvrfis.service.BLogOperService;
 import com.bestvike.bvrfis.service.BmatchAnResultService;
 import com.bestvike.bvrfis.service.BvrfisCorpService;
 import com.bestvike.bvrfis.service.BvrfisService;
@@ -77,6 +79,8 @@ public class BvrfisCorpBizImpl implements BvrfisCorpBiz {
 	private BmatchAnResultService bmatchAnResultService;
 	@Autowired
 	private BvrfisService bvrfisService;
+	@Autowired
+	private BLogOperService bLogOperService;
 
 	/**
 	 * @Author: yinxunyang
@@ -98,14 +102,23 @@ public class BvrfisCorpBizImpl implements BvrfisCorpBiz {
 			log.info("bvrfis没有需要跟elasticsearch匹配的开发企业数据");
 			return;
 		}
+		// 新增操作日志
+		BLogOper bLogOper = new BLogOper();
+		String logId = UtilTool.UUID();
+		bLogOper.setLogid(logId);
+		// todo 待定
+		bLogOper.setInUser("无");
+		bLogOper.setInDate(UtilTool.nowTime());
+		bLogOper.setMatchtype(MatchTypeEnum.DEVELOP.getCode());
+		bLogOperService.insertBLogOper(bLogOper);
 		try (TransportClient client = new PreBuiltTransportClient(Settings.builder().put("cluster.name", esClusterName).build())
 				.addTransportAddress(new TransportAddress(InetAddress.getByName(esIP), Integer.parseInt(esPort)))) {
 			// 开发企业根据组织机构代码完全匹配
-			//uniqueMatchCorp(bvrfisCorpInfoParamList, client, httpSession);
+			uniqueMatchCorp(bvrfisCorpInfoParamList, client, httpSession, logId);
 			// 开发企业根据单位名称完全匹配
-			//uniqueMatchCorpByCorpName(bvrfisCorpInfoParamList, client, httpSession);
+			uniqueMatchCorpByCorpName(bvrfisCorpInfoParamList, client, httpSession, logId);
 			// 开发企业根据单位名称疑似匹配
-			unCertainCorpByCorpName(bvrfisCorpInfoParamList, client, httpSession);
+			unCertainCorpByCorpName(bvrfisCorpInfoParamList, client, httpSession, logId);
 		} catch (UnknownHostException e) {
 			log.error("创建elasticsearch客户端连接失败" + e);
 			throw new MsgException(ReturnCode.sdp_sys_error, "创建elasticsearch客户端连接失败");
@@ -119,7 +132,7 @@ public class BvrfisCorpBizImpl implements BvrfisCorpBiz {
 	 * @param:
 	 * @return:
 	 */
-	private void uniqueMatchCorp(List<BvrfisCorpInfoParam> bvrfisCorpInfoParamList, TransportClient client, HttpSession httpSession) {
+	private void uniqueMatchCorp(List<BvrfisCorpInfoParam> bvrfisCorpInfoParamList, TransportClient client, HttpSession httpSession, String logId) {
 		// 完全匹配开发企业信息
 		String corpQueryEs = bvrfisService.organizeQueryEsByJson("elasticSearch/uniqueMatchCorpQuery.json");
 		// 匹配成功后需要从bvrfisCorpInfoParamList移除的List
@@ -146,8 +159,7 @@ public class BvrfisCorpBizImpl implements BvrfisCorpBiz {
 						BvdfCorpParam bvdfCorpParam = (BvdfCorpParam) UtilTool.jsonToObj(bvdfCorpJson, BvdfCorpParam.class);
 						BmatchAnResultInfo bmatchAnResultInfo = new BmatchAnResultInfo();
 						bmatchAnResultInfo.setMatchid(UtilTool.UUID());
-						// todo 待确定
-						bmatchAnResultInfo.setLogid(null);
+						bmatchAnResultInfo.setLogid(logId);
 						// 维修资金数据ID
 						bmatchAnResultInfo.setWxbusiid(bvrfisCorpInfoParam.getCorpNo());
 						bmatchAnResultInfo.setCenterid(bvdfCorpParam.getDataCenterId());
@@ -190,7 +202,7 @@ public class BvrfisCorpBizImpl implements BvrfisCorpBiz {
 	 * @param:
 	 * @return:
 	 */
-	private void uniqueMatchCorpByCorpName(List<BvrfisCorpInfoParam> bvrfisCorpInfoParamList, TransportClient client, HttpSession httpSession) {
+	private void uniqueMatchCorpByCorpName(List<BvrfisCorpInfoParam> bvrfisCorpInfoParamList, TransportClient client, HttpSession httpSession, String logId) {
 		// 完全匹配开发企业信息
 		String corpQueryEs = bvrfisService.organizeQueryEsByJson("elasticSearch/uniqueMatchbyCorpName.json");
 		// 匹配成功后需要从bvrfisCorpInfoParamList移除的List
@@ -212,8 +224,7 @@ public class BvrfisCorpBizImpl implements BvrfisCorpBiz {
 						BvdfCorpParam bvdfCorpParam = (BvdfCorpParam) UtilTool.jsonToObj(bvdfCorpJson, BvdfCorpParam.class);
 						BmatchAnResultInfo bmatchAnResultInfo = new BmatchAnResultInfo();
 						bmatchAnResultInfo.setMatchid(UtilTool.UUID());
-						// todo 待确定
-						bmatchAnResultInfo.setLogid(null);
+						bmatchAnResultInfo.setLogid(logId);
 						// 维修资金数据ID
 						bmatchAnResultInfo.setWxbusiid(bvrfisCorpInfoParam.getCorpNo());
 						bmatchAnResultInfo.setCenterid(bvdfCorpParam.getDataCenterId());
@@ -256,7 +267,7 @@ public class BvrfisCorpBizImpl implements BvrfisCorpBiz {
 	 * @param:
 	 * @return:
 	 */
-	private void unCertainCorpByCorpName(List<BvrfisCorpInfoParam> bvrfisCorpInfoParamList, TransportClient client, HttpSession httpSession) {
+	private void unCertainCorpByCorpName(List<BvrfisCorpInfoParam> bvrfisCorpInfoParamList, TransportClient client, HttpSession httpSession, String logId) {
 		// 完全匹配开发企业信息
 		String corpQueryEs = bvrfisService.organizeQueryEsByJson("elasticSearch/unCertainbyCorpName.json");
 		// 遍历开发企业信息和elasticsearch
@@ -275,8 +286,7 @@ public class BvrfisCorpBizImpl implements BvrfisCorpBiz {
 					BvdfCorpParam bvdfCorpParam = (BvdfCorpParam) UtilTool.jsonToObj(bvdfCorpJson, BvdfCorpParam.class);
 					BmatchAnResultInfo bmatchAnResultInfo = new BmatchAnResultInfo();
 					bmatchAnResultInfo.setMatchid(UtilTool.UUID());
-					// todo 待确定
-					bmatchAnResultInfo.setLogid(null);
+					bmatchAnResultInfo.setLogid(logId);
 					// 维修资金数据ID
 					bmatchAnResultInfo.setWxbusiid(bvrfisCorpInfoParam.getCorpNo());
 					bmatchAnResultInfo.setCenterid(bvdfCorpParam.getDataCenterId());

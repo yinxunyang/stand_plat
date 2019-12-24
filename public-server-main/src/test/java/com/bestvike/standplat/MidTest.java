@@ -1,5 +1,9 @@
 package com.bestvike.standplat;
 
+import com.bestvike.bvrfis.entity.BLogOper;
+import com.bestvike.bvrfis.service.BLogOperService;
+import com.bestvike.commons.enums.MatchTypeEnum;
+import com.bestvike.commons.utils.UtilTool;
 import com.bestvike.dataCenter.dao.BvdfHouseDao;
 import com.bestvike.dataCenter.param.BvdfCorpParam;
 import com.bestvike.dataCenter.param.BvdfHouseParam;
@@ -40,6 +44,8 @@ public class MidTest extends BaseTest {
 	private BvdfServiceImpl bvdfServiceImpl;
 	@Autowired
 	private BvdfHouseDao bvdfHouseDao;
+	@Autowired
+	private BLogOperService bLogOperService;
 	/**
 	 * es集群的名称
 	 */
@@ -178,5 +184,17 @@ public class MidTest extends BaseTest {
 		}
 		log.info(text);
 
+	}
+	@Test
+	public void test9(){
+		// 新增操作日志
+		BLogOper bLogOper = new BLogOper();
+		String logId = UtilTool.UUID();
+		bLogOper.setLogid(logId);
+		// todo 待定
+		bLogOper.setInUser("无");
+		bLogOper.setInDate(UtilTool.nowTime());
+		bLogOper.setMatchtype(MatchTypeEnum.DEVELOP.getCode());
+		bLogOperService.insertBLogOper(bLogOper);
 	}
 }

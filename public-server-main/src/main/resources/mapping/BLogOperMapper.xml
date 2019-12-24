@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bestvike.bvrfis.dao.BLogOperDao">
+	<insert id="insertBLogOper">
+		insert into bvrfis_xjws.B_LogOper
+		(
+			logid,
+			matchtype,
+			opernum,
+			matchnum,
+			remark,
+			inUser,
+			inDate,
+			editUser,
+			editDate
+		)
+		values(
+			#{param.logid, jdbcType=VARCHAR},
+			#{param.matchtype, jdbcType=VARCHAR},
+			#{param.opernum, jdbcType=DECIMAL},
+			#{param.matchnum, jdbcType=DECIMAL},
+			#{param.remark, jdbcType=VARCHAR},
+			#{param.inUser, jdbcType=VARCHAR},
+			#{param.inDate, jdbcType=VARCHAR},
+			#{param.editUser, jdbcType=VARCHAR},
+			#{param.editDate, jdbcType=VARCHAR}
+			)
+	</insert>
+</mapper>

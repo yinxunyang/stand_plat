@@ -2,10 +2,12 @@ package com.bestvike.bvrfis.biz.impl;
 
 import com.bestvike.bvrfis.biz.BvrfisRegionBiz;
 import com.bestvike.bvrfis.entity.BDataRelation;
+import com.bestvike.bvrfis.entity.BLogOper;
 import com.bestvike.bvrfis.entity.BmatchAnResultInfo;
 import com.bestvike.bvrfis.param.BDataRelationParam;
 import com.bestvike.bvrfis.param.BvrfisRegionParam;
 import com.bestvike.bvrfis.service.BDataRelationService;
+import com.bestvike.bvrfis.service.BLogOperService;
 import com.bestvike.bvrfis.service.BmatchAnResultService;
 import com.bestvike.bvrfis.service.BvrfisRegionService;
 import com.bestvike.bvrfis.service.BvrfisService;
@@ -85,6 +87,8 @@ public class BvrfisRegionBizImpl implements BvrfisRegionBiz {
 	private BDataRelationService bDataRelationService;
 	@Autowired
 	private BvrfisService bvrfisService;
+	@Autowired
+	private BLogOperService bLogOperService;
 
 	/**
 	 * @Author: yinxunyang
@@ -103,12 +107,21 @@ public class BvrfisRegionBizImpl implements BvrfisRegionBiz {
 			log.info("bvrfis没有需要跟elasticsearch匹配的小区数据");
 			return;
 		}
+		// 新增操作日志
+		BLogOper bLogOper = new BLogOper();
+		String logId = UtilTool.UUID();
+		bLogOper.setLogid(logId);
+		// todo 待定
+		bLogOper.setInUser("无");
+		bLogOper.setInDate(UtilTool.nowTime());
+		bLogOper.setMatchtype(MatchTypeEnum.DEVELOP.getCode());
+		bLogOperService.insertBLogOper(bLogOper);
 		// 完全匹配
-		uniqueMatchCorp(bvrfisRegionParamList, httpSession);
+		uniqueMatchCorp(bvrfisRegionParamList, httpSession, logId);
 		try (TransportClient client = new PreBuiltTransportClient(Settings.builder().put("cluster.name", esClusterName).build())
 				.addTransportAddress(new TransportAddress(InetAddress.getByName(esIP), Integer.parseInt(esPort)))) {
 			// 疑似匹配
-			unCertainMatchCorp(bvrfisRegionParamList, client, httpSession);
+			unCertainMatchCorp(bvrfisRegionParamList, client, httpSession, logId);
 		} catch (UnknownHostException e) {
 			log.error("创建elasticsearch客户端连接失败" + e);
 			throw new MsgException(ReturnCode.sdp_sys_error, "创建elasticsearch客户端连接失败");
@@ -122,7 +135,7 @@ public class BvrfisRegionBizImpl implements BvrfisRegionBiz {
 	 * @param:
 	 * @return:
 	 */
-	private void uniqueMatchCorp(List<BvrfisRegionParam> bvrfisRegionParamList, HttpSession httpSession) {
+	private void uniqueMatchCorp(List<BvrfisRegionParam> bvrfisRegionParamList, HttpSession httpSession, String logId) {
 		// 匹配成功后需要从bvrfisRegionParamList移除的List
 		List<BvrfisRegionParam> paramListForDel = new ArrayList<>();
 		// 遍历开发企业信息和elasticsearch
@@ -141,8 +154,7 @@ public class BvrfisRegionBizImpl implements BvrfisRegionBiz {
 				BvdfRegionParam bvdfRegionParam = bvdfRegionParamList.get(0);
 				BmatchAnResultInfo bmatchAnResultInfo = new BmatchAnResultInfo();
 				bmatchAnResultInfo.setMatchid(UtilTool.UUID());
-				// todo 待确定
-				bmatchAnResultInfo.setLogid(null);
+				bmatchAnResultInfo.setLogid(logId);
 				// 维修资金数据ID
 				bmatchAnResultInfo.setWxbusiid(bvrfisRegionParam.getRegionNo());
 				bmatchAnResultInfo.setCenterid(bvdfRegionParam.getDataCenterId());
@@ -182,7 +194,7 @@ public class BvrfisRegionBizImpl implements BvrfisRegionBiz {
 	 * @param:
 	 * @return:
 	 */
-	private void unCertainMatchCorp(List<BvrfisRegionParam> bvrfisRegionParamList, TransportClient client, HttpSession httpSession) {
+	private void unCertainMatchCorp(List<BvrfisRegionParam> bvrfisRegionParamList, TransportClient client, HttpSession httpSession, String logId) {
 		// 完全匹配开发企业信息
 		String corpQueryEs = bvrfisService.organizeQueryEsByJson("elasticSearch/region/unCertainRegion.json");
 		// 匹配成功后需要从bvrfisRegionParamList移除的List
@@ -241,8 +253,7 @@ public class BvrfisRegionBizImpl implements BvrfisRegionBiz {
 					BvdfRegionParam bvdfRegionParam = (BvdfRegionParam) UtilTool.jsonToObj(bvdfRegionJson, BvdfRegionParam.class);
 					BmatchAnResultInfo bmatchAnResultInfo = new BmatchAnResultInfo();
 					bmatchAnResultInfo.setMatchid(UtilTool.UUID());
-					// todo 待确定
-					bmatchAnResultInfo.setLogid(null);
+					bmatchAnResultInfo.setLogid(logId);
 					// 维修资金数据ID
 					bmatchAnResultInfo.setWxbusiid(bvrfisRegionParam.getCorpNo());
 					bmatchAnResultInfo.setCenterid(bvdfRegionParam.getDataCenterId());
