@@ -8,6 +8,7 @@ import com.bestvike.bvrfis.param.BvrfisRegionParam;
 import com.bestvike.bvrfis.service.BDataRelationService;
 import com.bestvike.bvrfis.service.BmatchAnResultService;
 import com.bestvike.bvrfis.service.BvrfisRegionService;
+import com.bestvike.bvrfis.service.BvrfisService;
 import com.bestvike.commons.enums.MatchTypeEnum;
 import com.bestvike.commons.enums.RelStateEnum;
 import com.bestvike.commons.enums.ReturnCode;
@@ -26,14 +27,10 @@ import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.transport.client.PreBuiltTransportClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import javax.servlet.http.HttpSession;
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -86,6 +83,8 @@ public class BvrfisRegionBizImpl implements BvrfisRegionBiz {
 	private BvdfRegionService bvdfRegionService;
 	@Autowired
 	private BDataRelationService bDataRelationService;
+	@Autowired
+	private BvrfisService bvrfisService;
 
 	/**
 	 * @Author: yinxunyang
@@ -185,18 +184,7 @@ public class BvrfisRegionBizImpl implements BvrfisRegionBiz {
 	 */
 	private void unCertainMatchCorp(List<BvrfisRegionParam> bvrfisRegionParamList, TransportClient client, HttpSession httpSession) {
 		// 完全匹配开发企业信息
-		ClassPathResource classPathResource = new ClassPathResource("elasticSearch/region/unCertainRegion.json");
-		StringBuilder sb = new StringBuilder();
-		try {
-			InputStream inputStream = classPathResource.getInputStream();
-			BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));
-			String line;
-			while ((line = br.readLine()) != null) {
-				sb.append(line);
-			}
-		} catch (Exception e) {
-			log.error("完全匹配小区信息失败");
-		}
+		String corpQueryEs = bvrfisService.organizeQueryEsByJson("elasticSearch/region/unCertainRegion.json");
 		// 匹配成功后需要从bvrfisRegionParamList移除的List
 		List<BvrfisRegionParam> paramListForDel = new ArrayList<>();
 		// 遍历开发企业信息和elasticsearch
@@ -235,7 +223,7 @@ public class BvrfisRegionBizImpl implements BvrfisRegionBiz {
 				if (StringUtils.isEmpty(floorArea)) {
 					floorArea = "无";
 				}
-				String corpQueryParam = sb.toString()
+				String corpQueryParam = corpQueryEs
 						.replace("corpNoValue", corpNo)
 						//.replace("regionNoValue", regionNo)
 						.replace("regionNameValue", regionName)

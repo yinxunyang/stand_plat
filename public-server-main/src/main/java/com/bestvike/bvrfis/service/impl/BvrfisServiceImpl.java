@@ -1,33 +1,21 @@
 package com.bestvike.bvrfis.service.impl;
 
-import com.bestvike.bvrfis.dao.BmatchAnResultDao;
 import com.bestvike.bvrfis.dao.BvrfisHouseDao;
-import com.bestvike.bvrfis.entity.BmatchAnResultInfo;
 import com.bestvike.bvrfis.param.BvrfisBldParam;
 import com.bestvike.bvrfis.param.BvrfisCorpInfoParam;
 import com.bestvike.bvrfis.param.BvrfisHouseParam;
 import com.bestvike.bvrfis.param.BvrfisOwnerInfoParam;
 import com.bestvike.bvrfis.param.BvrfisShareOwnerInfoParam;
-import com.bestvike.bvrfis.service.BvrfisCorpService;
 import com.bestvike.bvrfis.service.BvrfisHouseService;
 import com.bestvike.bvrfis.service.BvrfisService;
-import com.bestvike.commons.enums.MatchTypeEnum;
-import com.bestvike.commons.enums.RelStateEnum;
 import com.bestvike.commons.enums.ReturnCode;
 import com.bestvike.commons.exception.MsgException;
-import com.bestvike.commons.utils.GCC;
-import com.bestvike.commons.utils.UtilTool;
-import com.bestvike.dataCenter.param.BvdfCorpParam;
 import com.bestvike.elastic.param.EsHouseParam;
 import com.bestvike.elastic.service.ElasticSearchService;
 import lombok.extern.slf4j.Slf4j;
-import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.TransportAddress;
-import org.elasticsearch.index.query.QueryBuilders;
-import org.elasticsearch.index.query.WrapperQueryBuilder;
-import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.transport.client.PreBuiltTransportClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -35,12 +23,9 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import javax.servlet.http.HttpSession;
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.math.BigDecimal;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
@@ -267,5 +252,30 @@ public class BvrfisServiceImpl implements BvrfisService {
 		esHouseParam.setBuyNames(buyNames.toString());
 		esHouseParam.setHouseAddress(bvrfisHouseParam.getAddress());
 		return esHouseParam;
+	}
+
+	/**
+	 * @Author: yinxunyang
+	 * @Description: 根据json文件组织查询Es的语句
+	 * @Date: 2019/12/24 15:16
+	 * @param:
+	 * @return:
+	 */
+	@Override
+	public String organizeQueryEsByJson(String jsonPath) {
+		StringBuilder sb = new StringBuilder();
+		try {
+			ClassPathResource classPathResource = new ClassPathResource(jsonPath);
+			InputStream inputStream = classPathResource.getInputStream();
+			BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));
+
+			String line;
+			while ((line = br.readLine()) != null) {
+				sb.append(line);
+			}
+		} catch (Exception e) {
+			log.error("根据json文件组织查询Es的语句异常" + e);
+		}
+		return sb.toString();
 	}
 }

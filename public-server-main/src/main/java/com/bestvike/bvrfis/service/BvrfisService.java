@@ -2,8 +2,6 @@ package com.bestvike.bvrfis.service;
 
 import com.bestvike.commons.exception.MsgException;
 
-import javax.servlet.http.HttpSession;
-
 /**
  * @Author: yinxunyang
  * @Description: 维修资金的service
@@ -18,4 +16,13 @@ public interface BvrfisService {
 	 * @return:
 	 */
 	void bvrfisHouseMatchEs() throws MsgException;
+
+	/**
+	 * @Author: yinxunyang
+	 * @Description: 根据json文件组织查询Es的语句
+	 * @Date: 2019/12/24 15:15
+	 * @param:
+	 * @return:
+	 */
+	String organizeQueryEsByJson(String jsonPath);
 }

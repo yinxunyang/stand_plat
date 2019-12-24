@@ -5,6 +5,7 @@ import com.bestvike.bvrfis.entity.BmatchAnResultInfo;
 import com.bestvike.bvrfis.param.BvrfisCorpInfoParam;
 import com.bestvike.bvrfis.service.BmatchAnResultService;
 import com.bestvike.bvrfis.service.BvrfisCorpService;
+import com.bestvike.bvrfis.service.BvrfisService;
 import com.bestvike.commons.enums.MatchTypeEnum;
 import com.bestvike.commons.enums.RelStateEnum;
 import com.bestvike.commons.enums.ReturnCode;
@@ -23,14 +24,9 @@ import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.transport.client.PreBuiltTransportClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpSession;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -79,6 +75,8 @@ public class BvrfisCorpBizImpl implements BvrfisCorpBiz {
 	private BvrfisCorpService bvrfisCorpService;
 	@Autowired
 	private BmatchAnResultService bmatchAnResultService;
+	@Autowired
+	private BvrfisService bvrfisService;
 
 	/**
 	 * @Author: yinxunyang
@@ -123,25 +121,18 @@ public class BvrfisCorpBizImpl implements BvrfisCorpBiz {
 	 */
 	private void uniqueMatchCorp(List<BvrfisCorpInfoParam> bvrfisCorpInfoParamList, TransportClient client, HttpSession httpSession) {
 		// 完全匹配开发企业信息
-		ClassPathResource classPathResource = new ClassPathResource("elasticSearch/uniqueMatchCorpQuery.json");
+		String corpQueryEs = bvrfisService.organizeQueryEsByJson("elasticSearch/uniqueMatchCorpQuery.json");
 		// 匹配成功后需要从bvrfisCorpInfoParamList移除的List
 		List<BvrfisCorpInfoParam> paramListForDelByCertNo = new ArrayList<>();
 		// 遍历开发企业信息和elasticsearch
 		bvrfisCorpInfoParamList.forEach(bvrfisCorpInfoParam -> {
 			try {
-				InputStream inputStream = classPathResource.getInputStream();
-				BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));
-				StringBuilder sb = new StringBuilder();
-				String line;
-				while ((line = br.readLine()) != null) {
-					sb.append(line);
-				}
 				String licenseNo = bvrfisCorpInfoParam.getLicenseNo();
-				// licenseNo如果为空，跳高该笔查询
+				// licenseNo如果为空，跳过该笔查询
 				if (StringUtils.isEmpty(licenseNo)) {
 					return;
 				}
-				String corpQueryParam = sb.toString().replace("certificateNoValue", licenseNo);
+				String corpQueryParam = corpQueryEs.replace("certificateNoValue", licenseNo);
 				log.info(corpQueryParam);
 				WrapperQueryBuilder wqb = QueryBuilders.wrapperQuery(corpQueryParam);
 				SearchResponse searchResponse = client.prepareSearch(corpindex)
@@ -187,8 +178,6 @@ public class BvrfisCorpBizImpl implements BvrfisCorpBiz {
 				}
 			} catch (MsgException e) {
 				log.error(e + "bvrfisCorpInfoParam参数为：{}", bvrfisCorpInfoParam);
-			} catch (IOException e) {
-				log.error(e + "bvrfisCorpInfoParam参数为：{}", bvrfisCorpInfoParam);
 			}
 		});
 		bvrfisCorpInfoParamList.removeAll(paramListForDelByCertNo);
@@ -203,20 +192,13 @@ public class BvrfisCorpBizImpl implements BvrfisCorpBiz {
 	 */
 	private void uniqueMatchCorpByCorpName(List<BvrfisCorpInfoParam> bvrfisCorpInfoParamList, TransportClient client, HttpSession httpSession) {
 		// 完全匹配开发企业信息
-		ClassPathResource classPathResource = new ClassPathResource("elasticSearch/uniqueMatchbyCorpName.json");
+		String corpQueryEs = bvrfisService.organizeQueryEsByJson("elasticSearch/uniqueMatchbyCorpName.json");
 		// 匹配成功后需要从bvrfisCorpInfoParamList移除的List
 		List<BvrfisCorpInfoParam> paramListForDelByCorpName = new ArrayList<>();
 		// 遍历开发企业信息和elasticsearch
 		bvrfisCorpInfoParamList.forEach(bvrfisCorpInfoParam -> {
 			try {
-				InputStream inputStream = classPathResource.getInputStream();
-				BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));
-				StringBuilder sb = new StringBuilder();
-				String line;
-				while ((line = br.readLine()) != null) {
-					sb.append(line);
-				}
-				String corpQueryParam = sb.toString().replace("corpNameValue", bvrfisCorpInfoParam.getCorpName());
+				String corpQueryParam = corpQueryEs.replace("corpNameValue", bvrfisCorpInfoParam.getCorpName());
 				log.info(corpQueryParam);
 				WrapperQueryBuilder wqb = QueryBuilders.wrapperQuery(corpQueryParam);
 				SearchResponse searchResponse = client.prepareSearch(corpindex)
@@ -262,8 +244,6 @@ public class BvrfisCorpBizImpl implements BvrfisCorpBiz {
 				}
 			} catch (MsgException e) {
 				log.error(e + "bvrfisCorpInfoParam参数为：{}", bvrfisCorpInfoParam);
-			} catch (IOException e) {
-				log.error(e + "bvrfisCorpInfoParam参数为：{}", bvrfisCorpInfoParam);
 			}
 		});
 		bvrfisCorpInfoParamList.removeAll(paramListForDelByCorpName);
@@ -278,18 +258,11 @@ public class BvrfisCorpBizImpl implements BvrfisCorpBiz {
 	 */
 	private void unCertainCorpByCorpName(List<BvrfisCorpInfoParam> bvrfisCorpInfoParamList, TransportClient client, HttpSession httpSession) {
 		// 完全匹配开发企业信息
-		ClassPathResource classPathResource = new ClassPathResource("elasticSearch/unCertainbyCorpName.json");
+		String corpQueryEs = bvrfisService.organizeQueryEsByJson("elasticSearch/unCertainbyCorpName.json");
 		// 遍历开发企业信息和elasticsearch
 		bvrfisCorpInfoParamList.forEach(bvrfisCorpInfoParam -> {
 			try {
-				InputStream inputStream = classPathResource.getInputStream();
-				BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));
-				StringBuilder sb = new StringBuilder();
-				String line;
-				while ((line = br.readLine()) != null) {
-					sb.append(line);
-				}
-				String corpQueryParam = sb.toString().replace("corpNameValue", bvrfisCorpInfoParam.getCorpName());
+				String corpQueryParam = corpQueryEs.replace("corpNameValue", bvrfisCorpInfoParam.getCorpName());
 				log.info(corpQueryParam);
 				WrapperQueryBuilder wqb = QueryBuilders.wrapperQuery(corpQueryParam);
 				SearchResponse searchResponse = client.prepareSearch(corpindex)
@@ -332,8 +305,6 @@ public class BvrfisCorpBizImpl implements BvrfisCorpBiz {
 					bmatchAnResultService.insertBmatchAnResult(bmatchAnResultInfo);
 				}
 			} catch (MsgException e) {
-				log.error(e + "bvrfisCorpInfoParam参数为：{}", bvrfisCorpInfoParam);
-			} catch (IOException e) {
 				log.error(e + "bvrfisCorpInfoParam参数为：{}", bvrfisCorpInfoParam);
 			}
 		});
