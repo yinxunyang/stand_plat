@@ -5,9 +5,9 @@ import com.bestvike.commons.exception.MsgException;
 import com.bestvike.dataCenter.biz.BvdfRegionBiz;
 import com.bestvike.dataCenter.dao.BvdfHouseDao;
 import com.bestvike.dataCenter.entity.BvdfToEsRecordTime;
-import com.bestvike.dataCenter.param.BvdfCorpParam;
-import com.bestvike.dataCenter.service.BvdfCorpService;
+import com.bestvike.dataCenter.param.BvdfRegionParam;
 import com.bestvike.dataCenter.service.BvdfHouseService;
+import com.bestvike.dataCenter.service.BvdfRegionService;
 import com.bestvike.elastic.service.ElasticSearchService;
 import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.client.transport.TransportClient;
@@ -77,7 +77,7 @@ public class BvdfRegionBizImpl implements BvdfRegionBiz {
 	@Autowired
 	private ElasticSearchService elasticSearchService;
 	@Autowired
-	private BvdfCorpService bvdfCorpService;
+	private BvdfRegionService bvdfRegionService;
 	@Autowired
 	private MongoTemplate mongoTemplate;
 	private static final DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
@@ -90,9 +90,9 @@ public class BvdfRegionBizImpl implements BvdfRegionBiz {
 	 * @return:
 	 */
 	@Override
-	//@Scheduled(cron = "${standplatConfig.corpToEsSchedule.cronTime}")
+	@Scheduled(cron = "${standplatConfig.corpToEsSchedule.cronTime}")
 	public void bvdfRegionToEs() {
-		BvdfCorpParam queryParam = new BvdfCorpParam();
+		BvdfRegionParam queryParam = new BvdfRegionParam();
 		// 状态正
 		queryParam.setState("normal");
 		queryParam.setAppcode("BVDF");
@@ -106,18 +106,18 @@ public class BvdfRegionBizImpl implements BvdfRegionBiz {
 		queryParam.setScopeBeginTime(scopeBeginTime);
 		String scopeEndTime = df.format(LocalDateTime.now());
 		queryParam.setScopeEndTime(scopeEndTime);
-		List<BvdfCorpParam> bvdfCorpParamList = bvdfCorpService.queryBvdfCorpInfo(queryParam);
-		if (bvdfCorpParamList.isEmpty()) {
-			log.info("没有bvdfCorpToEs的数据");
+		List<BvdfRegionParam> bvdfRegionParamList = bvdfRegionService.queryBvdfRegionInfo(queryParam);
+		if (bvdfRegionParamList.isEmpty()) {
+			log.info("没有bvdfRegionToEs的数据");
 			return;
 		}
 		try (TransportClient client = new PreBuiltTransportClient(Settings.builder().put("cluster.name", esClusterName).build())
 				.addTransportAddress(new TransportAddress(InetAddress.getByName(esIP), Integer.parseInt(esPort)))) {
-			bvdfCorpParamList.forEach(bvdfCorpParam -> {
+			bvdfRegionParamList.forEach(bvdfRegionParam -> {
 				// 拼装新增es的数据
-				XContentBuilder doc = organizeCorpToEsData(bvdfCorpParam);
+				XContentBuilder doc = organizeRegionToEsData(bvdfRegionParam);
 				// 往elasticsearch迁移一条数据，elasticsearch主键相同会覆盖原数据，该处不用判断
-				elasticSearchService.insertElasticSearch(client, doc, regionindex, regiontype, bvdfCorpParam.getCorpId());
+				elasticSearchService.insertElasticSearch(client, doc, regionindex, regiontype, bvdfRegionParam.getRegionNo());
 			});
 		} catch (UnknownHostException e) {
 			log.error("创建elasticsearch客户端连接失败" + e);
@@ -139,26 +139,27 @@ public class BvdfRegionBizImpl implements BvdfRegionBiz {
 
 	/**
 	 * @Author: yinxunyang
-	 * @Description: 拼装corpToElasticSearch的数据
+	 * @Description: 拼装regionToElasticSearch的数据
 	 * @Date: 2019/12/19 14:23
 	 * @param:
 	 * @return:
 	 */
-	private XContentBuilder organizeCorpToEsData(BvdfCorpParam bvdfCorpParam) {
+	private XContentBuilder organizeRegionToEsData(BvdfRegionParam bvdfRegionParam) {
 		XContentBuilder doc;
 		try {
 			doc = XContentFactory.jsonBuilder()
 					.startObject()
-					.field("dataCenterId", bvdfCorpParam.getDataCenterId())
-					.field("corpId", bvdfCorpParam.getCorpId())
-					.field("corpName", bvdfCorpParam.getCorpName())
-					.field("corpNameForKey", bvdfCorpParam.getCorpName())
-					.field("certificateNo", bvdfCorpParam.getCertificateNo())
-					.field("versionnumber", bvdfCorpParam.getVersionnumber())
+					.field("dataCenterId", bvdfRegionParam.getDataCenterId())
+					.field("corpNo", bvdfRegionParam.getCorpNo())
+					.field("regionNo", bvdfRegionParam.getRegionNo())
+					.field("regionName", bvdfRegionParam.getRegionName())
+					.field("divisionCode", bvdfRegionParam.getDivisionCode())
+					.field("address", bvdfRegionParam.getAddress())
+					.field("versionnumber", bvdfRegionParam.getVersionnumber())
 					.endObject();
 		} catch (IOException e) {
-			log.error("拼装corpToElasticSearch的数据失败" + e);
-			throw new MsgException(ReturnCode.fail, "拼装corpToElasticSearch的数据失败");
+			log.error("拼装regionToElasticSearch的数据失败" + e);
+			throw new MsgException(ReturnCode.fail, "拼装regionToElasticSearch的数据失败");
 		}
 		return doc;
 	}
