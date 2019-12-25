@@ -49,6 +49,15 @@ public interface BvrfisHouseDao {
 
 	/**
 	 * @Author: yinxunyang
+	 * @Description: 查询bvrfis自然幢的数据
+	 * @Date: 2019/12/10 17:25
+	 * @param:
+	 * @return:
+	 */
+	List<BvrfisBldParam> queryBvrfisBldInfo(@Param("param") BvrfisBldParam queryParam);
+
+	/**
+	 * @Author: yinxunyang
 	 * @Description: 查询bvrfis房屋的数据
 	 * @Date: 2019/12/10 17:25
 	 * @param:

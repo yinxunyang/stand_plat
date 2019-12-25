@@ -40,6 +40,26 @@
 			</if>
 		</where>
 	</select>
+	<select id="queryBvrfisBldInfo" resultType="com.bestvike.bvrfis.param.BvrfisBldParam">
+		select t.bldNo,
+		t.bldName,
+		t.address,
+		t.totalArea,
+		t.startDate,
+		t.finishDate,
+		t.regionNo,
+		t.developNo,
+		t.divisionCode
+		from bvrfis_xjws.arc_bldinfo t
+		<where>
+			<if test="null != param.state and '' != param.state">
+				t.state = #{param.state,jdbcType=VARCHAR}
+			</if>
+			<if test="null != param.datacenterId and '' != param.datacenterId">
+				AND t.datacenterid IS NULL
+			</if>
+		</where>
+	</select>
 	<select id="queryBvrfisHouseInfo" resultType="com.bestvike.bvrfis.param.BvrfisHouseParam">
 			select * from (select
 							t1.sysGuid,

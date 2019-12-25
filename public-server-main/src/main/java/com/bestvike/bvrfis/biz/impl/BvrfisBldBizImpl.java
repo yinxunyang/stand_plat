@@ -1,38 +1,30 @@
 package com.bestvike.bvrfis.biz.impl;
 
 import com.bestvike.bvrfis.biz.BvrfisBldBiz;
-import com.bestvike.bvrfis.entity.BDataRelation;
-import com.bestvike.bvrfis.entity.BLogOper;
 import com.bestvike.bvrfis.entity.BmatchAnResultInfo;
-import com.bestvike.bvrfis.param.BDataRelationParam;
+import com.bestvike.bvrfis.param.BvrfisBldParam;
 import com.bestvike.bvrfis.param.BvrfisCorpInfoParam;
 import com.bestvike.bvrfis.service.BDataRelationService;
 import com.bestvike.bvrfis.service.BLogOperService;
-import com.bestvike.bvrfis.service.BvrfisCorpService;
+import com.bestvike.bvrfis.service.BvrfisBldService;
 import com.bestvike.bvrfis.service.BvrfisService;
 import com.bestvike.commons.enums.MatchTypeEnum;
 import com.bestvike.commons.enums.RelStateEnum;
-import com.bestvike.commons.enums.ReturnCode;
 import com.bestvike.commons.exception.MsgException;
 import com.bestvike.commons.utils.UtilTool;
 import com.bestvike.dataCenter.param.BvdfCorpParam;
 import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.transport.TransportClient;
-import org.elasticsearch.common.settings.Settings;
-import org.elasticsearch.common.transport.TransportAddress;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.WrapperQueryBuilder;
 import org.elasticsearch.search.SearchHit;
-import org.elasticsearch.transport.client.PreBuiltTransportClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpSession;
 import java.math.BigDecimal;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -75,7 +67,7 @@ public class BvrfisBldBizImpl implements BvrfisBldBiz {
 	@Value("${standplatConfig.unCertainSize}")
 	private String unCertainSize;
 	@Autowired
-	private BvrfisCorpService bvrfisCorpService;
+	private BvrfisBldService bvrfisBldService;
 	@Autowired
 	private BvrfisService bvrfisService;
 	@Autowired
@@ -92,19 +84,17 @@ public class BvrfisBldBizImpl implements BvrfisBldBiz {
 	 */
 	@Override
 	public void bvrfisBldMatchEs(HttpSession httpSession) throws MsgException {
-		BvrfisCorpInfoParam queryParam = new BvrfisCorpInfoParam();
+		BvrfisBldParam queryParam = new BvrfisBldParam();
 		// 0正常
 		queryParam.setState("0");
-		// 开发企业
-		queryParam.setCorptype("01");
-		queryParam.setDatacenterid("isNUll");
-		List<BvrfisCorpInfoParam> bvrfisCorpInfoParamList = bvrfisCorpService.queryBvrfisCorpInfo(queryParam);
-		if (bvrfisCorpInfoParamList.isEmpty()) {
-			log.info("bvrfis没有需要跟elasticsearch匹配的开发企业数据");
+		queryParam.setDatacenterId("isNUll");
+		List<BvrfisBldParam> bvrfisBldParamList = bvrfisBldService.queryBvrfisBldInfo(queryParam);
+		if (bvrfisBldParamList.isEmpty()) {
+			log.info("bvrfis没有需要跟elasticsearch匹配的自然幢数据");
 			return;
 		}
-		List<BvrfisCorpInfoParam> bvrfisCorpExists = new ArrayList<>();
-		bvrfisCorpInfoParamList.forEach(bvrfisCorpInfoParam -> {
+		/*List<BvrfisCorpInfoParam> bvrfisCorpExists = new ArrayList<>();
+		bvrfisBldParamList.forEach(bvrfisCorpInfoParam -> {
 			// 如果该条数据已经存在挂接关系，不再新增匹配结果表
 			BDataRelationParam bDataRelationParam = new BDataRelationParam();
 			bDataRelationParam.setWxBusiId(bvrfisCorpInfoParam.getCorpNo());
@@ -113,7 +103,7 @@ public class BvrfisBldBizImpl implements BvrfisBldBiz {
 				bvrfisCorpExists.add(bvrfisCorpInfoParam);
 			}
 		});
-		bvrfisCorpInfoParamList.removeAll(bvrfisCorpExists);
+		bvrfisBldParamList.removeAll(bvrfisCorpExists);
 		// 新增操作日志
 		BLogOper bLogOper = new BLogOper();
 		String logId = UtilTool.UUID();
@@ -126,13 +116,13 @@ public class BvrfisBldBizImpl implements BvrfisBldBiz {
 		try (TransportClient client = new PreBuiltTransportClient(Settings.builder().put("cluster.name", esClusterName).build())
 				.addTransportAddress(new TransportAddress(InetAddress.getByName(esIP), Integer.parseInt(esPort)))) {
 			// 开发企业根据单位名称完全匹配
-			uniqueMatchCorpByCorpName(bvrfisCorpInfoParamList, client, httpSession, logId);
+			uniqueMatchCorpByCorpName(bvrfisBldParamList, client, httpSession, logId);
 			// 开发企业根据单位名称疑似匹配
-			unCertainCorpByCorpName(bvrfisCorpInfoParamList, client, httpSession, logId);
+			unCertainCorpByCorpName(bvrfisBldParamList, client, httpSession, logId);
 		} catch (UnknownHostException e) {
 			log.error("创建elasticsearch客户端连接失败" + e);
 			throw new MsgException(ReturnCode.sdp_sys_error, "创建elasticsearch客户端连接失败");
-		}
+		}*/
 	}
 
 	/**

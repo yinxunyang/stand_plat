@@ -1,6 +1,7 @@
 package com.bestvike.standplat;
 
 import com.bestvike.bvrfis.biz.BDataRelationBiz;
+import com.bestvike.bvrfis.biz.BvrfisBldBiz;
 import com.bestvike.bvrfis.biz.BvrfisRegionBiz;
 import com.bestvike.bvrfis.biz.impl.BvrfisCorpBizImpl;
 import com.bestvike.bvrfis.dao.BvrfisHouseDao;
@@ -45,6 +46,8 @@ public class BvrfisTest extends BaseTest {
 	private BDataRelationBiz bDataRelationBiz;
 	@Autowired
 	private BvrfisRegionBiz bvrfisRegionBiz;
+	@Autowired
+	private BvrfisBldBiz bvrfisBldBiz;
 
 	@Test
 	public void test1() {
@@ -384,5 +387,86 @@ public class BvrfisTest extends BaseTest {
 		};
 
 		bvrfisRegionBiz.bvrfisRegionMatchEs(httpSession);
+	}
+	@Test
+	public void test13(){
+		HttpSession httpSession = new HttpSession() {
+			@Override
+			public long getCreationTime() {
+				return 0;
+			}
+
+			@Override
+			public String getId() {
+				return null;
+			}
+
+			@Override
+			public long getLastAccessedTime() {
+				return 0;
+			}
+
+			@Override
+			public ServletContext getServletContext() {
+				return null;
+			}
+
+			@Override
+			public void setMaxInactiveInterval(int interval) {
+			}
+			@Override
+			public int getMaxInactiveInterval() {
+				return 0;
+			}
+
+			@Override
+			public HttpSessionContext getSessionContext() {
+				return null;
+			}
+
+			@Override
+			public Object getAttribute(String name) {
+				return null;
+			}
+
+			@Override
+			public Object getValue(String name) {
+				return null;
+			}
+
+			@Override
+			public Enumeration<String> getAttributeNames() {
+				return null;
+			}
+
+			@Override
+			public String[] getValueNames() {
+				return new String[0];
+			}
+
+			@Override
+			public void setAttribute(String name, Object value) {
+			}
+			@Override
+			public void putValue(String name, Object value) {
+			}
+			@Override
+			public void removeAttribute(String name) {
+			}
+			@Override
+			public void removeValue(String name) {
+			}
+			@Override
+			public void invalidate() {
+
+			}
+
+			@Override
+			public boolean isNew() {
+				return false;
+			}
+		};
+
+		bvrfisBldBiz.bvrfisBldMatchEs(httpSession);
 	}
 }
