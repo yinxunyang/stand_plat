@@ -31,6 +31,15 @@ public interface BmatchAnResultService {
 
 	/**
 	 * @Author: yinxunyang
+	 * @Description: 删除匹配分析表
+	 * @Date: 2019/12/9 13:56
+	 * @param:
+	 * @return:
+	 */
+	void delBmatchAnResultByWxId(String wxId);
+
+	/**
+	 * @Author: yinxunyang
 	 * @Description: 查询b_matchAnResult
 	 * @Date: 2019/12/23 13:18
 	 * @param:

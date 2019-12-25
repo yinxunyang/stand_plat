@@ -60,6 +60,22 @@ public class BmatchAnResultServiceImpl implements BmatchAnResultService {
 			}
 		}
 	}
+	 /**
+	   * @Author: yinxunyang
+	   * @Description: 删除匹配分析表
+	   * @Date: 2019/12/25 9:11
+	   * @param:
+	   * @return:
+	   */
+	@Override
+	@Transactional(rollbackFor = Exception.class)
+	public void delBmatchAnResultByWxId(String wxId) {
+		// 删除匹配分析表
+		int delNum = bmatchAnResultDao.delBmatchAnResultByWxId(wxId);
+		if (1 != delNum) {
+			throw new MsgException(ReturnCode.sdp_delete_fail, "删除匹配分析表失败");
+		}
+	}
 
 	/**
 	 * @Author: yinxunyang

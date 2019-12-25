@@ -8,7 +8,6 @@ import com.bestvike.bvrfis.param.BDataRelationParam;
 import com.bestvike.bvrfis.param.BvrfisCorpInfoParam;
 import com.bestvike.bvrfis.service.BDataRelationService;
 import com.bestvike.bvrfis.service.BLogOperService;
-import com.bestvike.bvrfis.service.BmatchAnResultService;
 import com.bestvike.bvrfis.service.BvrfisCorpService;
 import com.bestvike.bvrfis.service.BvrfisService;
 import com.bestvike.commons.enums.MatchTypeEnum;
@@ -78,8 +77,6 @@ public class BvrfisCorpBizImpl implements BvrfisCorpBiz {
 	private String unCertainSize;
 	@Autowired
 	private BvrfisCorpService bvrfisCorpService;
-	@Autowired
-	private BmatchAnResultService bmatchAnResultService;
 	@Autowired
 	private BvrfisService bvrfisService;
 	@Autowired
@@ -173,6 +170,7 @@ public class BvrfisCorpBizImpl implements BvrfisCorpBiz {
 						// 返回内容
 						String bvdfCorpJson = hit.getSourceAsString();
 						BvdfCorpParam bvdfCorpParam = (BvdfCorpParam) UtilTool.jsonToObj(bvdfCorpJson, BvdfCorpParam.class);
+
 						BmatchAnResultInfo bmatchAnResultInfo = new BmatchAnResultInfo();
 						bmatchAnResultInfo.setMatchid(UtilTool.UUID());
 						bmatchAnResultInfo.setLogid(logId);
@@ -200,7 +198,8 @@ public class BvrfisCorpBizImpl implements BvrfisCorpBiz {
 						bmatchAnResultInfo.setEdituser(null);
 						bmatchAnResultInfo.setEditdate(null);
 						bmatchAnResultInfo.setVersion(new BigDecimal(bvdfCorpParam.getVersionnumber()));
-						bmatchAnResultService.insertBmatchAnResult(bmatchAnResultInfo);
+						// 先删除再新增匹配结果表，同事务
+						bvrfisService.delAndInsertBmatchAnResult(bmatchAnResultInfo);
 						paramListForDelByCertNo.add(bvrfisCorpInfoParam);
 					}
 				}
@@ -265,7 +264,8 @@ public class BvrfisCorpBizImpl implements BvrfisCorpBiz {
 						bmatchAnResultInfo.setEdituser(null);
 						bmatchAnResultInfo.setEditdate(null);
 						bmatchAnResultInfo.setVersion(new BigDecimal(bvdfCorpParam.getVersionnumber()));
-						bmatchAnResultService.insertBmatchAnResult(bmatchAnResultInfo);
+						// 先删除再新增匹配结果表，同事务
+						bvrfisService.delAndInsertBmatchAnResult(bmatchAnResultInfo);
 						paramListForDelByCorpName.add(bvrfisCorpInfoParam);
 					}
 				}
@@ -328,7 +328,8 @@ public class BvrfisCorpBizImpl implements BvrfisCorpBiz {
 					bmatchAnResultInfo.setEdituser(null);
 					bmatchAnResultInfo.setEditdate(null);
 					bmatchAnResultInfo.setVersion(new BigDecimal(bvdfCorpParam.getVersionnumber()));
-					bmatchAnResultService.insertBmatchAnResult(bmatchAnResultInfo);
+					// 先删除再新增匹配结果表，同事务
+					bvrfisService.delAndInsertBmatchAnResult(bmatchAnResultInfo);
 				}
 			} catch (MsgException e) {
 				log.error(e + "bvrfisCorpInfoParam参数为：{}", bvrfisCorpInfoParam);

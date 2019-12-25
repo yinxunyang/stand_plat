@@ -1,11 +1,13 @@
 package com.bestvike.bvrfis.service.impl;
 
 import com.bestvike.bvrfis.dao.BvrfisHouseDao;
+import com.bestvike.bvrfis.entity.BmatchAnResultInfo;
 import com.bestvike.bvrfis.param.BvrfisBldParam;
 import com.bestvike.bvrfis.param.BvrfisCorpInfoParam;
 import com.bestvike.bvrfis.param.BvrfisHouseParam;
 import com.bestvike.bvrfis.param.BvrfisOwnerInfoParam;
 import com.bestvike.bvrfis.param.BvrfisShareOwnerInfoParam;
+import com.bestvike.bvrfis.service.BmatchAnResultService;
 import com.bestvike.bvrfis.service.BvrfisHouseService;
 import com.bestvike.bvrfis.service.BvrfisService;
 import com.bestvike.commons.enums.ReturnCode;
@@ -21,6 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.io.BufferedReader;
@@ -77,6 +80,8 @@ public class BvrfisServiceImpl implements BvrfisService {
 	private BvrfisHouseDao bvrfisHouseDao;
 	@Autowired
 	private ElasticSearchService elasticSearchService;
+	@Autowired
+	private BmatchAnResultService bmatchAnResultService;
 	/**
 	 * @Author: yinxunyang
 	 * @Description: 将bvrfis房屋信息跟es中的匹配
@@ -277,5 +282,18 @@ public class BvrfisServiceImpl implements BvrfisService {
 			log.error("根据json文件组织查询Es的语句异常" + e);
 		}
 		return sb.toString();
+	}
+	/**
+	 * @Author: yinxunyang
+	 * @Description: 先删除再新增匹配结果表，同事务
+	 * @Date: 2019/12/25 9:21
+	 * @param:
+	 * @return:
+	 */
+	@Override
+	@Transactional(rollbackFor = Exception.class)
+	public void delAndInsertBmatchAnResult(BmatchAnResultInfo bmatchAnResultInfo) {
+		bmatchAnResultService.delBmatchAnResultByWxId(bmatchAnResultInfo.getWxbusiid());
+		bmatchAnResultService.insertBmatchAnResult(bmatchAnResultInfo);
 	}
 }

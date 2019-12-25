@@ -8,7 +8,6 @@ import com.bestvike.bvrfis.param.BDataRelationParam;
 import com.bestvike.bvrfis.param.BvrfisRegionParam;
 import com.bestvike.bvrfis.service.BDataRelationService;
 import com.bestvike.bvrfis.service.BLogOperService;
-import com.bestvike.bvrfis.service.BmatchAnResultService;
 import com.bestvike.bvrfis.service.BvrfisRegionService;
 import com.bestvike.bvrfis.service.BvrfisService;
 import com.bestvike.commons.enums.MatchTypeEnum;
@@ -79,8 +78,6 @@ public class BvrfisRegionBizImpl implements BvrfisRegionBiz {
 	private String unCertainSize;
 	@Autowired
 	private BvrfisRegionService bvrfisRegionService;
-	@Autowired
-	private BmatchAnResultService bmatchAnResultService;
 	@Autowired
 	private BvdfRegionService bvdfRegionService;
 	@Autowired
@@ -190,7 +187,8 @@ public class BvrfisRegionBizImpl implements BvrfisRegionBiz {
 				bmatchAnResultInfo.setEdituser(null);
 				bmatchAnResultInfo.setEditdate(null);
 				bmatchAnResultInfo.setVersion(new BigDecimal(bvdfRegionParam.getVersionnumber()));
-				bmatchAnResultService.insertBmatchAnResult(bmatchAnResultInfo);
+				// 先删除再新增匹配结果表，同事务
+				bvrfisService.delAndInsertBmatchAnResult(bmatchAnResultInfo);
 				paramListForDel.add(bvrfisRegionParam);
 			} catch (MsgException e) {
 				log.error(e + "bvrfisRegionParam参数为：{}", bvrfisRegionParam);
@@ -290,7 +288,8 @@ public class BvrfisRegionBizImpl implements BvrfisRegionBiz {
 					bmatchAnResultInfo.setEdituser(null);
 					bmatchAnResultInfo.setEditdate(null);
 					bmatchAnResultInfo.setVersion(new BigDecimal(bvdfRegionParam.getVersionnumber()));
-					bmatchAnResultService.insertBmatchAnResult(bmatchAnResultInfo);
+					// 先删除再新增匹配结果表，同事务
+					bvrfisService.delAndInsertBmatchAnResult(bmatchAnResultInfo);
 					paramListForDel.add(bvrfisRegionParam);
 				}
 			} catch (MsgException e) {

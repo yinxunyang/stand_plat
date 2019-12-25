@@ -81,6 +81,11 @@
 			#{param.version,jdbcType=DECIMAL}
 			)
 	</insert>
+	<delete id="delBmatchAnResultByWxId">
+		DELETE FROM
+		bvrfis_xjws.b_matchAnResult
+		WHERE wxbusiid = #{wxId,jdbcType=VARCHAR}
+	</delete>
 	<select id="selectBmatchAnResultById" resultType="com.bestvike.bvrfis.entity.BmatchAnResultInfo">
 		SELECT
 		matchid,
