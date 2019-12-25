@@ -1,5 +1,6 @@
 package com.bestvike.dataCenter.dao;
 
+import com.bestvike.dataCenter.param.BvdfBldParam;
 import com.bestvike.dataCenter.param.BvdfCorpParam;
 import com.bestvike.dataCenter.param.BvdfHouseParam;
 import com.bestvike.dataCenter.param.BvdfRegionParam;
@@ -35,6 +36,15 @@ public interface BvdfHouseDao {
 	 * @return:
 	 */
 	List<BvdfRegionParam> queryBvdfRegionInfo(@Param("param") BvdfRegionParam queryParam);
+	/**
+	 * @Author: yinxunyang
+	 * @Description: 查询自然幢信息
+	 * @Date: 2019/12/5 11:34
+	 * @param:
+	 * @return:
+	 */
+	List<BvdfBldParam> queryBvdfBldInfo(@Param("param") BvdfBldParam queryParam);
+
 	/**
 	 * @Author: yinxunyang
 	 * @Description: 查询房屋信息

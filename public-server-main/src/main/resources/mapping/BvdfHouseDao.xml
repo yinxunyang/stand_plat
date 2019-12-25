@@ -58,6 +58,38 @@
 			</if>
 		</where>
 	</select>
+	<select id="queryBvdfBldInfo" resultType="com.bestvike.dataCenter.param.BvdfBldParam">
+		select
+		t.sysguid as dataCenterId,
+		t.naturalid as bldNo,
+		t.buildingname as bldName,
+		t.address,
+		t.coverarea as totalArea,
+		t.startdate,
+		t.finishdate,
+		t.projectid as regionNo,
+		t.developid as corpNo,
+		t.versionnumber
+		from datasource_xjws.rev_natural_building t
+		<where>
+			<if test="null != param.state and '' != param.state">
+				t.state = #{param.state,jdbcType=VARCHAR}
+			</if>
+			<if test="null != param.appcode and '' != param.appcode">
+				AND t.appcode = #{param.appcode,jdbcType=VARCHAR}
+			</if>
+			<if test="null != param.scopeBeginTime and '' != param.scopeBeginTime">
+				<![CDATA[
+				AND to_date(t.modifydate,'yyyy-mm-dd hh24:mi:ss') >= to_date(#{param.scopeBeginTime},'yyyy-mm-dd hh24:mi:ss')
+                ]]>
+			</if>
+			<if test="null != param.scopeEndTime and '' != param.scopeEndTime">
+				<![CDATA[
+				AND to_date(t.modifydate,'yyyy-mm-dd hh24:mi:ss') < to_date(#{param.scopeEndTime},'yyyy-mm-dd hh24:mi:ss')
+                ]]>
+			</if>
+		</where>
+	</select>
 	<select id="queryBvdfHouseInfo" resultType="com.bestvike.dataCenter.param.BvdfHouseParam">
 			select * from (select  t1.sysguid,
 		        t1.buycertnos,

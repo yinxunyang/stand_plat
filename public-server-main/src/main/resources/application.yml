@@ -93,6 +93,10 @@ esConfig:
   regionindex: region_index
   # es数据库小区的映射
   regiontype: region_type
+  # es数据库小区的索引
+  bldindex: bld_index
+  # es数据库小区的映射
+  bldtype: bld_type
 
 
 
@@ -114,6 +118,9 @@ standplatConfig:
     # 批量新增、修改bvdf表的数量
     bvdfBatchNum: 1
   corpToEsSchedule:
+    # 定时时间 每隔5分钟执行一次,cornTime为“-”是停止定时
+    cronTime: 0/5 * * * * ?
+  bldToEsSchedule:
     # 定时时间 每隔5分钟执行一次,cornTime为“-”是停止定时
     cronTime: 0/5 * * * * ?
 

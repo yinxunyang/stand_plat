@@ -25,6 +25,22 @@ public class BvrfisController extends BaseController {
 	@Autowired
 	private BvrfisRegionBiz bvrfisRegionBiz;
 
+	@ApiOperation(value = "将bvrfis信息跟es中的匹配", notes = "将bvrfis信息跟es中的匹配")
+	@GetMapping("/api/bvrfis/bvrfisMatchEs")
+	public void bvrfisMatchEs(HttpSession httpSession) {
+		try {
+			// 匹配公司信息
+			bvrfisCorpBiz.bvrfisCorpMatchEs(httpSession);
+			// 匹配小区信息
+			bvrfisRegionBiz.bvrfisRegionMatchEs(httpSession);
+			// TODO 匹配自然幢信息
+
+			// TODO 匹配房屋信息
+		} catch (MsgException e) {
+			logger.error("将bvrfis信息跟es中的匹配失败");
+		}
+	}
+
 	@ApiOperation(value = "将bvrfis公司信息跟es中的匹配", notes = "将bvrfis公司信息跟es中的匹配")
 	@GetMapping("/api/bvrfis/bvrfisCorpMatchEs")
 	public void bvrfisCorpMatchEs(HttpSession httpSession) {
