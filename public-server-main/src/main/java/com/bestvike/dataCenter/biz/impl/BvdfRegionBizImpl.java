@@ -22,7 +22,6 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -101,7 +100,7 @@ public class BvdfRegionBizImpl implements BvdfRegionBiz {
 		String scopeBeginTime = null;
 		if (null != bvdfToEsRecordTime) {
 			// 开始时间取上一次执行的最后时间
-			scopeBeginTime = bvdfToEsRecordTime.getCorpLastExcuteTime();
+			scopeBeginTime = bvdfToEsRecordTime.getRegionLastExcuteTime();
 		}
 		queryParam.setScopeBeginTime(scopeBeginTime);
 		String scopeEndTime = df.format(LocalDateTime.now());
@@ -127,11 +126,11 @@ public class BvdfRegionBizImpl implements BvdfRegionBiz {
 		if (null == bvdfToEsRecordTime) {
 			BvdfToEsRecordTime bvdfToEsForAdd = new BvdfToEsRecordTime();
 			bvdfToEsForAdd.setId("bvdfRegion");
-			bvdfToEsForAdd.setCorpLastExcuteTime(scopeEndTime);
+			bvdfToEsForAdd.setRegionLastExcuteTime(scopeEndTime);
 			mongoTemplate.insert(bvdfToEsForAdd);
 		} else {
 			Query queryupdate = new Query(Criteria.where("id").is("bvdfRegion"));
-			Update update = new Update().set("corpLastExcuteTime", scopeEndTime);
+			Update update = new Update().set("regionLastExcuteTime", scopeEndTime);
 			mongoTemplate.updateFirst(queryupdate, update, BvdfToEsRecordTime.class);
 		}
 

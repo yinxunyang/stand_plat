@@ -69,7 +69,8 @@
 		t.finishdate,
 		t.projectid as regionNo,
 		t.developid as corpNo,
-		t.versionnumber
+		t.versionnumber,
+		t.divisionCode
 		from datasource_xjws.rev_natural_building t
 		<where>
 			<if test="null != param.state and '' != param.state">

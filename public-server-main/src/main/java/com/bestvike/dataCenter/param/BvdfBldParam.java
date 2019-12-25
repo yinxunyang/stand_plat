@@ -57,6 +57,10 @@ public class BvdfBldParam {
 	 */
 	private String versionnumber;
 	/**
+	 * 行政区编号
+	 */
+	private String divisionCode;
+	/**
 	 * appCode
 	 */
 	private String appcode;
