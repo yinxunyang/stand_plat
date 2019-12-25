@@ -22,27 +22,15 @@ public class BvdfToEsRecordTime extends BaseData implements Serializable {
 	 */
 	private String id;
 	/**
-	 * 公司信息的最后执行时间
+	 * 最后执行时间
 	 */
-	private String corpLastExcuteTime;
+	private String lastExcuteTime;
 	/**
-	 * 小区信息的最后执行时间
+	 * 类型
 	 */
-	private String regionLastExcuteTime;
+	private String matchType;
 	/**
-	 * 楼幢信息的最后执行时间
+	 * 描述
 	 */
-	private String bldLastExcuteTime;
-	/**
-	 * 单元信息的最后执行时间
-	 */
-	private String cellLastExcuteTime;
-	/**
-	 * 楼层信息的最后执行时间
-	 */
-	private String floorLastExcuteTime;
-	/**
-	 * 房屋信息的最后执行时间
-	 */
-	private String houseLastExcuteTime;
+	private String describe;
 }

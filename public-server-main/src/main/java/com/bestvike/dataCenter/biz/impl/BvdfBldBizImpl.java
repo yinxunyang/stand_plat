@@ -1,5 +1,6 @@
 package com.bestvike.dataCenter.biz.impl;
 
+import com.bestvike.commons.enums.MatchTypeEnum;
 import com.bestvike.commons.enums.ReturnCode;
 import com.bestvike.commons.exception.MsgException;
 import com.bestvike.commons.utils.UtilTool;
@@ -89,7 +90,7 @@ public class BvdfBldBizImpl implements BvdfBldBiz {
 		String scopeBeginTime = null;
 		if (null != bvdfToEsRecordTime) {
 			// 开始时间取上一次执行的最后时间
-			scopeBeginTime = bvdfToEsRecordTime.getBldLastExcuteTime();
+			scopeBeginTime = bvdfToEsRecordTime.getLastExcuteTime();
 		}
 		BvdfBldParam queryParam = new BvdfBldParam();
 		// 状态正常
@@ -118,11 +119,13 @@ public class BvdfBldBizImpl implements BvdfBldBiz {
 		if (null == bvdfToEsRecordTime) {
 			BvdfToEsRecordTime bvdfToEsForAdd = new BvdfToEsRecordTime();
 			bvdfToEsForAdd.setId("bvdfBld");
-			bvdfToEsForAdd.setBldLastExcuteTime(scopeEndTime);
+			bvdfToEsForAdd.setLastExcuteTime(scopeEndTime);
+			bvdfToEsRecordTime.setMatchType(MatchTypeEnum.BLD.getCode());
+			bvdfToEsRecordTime.setDescribe(MatchTypeEnum.BLD.getDesc());
 			mongoTemplate.insert(bvdfToEsForAdd);
 		} else {
 			Query queryupdate = new Query(Criteria.where("id").is("bvdfBld"));
-			Update update = new Update().set("bldLastExcuteTime", scopeEndTime);
+			Update update = new Update().set("lastExcuteTime", scopeEndTime);
 			mongoTemplate.updateFirst(queryupdate, update, BvdfToEsRecordTime.class);
 		}
 

@@ -1,5 +1,6 @@
 package com.bestvike.dataCenter.biz.impl;
 
+import com.bestvike.commons.enums.MatchTypeEnum;
 import com.bestvike.commons.enums.ReturnCode;
 import com.bestvike.commons.exception.MsgException;
 import com.bestvike.dataCenter.biz.BvdfRegionBiz;
@@ -100,7 +101,7 @@ public class BvdfRegionBizImpl implements BvdfRegionBiz {
 		String scopeBeginTime = null;
 		if (null != bvdfToEsRecordTime) {
 			// 开始时间取上一次执行的最后时间
-			scopeBeginTime = bvdfToEsRecordTime.getRegionLastExcuteTime();
+			scopeBeginTime = bvdfToEsRecordTime.getLastExcuteTime();
 		}
 		queryParam.setScopeBeginTime(scopeBeginTime);
 		String scopeEndTime = df.format(LocalDateTime.now());
@@ -126,11 +127,13 @@ public class BvdfRegionBizImpl implements BvdfRegionBiz {
 		if (null == bvdfToEsRecordTime) {
 			BvdfToEsRecordTime bvdfToEsForAdd = new BvdfToEsRecordTime();
 			bvdfToEsForAdd.setId("bvdfRegion");
-			bvdfToEsForAdd.setRegionLastExcuteTime(scopeEndTime);
+			bvdfToEsForAdd.setLastExcuteTime(scopeEndTime);
+			bvdfToEsRecordTime.setMatchType(MatchTypeEnum.REGION.getCode());
+			bvdfToEsRecordTime.setDescribe(MatchTypeEnum.REGION.getDesc());
 			mongoTemplate.insert(bvdfToEsForAdd);
 		} else {
 			Query queryupdate = new Query(Criteria.where("id").is("bvdfRegion"));
-			Update update = new Update().set("regionLastExcuteTime", scopeEndTime);
+			Update update = new Update().set("lastExcuteTime", scopeEndTime);
 			mongoTemplate.updateFirst(queryupdate, update, BvdfToEsRecordTime.class);
 		}
 
