@@ -71,10 +71,7 @@ public class BmatchAnResultServiceImpl implements BmatchAnResultService {
 	@Transactional(rollbackFor = Exception.class)
 	public void delBmatchAnResultByWxId(String wxId) {
 		// 删除匹配分析表
-		int delNum = bmatchAnResultDao.delBmatchAnResultByWxId(wxId);
-		if (1 != delNum) {
-			throw new MsgException(ReturnCode.sdp_delete_fail, "删除匹配分析表失败");
-		}
+		bmatchAnResultDao.delBmatchAnResultByWxId(wxId);
 	}
 
 	/**
