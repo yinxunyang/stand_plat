@@ -89,6 +89,12 @@
 				AND to_date(t.modifydate,'yyyy-mm-dd hh24:mi:ss') < to_date(#{param.scopeEndTime},'yyyy-mm-dd hh24:mi:ss')
                 ]]>
 			</if>
+			<if test="null != param.bldName and '' != param.bldName">
+				AND t.buildingname = #{param.bldName,jdbcType=VARCHAR}
+			</if>
+			<if test="null != param.regionNo and '' != param.regionNo">
+				AND t.projectid = #{param.regionNo,jdbcType=VARCHAR}
+			</if>
 		</where>
 	</select>
 	<select id="queryBvdfHouseInfo" resultType="com.bestvike.dataCenter.param.BvdfHouseParam">
