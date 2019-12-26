@@ -15,6 +15,7 @@ import com.bestvike.bvrfis.service.BvrfisService;
 import com.bestvike.commons.enums.MatchTypeEnum;
 import com.bestvike.commons.utils.UtilTool;
 import com.bestvike.dataCenter.param.BvdfCorpParam;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -33,6 +34,7 @@ import java.util.Map;
  * @param:
  * @return:
  */
+@Slf4j
 public class BvrfisTest extends BaseTest {
 	@Autowired
 	private BvrfisHouseService bvrfisHouseService;
@@ -468,5 +470,15 @@ public class BvrfisTest extends BaseTest {
 		};
 
 		bvrfisBldBiz.bvrfisBldMatchEs(httpSession);
+	}
+
+	@Test
+	public void test14() {
+		String bldName = "15号楼栋";
+		log.info(bldName.replace("号楼", "").replace("栋", ""));
+		log.info(bldName.replace("号楼", "").replace("栋", "") + "号楼");
+		// todo 使用bldNames查询 号楼
+		String[] blaNames = new String[]{bldName, bldName.replace("号楼", "").replace("栋", ""), bldName.replace("号楼", "").replace("栋", "") + "号楼"};
+		int i = 0;
 	}
 }

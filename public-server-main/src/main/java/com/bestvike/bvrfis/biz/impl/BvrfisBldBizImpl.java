@@ -126,9 +126,12 @@ public class BvrfisBldBizImpl implements BvrfisBldBiz {
 		bLogOper.setInDate(UtilTool.nowTime());
 		bLogOper.setMatchtype(MatchTypeEnum.BLD.getCode());
 		bLogOperService.insertBLogOper(bLogOper);
-		// 自然幢根据自然幢名称完全匹配
-		uniqueMatchBldByBldName(bvrfisBldParamList, httpSession, logId);
-
+		// 自然幢根据自然幢名称完全匹配 使用初始的bldName
+		uniqueMatchBldByBldName(bvrfisBldParamList, httpSession, logId, "bldNameInit");
+		// 自然幢根据自然幢名称完全匹配 使用bldName xx数字
+		uniqueMatchBldByBldName(bvrfisBldParamList, httpSession, logId, "bldNameRepalceOne");
+		// 自然幢根据自然幢名称完全匹配 使用bldName xx号楼
+		uniqueMatchBldByBldName(bvrfisBldParamList, httpSession, logId, "bldNameRepalceTwo");
 		try (TransportClient client = new PreBuiltTransportClient(Settings.builder().put("cluster.name", esClusterName).build())
 				.addTransportAddress(new TransportAddress(InetAddress.getByName(esIP), Integer.parseInt(esPort)))) {
 
@@ -147,7 +150,7 @@ public class BvrfisBldBizImpl implements BvrfisBldBiz {
 	 * @param:
 	 * @return:
 	 */
-	private void uniqueMatchBldByBldName(List<BvrfisBldParam> bvrfisBldParamList, HttpSession httpSession, String logId) {
+	private void uniqueMatchBldByBldName(List<BvrfisBldParam> bvrfisBldParamList, HttpSession httpSession, String logId, String bldNameType) {
 		// 匹配成功后需要从bvrfisBldParamList移除的List
 		List<BvrfisBldParam> paramListForDel = new ArrayList<>();
 		// 遍历自然幢信息和elasticsearch
@@ -165,7 +168,14 @@ public class BvrfisBldBizImpl implements BvrfisBldBiz {
 				BvdfBldParam queryParam = new BvdfBldParam();
 				queryParam.setState("normal");
 				queryParam.setRegionNo(bvdfRegionId);
-				queryParam.setBldName(bvrfisBldParam.getBldName());
+				String bldName = bvrfisBldParam.getBldName();
+				if ("bldNameRepalceOne".equals(bldNameType)) {
+					bldName = bldName.replace("号楼", "").replace("栋", "");
+				}
+				if ("bldNameRepalceTwo".equals(bldNameType)) {
+					bldName = bldName.replace("号楼", "").replace("栋", "") + "号楼";
+				}
+				queryParam.setBldName(bldName);
 				List<BvdfBldParam> bvdfBldParamList = bvdfBldService.queryBvdfBldInfo(queryParam);
 				// bvdfBldParamList返回唯一的数据，说明完全匹配
 				if (bvdfBldParamList.isEmpty() || bvdfBldParamList.size() != 1) {
@@ -191,7 +201,7 @@ public class BvrfisBldBizImpl implements BvrfisBldBiz {
 				// 匹配情况说明
 				bmatchAnResultInfo.setDescribe(null);
 				// 备注
-				bmatchAnResultInfo.setRemark("小区信息完全匹配");
+				bmatchAnResultInfo.setRemark("自然幢信息完全匹配");
 				// 单位信息表
 				bmatchAnResultInfo.setMatchtype(MatchTypeEnum.BLD.getCode());
 				// todo 创建人 待确定
