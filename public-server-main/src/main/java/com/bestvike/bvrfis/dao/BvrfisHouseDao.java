@@ -46,6 +46,14 @@ public interface BvrfisHouseDao {
 	 * @return:
 	 */
 	List<BvrfisRegionParam> queryBvrfisRegionInfo(@Param("param") BvrfisRegionParam queryParam);
+	/**
+	 * @Author: yinxunyang
+	 * @Description: 查询bvrfis小区的数据
+	 * @Date: 2019/12/10 17:25
+	 * @param:
+	 * @return:
+	 */
+	BvrfisRegionParam selectBvrfisRegionInfo(@Param("param") BvrfisRegionParam queryParam);
 
 	/**
 	 * @Author: yinxunyang

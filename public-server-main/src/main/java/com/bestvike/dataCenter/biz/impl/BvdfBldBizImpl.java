@@ -91,7 +91,7 @@ public class BvdfBldBizImpl implements BvdfBldBiz {
 	 * @return:
 	 */
 	@Override
-	@Scheduled(cron = "${standplatConfig.bldToEsSchedule.cronTime}")
+	//@Scheduled(cron = "${standplatConfig.bldToEsSchedule.cronTime}")
 	public void bvdfBldToEs() {
 		Query query = new Query(Criteria.where("_id").is("bvdfBld"));
 		BvdfToEsRecordTime bvdfToEsRecordTime = mongoTemplate.findOne(query, BvdfToEsRecordTime.class);

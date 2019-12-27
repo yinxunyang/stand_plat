@@ -10,6 +10,14 @@
         "weight": 5,
         "filter": {
           "match": {
+            "regionName": "regionNameValue"
+          }
+        }
+      },
+      {
+        "weight": 5,
+        "filter": {
+          "match": {
             "bldName": "bldNameValue"
           }
         }

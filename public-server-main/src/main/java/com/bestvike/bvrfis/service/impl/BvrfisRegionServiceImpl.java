@@ -40,4 +40,22 @@ public class BvrfisRegionServiceImpl implements BvrfisRegionService {
 		}
 		return bvrfisRegionParamList;
 	}
+	/**
+	 * @Author: yinxunyang
+	 * @Description: 查询bvrfis小区的数据
+	 * @Date: 2019/12/10 13:15
+	 * @param:
+	 * @return:
+	 */
+	@Override
+	public BvrfisRegionParam selectBvrfisRegionInfo(BvrfisRegionParam queryParam) throws MsgException {
+		BvrfisRegionParam bvrfisRegionParam;
+		try {
+			bvrfisRegionParam = bvrfisHouseDao.selectBvrfisRegionInfo(queryParam);
+		} catch (Exception e) {
+			log.error("查询bvrfis小区的数据失败" + e);
+			throw new MsgException(ReturnCode.sdp_select_fail, "查询bvrfis小区的数据失败");
+		}
+		return bvrfisRegionParam;
+	}
 }

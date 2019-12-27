@@ -7,10 +7,12 @@ import com.bestvike.bvrfis.entity.BmatchAnResultInfo;
 import com.bestvike.bvrfis.param.BDataRelationParam;
 import com.bestvike.bvrfis.param.BmatchAnResultParam;
 import com.bestvike.bvrfis.param.BvrfisBldParam;
+import com.bestvike.bvrfis.param.BvrfisRegionParam;
 import com.bestvike.bvrfis.service.BDataRelationService;
 import com.bestvike.bvrfis.service.BLogOperService;
 import com.bestvike.bvrfis.service.BmatchAnResultService;
 import com.bestvike.bvrfis.service.BvrfisBldService;
+import com.bestvike.bvrfis.service.BvrfisRegionService;
 import com.bestvike.bvrfis.service.BvrfisService;
 import com.bestvike.commons.enums.MatchTypeEnum;
 import com.bestvike.commons.enums.RelStateEnum;
@@ -89,6 +91,8 @@ public class BvrfisBldBizImpl implements BvrfisBldBiz {
 	private BvdfBldService bvdfBldService;
 	@Autowired
 	private BmatchAnResultService bmatchAnResultService;
+	@Autowired
+	private BvrfisRegionService bvrfisRegionService;
 
 	/**
 	 * @Author: yinxunyang
@@ -116,6 +120,16 @@ public class BvrfisBldBizImpl implements BvrfisBldBiz {
 			BDataRelation bDataRelation = bDataRelationService.selectBDataRelation(bDataRelationParam);
 			if (null != bDataRelation) {
 				bvrfisBldExists.add(bvrfisBldParam);
+			} else {
+				// 添加小区名称
+				BvrfisRegionParam regionParam = new BvrfisRegionParam();
+				regionParam.setRegionNo(bvrfisBldParam.getRegionNo());
+				// 正常
+				regionParam.setState("0");
+				BvrfisRegionParam bvrfisRegionParam = bvrfisRegionService.selectBvrfisRegionInfo(regionParam);
+				if (null != bvrfisRegionParam) {
+					bvrfisBldParam.setRegionName(bvrfisRegionParam.getRegionName());
+				}
 			}
 		});
 		bvrfisBldParamList.removeAll(bvrfisBldExists);
@@ -139,7 +153,7 @@ public class BvrfisBldBizImpl implements BvrfisBldBiz {
 
 			// 自然幢根据小区疑似匹配
 			unCertainBldByRegion(bvrfisBldParamList, client, httpSession, logId);
-			// TODO 自然幢根据开发企业疑似匹配
+			// 自然幢根据开发企业疑似匹配
 			unCertainBldByCorpNo(bvrfisBldParamList, client, httpSession, logId);
 		} catch (UnknownHostException e) {
 			log.error("创建elasticsearch客户端连接失败" + e);
@@ -328,6 +342,7 @@ public class BvrfisBldBizImpl implements BvrfisBldBiz {
 					return;
 				}
 				String bldQueryParam = bldQueryJson.replace("corpNoValue", bDataRelation.getWqBusiId())
+						.replace("regionNameValue", bvrfisBldParam.getRegionName())
 						.replace("bldNameValue", bvrfisBldParam.getBldName())
 						.replace("addressValue", bvrfisBldParam.getAddress());
 				// 查询的json串

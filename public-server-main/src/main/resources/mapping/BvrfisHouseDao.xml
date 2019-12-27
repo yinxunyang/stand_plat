@@ -40,6 +40,18 @@
 			</if>
 		</where>
 	</select>
+	<select id="selectBvrfisRegionInfo" resultType="com.bestvike.bvrfis.param.BvrfisRegionParam">
+		select t1.regionName, t1.regionNo, t1.divisionCode, t1.address, t1.floorArea
+		from bvrfis_xjws.arc_regioninfo t1
+		<where>
+			<if test="null != param.state and '' != param.state">
+				t1.state = #{param.state,jdbcType=VARCHAR}
+			</if>
+			<if test="null != param.regionNo and '' != param.regionNo">
+				AND t1.regionNo = #{param.regionNo,jdbcType=VARCHAR}
+			</if>
+		</where>
+	</select>
 	<select id="queryBvrfisBldInfo" resultType="com.bestvike.bvrfis.param.BvrfisBldParam">
 		select t.bldNo,
 		t.bldName,

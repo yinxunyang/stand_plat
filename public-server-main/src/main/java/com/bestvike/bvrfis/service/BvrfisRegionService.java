@@ -19,4 +19,12 @@ public interface BvrfisRegionService {
 	 * @return:
 	 */
 	List<BvrfisRegionParam> queryBvrfisRegionInfo(BvrfisRegionParam queryParam);
+	/**
+	 * @Author: yinxunyang
+	 * @Description: 查询bvrfis小区的数据
+	 * @Date: 2019/12/9 13:14
+	 * @param:
+	 * @return:
+	 */
+	BvrfisRegionParam selectBvrfisRegionInfo(BvrfisRegionParam queryParam);
 }

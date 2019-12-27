@@ -45,6 +45,10 @@ public class BvrfisBldParam {
 	 */
 	private String regionNo;
 	/**
+	 * 小区名称
+	 */
+	private String regionName;
+	/**
 	 * 楼幢名称
 	 */
 	private String developNo;
