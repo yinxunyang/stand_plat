@@ -138,6 +138,12 @@
 			<if test="null != param.matchtype and '' != param.matchtype">
 				AND t.matchtype = #{param.matchtype,jdbcType=VARCHAR}
 			</if>
+			<if test="null != param.wqbusiid and '' != param.wqbusiid">
+				AND t.wqbusiid = #{param.wqbusiid,jdbcType=VARCHAR}
+			</if>
+			<if test="null != param.percent and '' != param.percent">
+				AND t.percent = #{param.percent,jdbcType=VARCHAR}
+			</if>
 		</where>
 	</select>
 </mapper>

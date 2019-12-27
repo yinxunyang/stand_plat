@@ -5,10 +5,11 @@ import com.bestvike.bvrfis.entity.BDataRelation;
 import com.bestvike.bvrfis.entity.BLogOper;
 import com.bestvike.bvrfis.entity.BmatchAnResultInfo;
 import com.bestvike.bvrfis.param.BDataRelationParam;
+import com.bestvike.bvrfis.param.BmatchAnResultParam;
 import com.bestvike.bvrfis.param.BvrfisBldParam;
-import com.bestvike.bvrfis.param.BvrfisCorpInfoParam;
 import com.bestvike.bvrfis.service.BDataRelationService;
 import com.bestvike.bvrfis.service.BLogOperService;
+import com.bestvike.bvrfis.service.BmatchAnResultService;
 import com.bestvike.bvrfis.service.BvrfisBldService;
 import com.bestvike.bvrfis.service.BvrfisService;
 import com.bestvike.commons.enums.MatchTypeEnum;
@@ -17,7 +18,6 @@ import com.bestvike.commons.enums.ReturnCode;
 import com.bestvike.commons.exception.MsgException;
 import com.bestvike.commons.utils.UtilTool;
 import com.bestvike.dataCenter.param.BvdfBldParam;
-import com.bestvike.dataCenter.param.BvdfCorpParam;
 import com.bestvike.dataCenter.service.BvdfBldService;
 import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.action.search.SearchResponse;
@@ -63,15 +63,15 @@ public class BvrfisBldBizImpl implements BvrfisBldBiz {
 	@Value("${esConfig.esPort}")
 	private String esPort;
 	/**
-	 * es开发企业的索引
+	 * es自然幢的索引
 	 */
-	@Value("${esConfig.corpindex}")
-	private String corpindex;
+	@Value("${esConfig.bldindex}")
+	private String bldindex;
 	/**
-	 * es开发企业的映射
+	 * es自然幢的映射
 	 */
-	@Value("${esConfig.corptype}")
-	private String corptype;
+	@Value("${esConfig.bldtype}")
+	private String bldtype;
 	/**
 	 * 疑似匹配的条数
 	 */
@@ -87,6 +87,8 @@ public class BvrfisBldBizImpl implements BvrfisBldBiz {
 	private BDataRelationService bDataRelationService;
 	@Autowired
 	private BvdfBldService bvdfBldService;
+	@Autowired
+	private BmatchAnResultService bmatchAnResultService;
 
 	/**
 	 * @Author: yinxunyang
@@ -135,8 +137,9 @@ public class BvrfisBldBizImpl implements BvrfisBldBiz {
 		try (TransportClient client = new PreBuiltTransportClient(Settings.builder().put("cluster.name", esClusterName).build())
 				.addTransportAddress(new TransportAddress(InetAddress.getByName(esIP), Integer.parseInt(esPort)))) {
 
-			// 开发企业根据单位名称疑似匹配
-			//unCertainCorpByCorpName(bvrfisBldParamList, client, httpSession, logId);
+			// 自然幢根据小区疑似匹配
+			unCertainBldByRegion(bvrfisBldParamList, client, httpSession, logId);
+			// TODO 自然幢根据开发企业疑似匹配
 		} catch (UnknownHostException e) {
 			log.error("创建elasticsearch客户端连接失败" + e);
 			throw new MsgException(ReturnCode.sdp_sys_error, "创建elasticsearch客户端连接失败");
@@ -211,7 +214,7 @@ public class BvrfisBldBizImpl implements BvrfisBldBiz {
 				// 修改人
 				bmatchAnResultInfo.setEdituser(null);
 				bmatchAnResultInfo.setEditdate(null);
-				//bmatchAnResultInfo.setVersion(new BigDecimal(bvdfRegionParam.getVersionnumber()));
+				bmatchAnResultInfo.setVersion(new BigDecimal(bvdfBldParam.getVersionnumber()));
 				// 先删除再新增匹配结果表，同事务
 				bvrfisService.delAndInsertBmatchAnResult(bmatchAnResultInfo);
 				paramListForDel.add(bvrfisBldParam);
@@ -224,35 +227,52 @@ public class BvrfisBldBizImpl implements BvrfisBldBiz {
 
 	/**
 	 * @Author: yinxunyang
-	 * @Description: 开发企业根据单位名称疑似匹配
+	 * @Description: 自然幢根据小区疑似匹配
 	 * @Date: 2019/12/19 19:15
 	 * @param:
 	 * @return:
 	 */
-	private void unCertainCorpByCorpName(List<BvrfisCorpInfoParam> bvrfisCorpInfoParamList, TransportClient client, HttpSession httpSession, String logId) {
-		// 完全匹配开发企业信息
-		String corpQueryEs = bvrfisService.organizeQueryEsByJson("elasticSearch/unCertainbyCorpName.json");
-		// 遍历开发企业信息和elasticsearch
-		bvrfisCorpInfoParamList.forEach(bvrfisCorpInfoParam -> {
+	private void unCertainBldByRegion(List<BvrfisBldParam> bvrfisBldParamList, TransportClient client, HttpSession httpSession, String logId) {
+		// 自然幢根据小区疑似匹配
+		String bldQueryJson = bvrfisService.organizeQueryEsByJson("elasticSearch/bld/unCertainBldByRegion.json");
+		// 遍历自然幢信息和elasticsearch
+		bvrfisBldParamList.forEach(bvrfisBldParam -> {
 			try {
-				String corpQueryParam = corpQueryEs.replace("corpNameValue", bvrfisCorpInfoParam.getCorpName());
-				log.info(corpQueryParam);
-				WrapperQueryBuilder wqb = QueryBuilders.wrapperQuery(corpQueryParam);
-				SearchResponse searchResponse = client.prepareSearch(corpindex)
-						.setTypes(corptype).setSize(Integer.parseInt(unCertainSize)).setQuery(wqb).get();
+				// 查询bvdf的小区信息
+				BDataRelationParam bDataRelationParam = new BDataRelationParam();
+				bDataRelationParam.setWxBusiId(bvrfisBldParam.getRegionNo());
+				BDataRelation bDataRelation = bDataRelationService.selectBDataRelation(bDataRelationParam);
+				if (null == bDataRelation) {
+					return;
+				}
+				String bldQueryParam = bldQueryJson.replace("regionNoValue", bDataRelation.getWqBusiId())
+						.replace("bldNameValue", bvrfisBldParam.getBldName())
+						.replace("addressValue", bvrfisBldParam.getAddress());
+				// 查询的json串
+				log.info(bldQueryParam);
+				WrapperQueryBuilder wqb = QueryBuilders.wrapperQuery(bldQueryParam);
+				SearchResponse searchResponse = client.prepareSearch(bldindex)
+						.setTypes(bldtype).setSize(Integer.parseInt(unCertainSize)).setQuery(wqb).get();
 				SearchHit[] hits = searchResponse.getHits().getHits();
-				// 如果返回唯一一条数据，说明完全匹配
 				for (SearchHit hit : hits) {
 					// 返回内容
-					String bvdfCorpJson = hit.getSourceAsString();
-					BvdfCorpParam bvdfCorpParam = (BvdfCorpParam) UtilTool.jsonToObj(bvdfCorpJson, BvdfCorpParam.class);
+					String bvdfBldJson = hit.getSourceAsString();
+					BvdfBldParam bvdfBldParam = (BvdfBldParam) UtilTool.jsonToObj(bvdfBldJson, BvdfBldParam.class);
+					// 完全匹配有匹配结果的话不再新增bvdfbldNo
+					BmatchAnResultParam bmatchAnResultParam = new BmatchAnResultParam();
+					bmatchAnResultParam.setWqbusiid(bvdfBldParam.getBldNo());
+					bmatchAnResultParam.setPercent(new BigDecimal("100.00"));
+					BmatchAnResultInfo bmatchIsExists = bmatchAnResultService.selectBmatchAnResult(bmatchAnResultParam);
+					if (null != bmatchIsExists) {
+						return;
+					}
 					BmatchAnResultInfo bmatchAnResultInfo = new BmatchAnResultInfo();
 					bmatchAnResultInfo.setMatchid(UtilTool.UUID());
 					bmatchAnResultInfo.setLogid(logId);
 					// 维修资金数据ID
-					bmatchAnResultInfo.setWxbusiid(bvrfisCorpInfoParam.getCorpNo());
-					bmatchAnResultInfo.setCenterid(bvdfCorpParam.getDataCenterId());
-					bmatchAnResultInfo.setWqbusiid(bvdfCorpParam.getCorpId());
+					bmatchAnResultInfo.setWxbusiid(bvrfisBldParam.getBldNo());
+					bmatchAnResultInfo.setCenterid(bvdfBldParam.getDataCenterId());
+					bmatchAnResultInfo.setWqbusiid(bvdfBldParam.getBldNo());
 					String score = Float.toString(hit.getScore());
 					// 该条数据匹配率
 					bmatchAnResultInfo.setPercent(new BigDecimal(score));
@@ -263,9 +283,9 @@ public class BvrfisBldBizImpl implements BvrfisBldBiz {
 					// 匹配情况说明
 					bmatchAnResultInfo.setDescribe(null);
 					// 备注
-					bmatchAnResultInfo.setRemark("开发企业根据单位名称疑似匹配");
+					bmatchAnResultInfo.setRemark("自然幢根据小区疑似匹配");
 					// 单位信息表
-					bmatchAnResultInfo.setMatchtype(MatchTypeEnum.DEVELOP.getCode());
+					bmatchAnResultInfo.setMatchtype(MatchTypeEnum.BLD.getCode());
 					// todo 创建人 待确定
 					bmatchAnResultInfo.setInuser("无");
 					//bmatchAnResultInfo.setInuser(httpSession.getAttribute(GCC.SESSION_KEY_USERNAME).toString());
@@ -273,12 +293,12 @@ public class BvrfisBldBizImpl implements BvrfisBldBiz {
 					// 修改人
 					bmatchAnResultInfo.setEdituser(null);
 					bmatchAnResultInfo.setEditdate(null);
-					bmatchAnResultInfo.setVersion(new BigDecimal(bvdfCorpParam.getVersionnumber()));
+					bmatchAnResultInfo.setVersion(new BigDecimal(bvdfBldParam.getVersionnumber()));
 					// 先删除再新增匹配结果表，同事务
 					bvrfisService.delAndInsertBmatchAnResult(bmatchAnResultInfo);
 				}
 			} catch (MsgException e) {
-				log.error(e + "bvrfisCorpInfoParam参数为：{}", bvrfisCorpInfoParam);
+				log.error(e + "bvrfisBldParam参数为：{}", bvrfisBldParam);
 			}
 		});
 	}
