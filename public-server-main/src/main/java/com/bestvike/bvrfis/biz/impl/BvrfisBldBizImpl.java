@@ -140,6 +140,7 @@ public class BvrfisBldBizImpl implements BvrfisBldBiz {
 			// 自然幢根据小区疑似匹配
 			unCertainBldByRegion(bvrfisBldParamList, client, httpSession, logId);
 			// TODO 自然幢根据开发企业疑似匹配
+			unCertainBldByCorpNo(bvrfisBldParamList, client, httpSession, logId);
 		} catch (UnknownHostException e) {
 			log.error("创建elasticsearch客户端连接失败" + e);
 			throw new MsgException(ReturnCode.sdp_sys_error, "创建elasticsearch客户端连接失败");
@@ -233,6 +234,8 @@ public class BvrfisBldBizImpl implements BvrfisBldBiz {
 	 * @return:
 	 */
 	private void unCertainBldByRegion(List<BvrfisBldParam> bvrfisBldParamList, TransportClient client, HttpSession httpSession, String logId) {
+		// 匹配成功后需要从bvrfisBldParamList移除的List
+		List<BvrfisBldParam> paramListForDel = new ArrayList<>();
 		// 自然幢根据小区疑似匹配
 		String bldQueryJson = bvrfisService.organizeQueryEsByJson("elasticSearch/bld/unCertainBldByRegion.json");
 		// 遍历自然幢信息和elasticsearch
@@ -284,6 +287,85 @@ public class BvrfisBldBizImpl implements BvrfisBldBiz {
 					bmatchAnResultInfo.setDescribe(null);
 					// 备注
 					bmatchAnResultInfo.setRemark("自然幢根据小区疑似匹配");
+					// 单位信息表
+					bmatchAnResultInfo.setMatchtype(MatchTypeEnum.BLD.getCode());
+					// todo 创建人 待确定
+					bmatchAnResultInfo.setInuser("无");
+					//bmatchAnResultInfo.setInuser(httpSession.getAttribute(GCC.SESSION_KEY_USERNAME).toString());
+					bmatchAnResultInfo.setIndate(UtilTool.nowTime());
+					// 修改人
+					bmatchAnResultInfo.setEdituser(null);
+					bmatchAnResultInfo.setEditdate(null);
+					bmatchAnResultInfo.setVersion(new BigDecimal(bvdfBldParam.getVersionnumber()));
+					// 先删除再新增匹配结果表，同事务
+					bvrfisService.delAndInsertBmatchAnResult(bmatchAnResultInfo);
+					paramListForDel.add(bvrfisBldParam);
+				}
+			} catch (MsgException e) {
+				log.error(e + "bvrfisBldParam参数为：{}", bvrfisBldParam);
+			}
+		});
+		bvrfisBldParamList.removeAll(paramListForDel);
+	}
+	/**
+	 * @Author: yinxunyang
+	 * @Description: 自然幢根据开发企业疑似匹配
+	 * @Date: 2019/12/19 19:15
+	 * @param:
+	 * @return:
+	 */
+	private void unCertainBldByCorpNo(List<BvrfisBldParam> bvrfisBldParamList, TransportClient client, HttpSession httpSession, String logId) {
+		// 自然幢根据小区疑似匹配
+		String bldQueryJson = bvrfisService.organizeQueryEsByJson("elasticSearch/bld/unCertainBldByCorp.json");
+		// 遍历自然幢信息和elasticsearch
+		bvrfisBldParamList.forEach(bvrfisBldParam -> {
+			try {
+				// 查询bvdf的开发企业信息
+				BDataRelationParam bDataRelationParam = new BDataRelationParam();
+				bDataRelationParam.setWxBusiId(bvrfisBldParam.getDevelopNo());
+				BDataRelation bDataRelation = bDataRelationService.selectBDataRelation(bDataRelationParam);
+				if (null == bDataRelation) {
+					return;
+				}
+				String bldQueryParam = bldQueryJson.replace("corpNoValue", bDataRelation.getWqBusiId())
+						.replace("bldNameValue", bvrfisBldParam.getBldName())
+						.replace("addressValue", bvrfisBldParam.getAddress());
+				// 查询的json串
+				log.info(bldQueryParam);
+				WrapperQueryBuilder wqb = QueryBuilders.wrapperQuery(bldQueryParam);
+				SearchResponse searchResponse = client.prepareSearch(bldindex)
+						.setTypes(bldtype).setSize(Integer.parseInt(unCertainSize)).setQuery(wqb).get();
+				SearchHit[] hits = searchResponse.getHits().getHits();
+				for (SearchHit hit : hits) {
+					// 返回内容
+					String bvdfBldJson = hit.getSourceAsString();
+					BvdfBldParam bvdfBldParam = (BvdfBldParam) UtilTool.jsonToObj(bvdfBldJson, BvdfBldParam.class);
+					// 完全匹配有匹配结果的话不再新增bvdfbldNo
+					BmatchAnResultParam bmatchAnResultParam = new BmatchAnResultParam();
+					bmatchAnResultParam.setWqbusiid(bvdfBldParam.getBldNo());
+					bmatchAnResultParam.setPercent(new BigDecimal("100.00"));
+					BmatchAnResultInfo bmatchIsExists = bmatchAnResultService.selectBmatchAnResult(bmatchAnResultParam);
+					if (null != bmatchIsExists) {
+						return;
+					}
+					BmatchAnResultInfo bmatchAnResultInfo = new BmatchAnResultInfo();
+					bmatchAnResultInfo.setMatchid(UtilTool.UUID());
+					bmatchAnResultInfo.setLogid(logId);
+					// 维修资金数据ID
+					bmatchAnResultInfo.setWxbusiid(bvrfisBldParam.getBldNo());
+					bmatchAnResultInfo.setCenterid(bvdfBldParam.getDataCenterId());
+					bmatchAnResultInfo.setWqbusiid(bvdfBldParam.getBldNo());
+					String score = Float.toString(hit.getScore());
+					// 该条数据匹配率
+					bmatchAnResultInfo.setPercent(new BigDecimal(score));
+					// 匹配情况分析
+					bmatchAnResultInfo.setResult("匹配度低");
+					// 匹配状态 匹配成功
+					bmatchAnResultInfo.setRelstate(RelStateEnum.MATCH_SUCCESS.getCode());
+					// 匹配情况说明
+					bmatchAnResultInfo.setDescribe(null);
+					// 备注
+					bmatchAnResultInfo.setRemark("自然幢根据开发企业疑似匹配");
 					// 单位信息表
 					bmatchAnResultInfo.setMatchtype(MatchTypeEnum.BLD.getCode());
 					// todo 创建人 待确定

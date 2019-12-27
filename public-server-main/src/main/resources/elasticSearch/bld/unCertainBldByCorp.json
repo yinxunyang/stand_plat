@@ -1,0 +1,28 @@
+{
+  "function_score": {
+    "query": {
+      "term": {
+        "corpNo": "corpNoValue"
+      }
+    },
+    "functions": [
+      {
+        "weight": 5,
+        "filter": {
+          "match": {
+            "bldName": "bldNameValue"
+          }
+        }
+      },
+      {
+        "weight": 5,
+        "filter": {
+          "match": {
+            "address": "addressValue"
+          }
+        }
+      }
+    ],
+    "boost_mode": "sum"
+  }
+}
