@@ -6,7 +6,7 @@ import com.bestvike.commons.enums.RecordTimeEnum;
 import com.bestvike.commons.enums.ReturnCode;
 import com.bestvike.commons.exception.MsgException;
 import com.bestvike.commons.utils.UtilTool;
-import com.bestvike.dataCenter.biz.BvdfBldBiz;
+import com.bestvike.dataCenter.biz.BvdfHouseBiz;
 import com.bestvike.dataCenter.entity.BvdfToEsRecordTime;
 import com.bestvike.dataCenter.param.BvdfBldParam;
 import com.bestvike.dataCenter.param.BvdfCorpParam;
@@ -28,6 +28,7 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -37,7 +38,7 @@ import java.util.List;
 
 @Service
 @Slf4j
-public class BvdfBldBizImpl implements BvdfBldBiz {
+public class BvdfHouseBizImpl implements BvdfHouseBiz {
 	/**
 	 * es集群的名称
 	 */
@@ -64,15 +65,15 @@ public class BvdfBldBizImpl implements BvdfBldBiz {
 	@Value("${standplatConfig.bvdfToEsSchedule.bvdfBatchNum}")
 	private String bvdfBatchNum;
 	/**
-	 * es自然幢的索引
+	 * es房屋信息的索引
 	 */
-	@Value("${esConfig.bldindex}")
-	private String bldindex;
+	@Value("${esConfig.houseindex}")
+	private String houseindex;
 	/**
-	 * es自然幢的映射
+	 * es房屋信息的映射
 	 */
-	@Value("${esConfig.bldtype}")
-	private String bldtype;
+	@Value("${esConfig.housetype}")
+	private String housetype;
 	@Autowired
 	private ElasticSearchService elasticSearchService;
 	@Autowired
@@ -86,15 +87,15 @@ public class BvdfBldBizImpl implements BvdfBldBiz {
 
 	/**
 	 * @Author: yinxunyang
-	 * @Description: 将bvdf自然幢信息迁移至elasticsearch
+	 * @Description: 将bvdf房屋信息迁移至elasticsearch
 	 * @Date: 2019/12/19 11:25
 	 * @param:
 	 * @return:
 	 */
 	@Override
-	//@Scheduled(cron = "${standplatConfig.bldToEsSchedule.cronTime}")
-	public void bvdfBldToEs() {
-		Query query = new Query(Criteria.where("_id").is(RecordTimeEnum.BVDF_BLD_ID.getCode()));
+	@Scheduled(cron = "${standplatConfig.houseToEsSchedule.cronTime}")
+	public void bvdfHouseToEs() {
+		Query query = new Query(Criteria.where("_id").is(RecordTimeEnum.BVDF_HOUSE_ID.getCode()));
 		BvdfToEsRecordTime bvdfToEsRecordTime = mongoTemplate.findOne(query, BvdfToEsRecordTime.class);
 		String scopeBeginTime = null;
 		if (null != bvdfToEsRecordTime) {
@@ -135,7 +136,7 @@ public class BvdfBldBizImpl implements BvdfBldBiz {
 				// 拼装新增es的数据
 				XContentBuilder doc = organizeBldToEsData(bvdfBldParam);
 				// 往elasticsearch迁移一条数据，elasticsearch主键相同会覆盖原数据，该处不用判断
-				elasticSearchService.insertElasticSearch(client, doc, bldindex, bldtype, bvdfBldParam.getBldNo());
+				elasticSearchService.insertElasticSearch(client, doc, houseindex, housetype, bvdfBldParam.getBldNo());
 			});
 		} catch (UnknownHostException e) {
 			log.error("创建elasticsearch客户端连接失败" + e);
@@ -144,13 +145,13 @@ public class BvdfBldBizImpl implements BvdfBldBiz {
 		// bvdfToEsRecordTime为空时新增一条数据
 		if (null == bvdfToEsRecordTime) {
 			BvdfToEsRecordTime bvdfToEsForAdd = new BvdfToEsRecordTime();
-			bvdfToEsForAdd.setId(RecordTimeEnum.BVDF_BLD_ID.getCode());
+			bvdfToEsForAdd.setId(RecordTimeEnum.BVDF_HOUSE_ID.getCode());
 			bvdfToEsForAdd.setLastExcuteTime(scopeEndTime);
 			bvdfToEsRecordTime.setMatchType(MatchTypeEnum.BLD.getCode());
 			bvdfToEsRecordTime.setDescribe(MatchTypeEnum.BLD.getDesc());
 			mongoTemplate.insert(bvdfToEsForAdd);
 		} else {
-			Query queryupdate = new Query(Criteria.where("id").is(RecordTimeEnum.BVDF_BLD_ID.getCode()));
+			Query queryupdate = new Query(Criteria.where("id").is(RecordTimeEnum.BVDF_HOUSE_ID.getCode()));
 			Update update = new Update().set(RecordTimeEnum.LAST_EXCUTE_TIME.getCode(), scopeEndTime);
 			mongoTemplate.updateFirst(queryupdate, update, BvdfToEsRecordTime.class);
 		}

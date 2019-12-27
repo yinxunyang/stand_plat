@@ -1,6 +1,7 @@
 package com.bestvike.standplat;
 
 import com.bestvike.commons.enums.MatchTypeEnum;
+import com.bestvike.commons.enums.RecordTimeEnum;
 import com.bestvike.dataCenter.entity.BvdfToEsRecordTime;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
@@ -17,7 +18,7 @@ public class MongoTest extends BaseTest {
 	@Test
 	public void test1() {
 		BvdfToEsRecordTime bvdfToEsRecordTime =new BvdfToEsRecordTime();
-		bvdfToEsRecordTime.setId("bvdfCorp");
+		bvdfToEsRecordTime.setId(RecordTimeEnum.BVDF_CORP_ID.getCode());
 		bvdfToEsRecordTime.setLastExcuteTime("2000-12-19 10:53:01");
 		bvdfToEsRecordTime.setMatchType(MatchTypeEnum.DEVELOP.getCode());
 		bvdfToEsRecordTime.setDescribe(MatchTypeEnum.DEVELOP.getDesc());
@@ -35,7 +36,7 @@ public class MongoTest extends BaseTest {
 	@Test
 	public void test3() {
 		BvdfToEsRecordTime bvdfToEsRecordTime =new BvdfToEsRecordTime();
-		bvdfToEsRecordTime.setId("bvdfRegion");
+		bvdfToEsRecordTime.setId(RecordTimeEnum.BVDF_REGION_ID.getCode());
 		bvdfToEsRecordTime.setLastExcuteTime("2000-12-19 10:53:01");
 		bvdfToEsRecordTime.setMatchType(MatchTypeEnum.REGION.getCode());
 		bvdfToEsRecordTime.setDescribe(MatchTypeEnum.REGION.getDesc());
@@ -45,7 +46,7 @@ public class MongoTest extends BaseTest {
 	@Test
 	public void test5() {
 		BvdfToEsRecordTime bvdfToEsRecordTime =new BvdfToEsRecordTime();
-		bvdfToEsRecordTime.setId("bvdfBld");
+		bvdfToEsRecordTime.setId(RecordTimeEnum.BVDF_BLD_ID.getCode());
 		bvdfToEsRecordTime.setLastExcuteTime("2000-12-19 10:53:01");
 		bvdfToEsRecordTime.setMatchType(MatchTypeEnum.BLD.getCode());
 		bvdfToEsRecordTime.setDescribe(MatchTypeEnum.BLD.getDesc());

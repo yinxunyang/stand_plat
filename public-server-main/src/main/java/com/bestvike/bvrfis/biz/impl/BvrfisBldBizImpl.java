@@ -14,6 +14,7 @@ import com.bestvike.bvrfis.service.BmatchAnResultService;
 import com.bestvike.bvrfis.service.BvrfisBldService;
 import com.bestvike.bvrfis.service.BvrfisRegionService;
 import com.bestvike.bvrfis.service.BvrfisService;
+import com.bestvike.commons.enums.DataCenterEnum;
 import com.bestvike.commons.enums.MatchTypeEnum;
 import com.bestvike.commons.enums.RelStateEnum;
 import com.bestvike.commons.enums.ReturnCode;
@@ -184,7 +185,7 @@ public class BvrfisBldBizImpl implements BvrfisBldBiz {
 				String bvdfRegionId = bDataRelation.getWqBusiId();
 				// 根据小区编号和自然名称查询 bvdf数据
 				BvdfBldParam queryParam = new BvdfBldParam();
-				queryParam.setState("normal");
+				queryParam.setState(DataCenterEnum.NORMAL_STATE.getCode());
 				queryParam.setRegionNo(bvdfRegionId);
 				String bldName = bvrfisBldParam.getBldName();
 				if ("bldNameRepalceOne".equals(bldNameType)) {

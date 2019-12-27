@@ -1,6 +1,8 @@
 package com.bestvike.dataCenter.biz.impl;
 
+import com.bestvike.commons.enums.DataCenterEnum;
 import com.bestvike.commons.enums.MatchTypeEnum;
+import com.bestvike.commons.enums.RecordTimeEnum;
 import com.bestvike.commons.enums.ReturnCode;
 import com.bestvike.commons.exception.MsgException;
 import com.bestvike.dataCenter.biz.BvdfRegionBiz;
@@ -94,9 +96,9 @@ public class BvdfRegionBizImpl implements BvdfRegionBiz {
 	public void bvdfRegionToEs() {
 		BvdfRegionParam queryParam = new BvdfRegionParam();
 		// 状态正
-		queryParam.setState("normal");
-		queryParam.setAppcode("BVDF");
-		Query query = new Query(Criteria.where("_id").is("bvdfRegion"));
+		queryParam.setState(DataCenterEnum.NORMAL_STATE.getCode());
+		queryParam.setAppcode(DataCenterEnum.BVDF_APP_CODE.getCode());
+		Query query = new Query(Criteria.where("_id").is(RecordTimeEnum.BVDF_REGION_ID.getCode()));
 		BvdfToEsRecordTime bvdfToEsRecordTime = mongoTemplate.findOne(query, BvdfToEsRecordTime.class);
 		String scopeBeginTime = null;
 		if (null != bvdfToEsRecordTime) {
@@ -126,14 +128,14 @@ public class BvdfRegionBizImpl implements BvdfRegionBiz {
 		// bvdfToEsRecordTime为空时新增一条数据
 		if (null == bvdfToEsRecordTime) {
 			BvdfToEsRecordTime bvdfToEsForAdd = new BvdfToEsRecordTime();
-			bvdfToEsForAdd.setId("bvdfRegion");
+			bvdfToEsForAdd.setId(RecordTimeEnum.BVDF_REGION_ID.getCode());
 			bvdfToEsForAdd.setLastExcuteTime(scopeEndTime);
 			bvdfToEsRecordTime.setMatchType(MatchTypeEnum.REGION.getCode());
 			bvdfToEsRecordTime.setDescribe(MatchTypeEnum.REGION.getDesc());
 			mongoTemplate.insert(bvdfToEsForAdd);
 		} else {
-			Query queryupdate = new Query(Criteria.where("id").is("bvdfRegion"));
-			Update update = new Update().set("lastExcuteTime", scopeEndTime);
+			Query queryupdate = new Query(Criteria.where("id").is(RecordTimeEnum.BVDF_REGION_ID.getCode()));
+			Update update = new Update().set(RecordTimeEnum.LAST_EXCUTE_TIME.getCode(), scopeEndTime);
 			mongoTemplate.updateFirst(queryupdate, update, BvdfToEsRecordTime.class);
 		}
 

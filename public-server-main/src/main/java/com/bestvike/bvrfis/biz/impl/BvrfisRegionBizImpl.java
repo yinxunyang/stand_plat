@@ -10,6 +10,7 @@ import com.bestvike.bvrfis.service.BDataRelationService;
 import com.bestvike.bvrfis.service.BLogOperService;
 import com.bestvike.bvrfis.service.BvrfisRegionService;
 import com.bestvike.bvrfis.service.BvrfisService;
+import com.bestvike.commons.enums.DataCenterEnum;
 import com.bestvike.commons.enums.MatchTypeEnum;
 import com.bestvike.commons.enums.RelStateEnum;
 import com.bestvike.commons.enums.ReturnCode;
@@ -151,8 +152,8 @@ public class BvrfisRegionBizImpl implements BvrfisRegionBiz {
 			try {
 				// 查询bvdf的小区信息
 				BvdfRegionParam queryParam = new BvdfRegionParam();
-				queryParam.setCorpNo("BVDF" + bvrfisRegionParam.getCorpNo());
-				queryParam.setRegionNo("BVDF" + bvrfisRegionParam.getRegionNo());
+				queryParam.setCorpNo(DataCenterEnum.BVDF_APP_CODE.getCode() + bvrfisRegionParam.getCorpNo());
+				queryParam.setRegionNo(DataCenterEnum.BVDF_APP_CODE.getCode() + bvrfisRegionParam.getRegionNo());
 				//queryParam.setDivisionCode(bvrfisRegionParam.getDivisionCode());
 				//queryParam.setFloorArea(bvrfisRegionParam.getFloorArea());
 				List<BvdfRegionParam> bvdfRegionParamList = bvdfRegionService.queryBvdfRegionInfo(queryParam);
