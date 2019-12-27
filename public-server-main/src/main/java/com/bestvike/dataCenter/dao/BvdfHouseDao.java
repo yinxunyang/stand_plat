@@ -30,12 +30,29 @@ public interface BvdfHouseDao {
 
 	/**
 	 * @Author: yinxunyang
+	 * @Description: 查询企业信息
+	 * @Date: 2019/12/5 11:34
+	 * @param:
+	 * @return:
+	 */
+	BvdfCorpParam selectBvdfCorpInfo(@Param("param") BvdfCorpParam queryParam);
+
+	/**
+	 * @Author: yinxunyang
 	 * @Description: 查询小区信息
 	 * @Date: 2019/12/5 11:34
 	 * @param:
 	 * @return:
 	 */
 	List<BvdfRegionParam> queryBvdfRegionInfo(@Param("param") BvdfRegionParam queryParam);
+	/**
+	 * @Author: yinxunyang
+	 * @Description: 查询小区信息
+	 * @Date: 2019/12/5 11:34
+	 * @param:
+	 * @return:
+	 */
+	BvdfRegionParam selectBvdfRegionInfo(@Param("param") BvdfRegionParam queryParam);
 	/**
 	 * @Author: yinxunyang
 	 * @Description: 查询自然幢信息

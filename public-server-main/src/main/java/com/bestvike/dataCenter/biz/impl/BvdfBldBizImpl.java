@@ -7,7 +7,11 @@ import com.bestvike.commons.utils.UtilTool;
 import com.bestvike.dataCenter.biz.BvdfBldBiz;
 import com.bestvike.dataCenter.entity.BvdfToEsRecordTime;
 import com.bestvike.dataCenter.param.BvdfBldParam;
+import com.bestvike.dataCenter.param.BvdfCorpParam;
+import com.bestvike.dataCenter.param.BvdfRegionParam;
 import com.bestvike.dataCenter.service.BvdfBldService;
+import com.bestvike.dataCenter.service.BvdfCorpService;
+import com.bestvike.dataCenter.service.BvdfRegionService;
 import com.bestvike.elastic.service.ElasticSearchService;
 import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.client.transport.TransportClient;
@@ -74,6 +78,10 @@ public class BvdfBldBizImpl implements BvdfBldBiz {
 	private BvdfBldService bvdfBldService;
 	@Autowired
 	private MongoTemplate mongoTemplate;
+	@Autowired
+	private BvdfRegionService bvdfRegionService;
+	@Autowired
+	private BvdfCorpService bvdfCorpService;
 
 	/**
 	 * @Author: yinxunyang
@@ -103,6 +111,23 @@ public class BvdfBldBizImpl implements BvdfBldBiz {
 			log.info("没有bvdfBldToEs的数据");
 			return;
 		}
+		// 添加小区名称和开发企业名称
+		bvdfBldParamList.forEach(bvdfBldParam -> {
+			BvdfRegionParam regionParam = new BvdfRegionParam();
+			regionParam.setRegionNo(bvdfBldParam.getRegionNo());
+			regionParam.setState("normal");
+			BvdfRegionParam bvdfRegionParam = bvdfRegionService.selectBvdfRegionInfo(regionParam);
+			if (null != bvdfRegionParam) {
+				bvdfBldParam.setRegionName(bvdfRegionParam.getRegionName());
+			}
+			BvdfCorpParam corpParam = new BvdfCorpParam();
+			corpParam.setCorpId(bvdfBldParam.getCorpNo());
+			corpParam.setState("normal");
+			BvdfCorpParam bvdfCorpParam = bvdfCorpService.selectBvdfCorpInfo(corpParam);
+			if (null != bvdfCorpParam) {
+				bvdfBldParam.setCorpName(bvdfCorpParam.getCorpName());
+			}
+		});
 		try (TransportClient client = new PreBuiltTransportClient(Settings.builder().put("cluster.name", esClusterName).build())
 				.addTransportAddress(new TransportAddress(InetAddress.getByName(esIP), Integer.parseInt(esPort)))) {
 			bvdfBldParamList.forEach(bvdfBldParam -> {
@@ -153,7 +178,9 @@ public class BvdfBldBizImpl implements BvdfBldBiz {
 					.field("startdate", bvdfBldParam.getStartdate())
 					.field("finishdate", bvdfBldParam.getFinishdate())
 					.field("regionNo", bvdfBldParam.getRegionNo())
+					.field("regionName", bvdfBldParam.getRegionName())
 					.field("corpNo", bvdfBldParam.getCorpNo())
+					.field("corpName", bvdfBldParam.getCorpName())
 					.field("versionnumber", bvdfBldParam.getVersionnumber())
 					.field("divisionCode", bvdfBldParam.getDivisionCode())
 					.endObject();

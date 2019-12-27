@@ -45,9 +45,17 @@ public class BvdfBldParam {
 	 */
 	private String regionNo;
 	/**
+	 * 小区名称
+	 */
+	private String regionName;
+	/**
 	 * 开发企业编号
 	 */
-	private String	corpNo;
+	private String corpNo;
+	/**
+	 * 开发企业名称
+	 */
+	private String corpName;
 	/**
 	 * 状态 0正常
 	 */

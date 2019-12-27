@@ -14,4 +14,12 @@ public interface BvdfCorpService {
 	 * @return:
 	 */
 	List<BvdfCorpParam> queryBvdfCorpInfo(BvdfCorpParam queryParam);
+	/**
+	 * @Author: yinxunyang
+	 * @Description: 查询bvdf开发公司的数据
+	 * @Date: 2019/12/9 13:14
+	 * @param:
+	 * @return:
+	 */
+	BvdfCorpParam selectBvdfCorpInfo(BvdfCorpParam queryParam);
 }

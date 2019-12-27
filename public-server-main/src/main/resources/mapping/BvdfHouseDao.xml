@@ -23,6 +23,21 @@
 			</if>
 		</where>
 	</select>
+	<select id="selectBvdfCorpInfo" resultType="com.bestvike.dataCenter.param.BvdfCorpParam">
+		SELECT t.sysGuid as dataCenterId,t.corpid, t.corpName, t.licenseNo, t.certificateNo, t.versionnumber FROM
+		datasource_xjws.REV_CORP_INFO t
+		<where>
+			<if test="null != param.state and '' != param.state">
+				t.state = #{param.state,jdbcType=VARCHAR}
+			</if>
+			<if test="null != param.appcode and '' != param.appcode">
+				AND t.appcode = #{param.appcode,jdbcType=VARCHAR}
+			</if>
+			<if test="null != param.corpId and '' != param.corpId">
+				AND t.corpid = #{param.corpId,jdbcType=VARCHAR}
+			</if>
+		</where>
+	</select>
 	<select id="queryBvdfRegionInfo" resultType="com.bestvike.dataCenter.param.BvdfRegionParam">
 		select t.sysguid as dataCenterId,t.developid as corpNo,t.projectid as regionNo,t.projectname as
 		regionName,t.divisionCode,t.address,t.versionnumber,t.coverarea as floorArea from
@@ -43,6 +58,31 @@
 				<![CDATA[
 				AND to_date(t.modifydate,'yyyy-mm-dd hh24:mi:ss') < to_date(#{param.scopeEndTime},'yyyy-mm-dd hh24:mi:ss')
                 ]]>
+			</if>
+			<if test="null != param.corpNo and '' != param.corpNo">
+				AND t.developid = #{param.corpNo,jdbcType=VARCHAR}
+			</if>
+			<if test="null != param.regionNo and '' != param.regionNo">
+				AND t.projectid = #{param.regionNo,jdbcType=VARCHAR}
+			</if>
+			<if test="null != param.divisionCode and '' != param.divisionCode">
+				AND t.divisionCode = #{param.divisionCode,jdbcType=VARCHAR}
+			</if>
+			<if test="null != param.floorArea and '' != param.floorArea">
+				AND t.coverarea = #{param.floorArea,jdbcType=DECIMAL}
+			</if>
+		</where>
+	</select>
+	<select id="selectBvdfRegionInfo" resultType="com.bestvike.dataCenter.param.BvdfRegionParam">
+		select t.sysguid as dataCenterId,t.developid as corpNo,t.projectid as regionNo,t.projectname as
+		regionName,t.divisionCode,t.address,t.versionnumber,t.coverarea as floorArea from
+		datasource_xjws.REV_PROJECT_INFO t
+		<where>
+			<if test="null != param.state and '' != param.state">
+				t.state = #{param.state,jdbcType=VARCHAR}
+			</if>
+			<if test="null != param.appcode and '' != param.appcode">
+				AND t.appcode = #{param.appcode,jdbcType=VARCHAR}
 			</if>
 			<if test="null != param.corpNo and '' != param.corpNo">
 				AND t.developid = #{param.corpNo,jdbcType=VARCHAR}

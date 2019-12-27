@@ -35,4 +35,22 @@ public class BvdfCorpServiceImpl implements BvdfCorpService {
 		}
 		return bvdfCorpParamList;
 	}
+	/**
+	 * @Author: yinxunyang
+	 * @Description: 查询bvdf企业的数据
+	 * @Date: 2019/12/9 13:15
+	 * @param:
+	 * @return:
+	 */
+	@Override
+	public BvdfCorpParam selectBvdfCorpInfo(BvdfCorpParam queryParam) throws MsgException {
+		BvdfCorpParam bvdfCorpParam;
+		try {
+			bvdfCorpParam = bvdfHouseDao.selectBvdfCorpInfo(queryParam);
+		} catch (Exception e) {
+			log.error("查询bvdf企业的数据失败" + e);
+			throw new MsgException(ReturnCode.sdp_select_fail, "查询bvdf企业的数据失败");
+		}
+		return bvdfCorpParam;
+	}
 }
