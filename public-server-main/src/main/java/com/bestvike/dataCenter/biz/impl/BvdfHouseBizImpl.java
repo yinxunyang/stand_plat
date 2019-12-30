@@ -108,22 +108,22 @@ public class BvdfHouseBizImpl implements BvdfHouseBiz {
 		queryParam.setAppcode(DataCenterEnum.BVDF_APP_CODE_LOWER.getCode());
 		queryParam.setScopeBeginTime(scopeBeginTime);
 		String scopeEndTime = UtilTool.nowTime();
-		// 查询房屋的总数量，如果总数量大于20000，ScopeEndTime取结束和开始的中间数，直至小于20000
-		scopeEndTime = queryBvdfScopeEndTime(scopeBeginTime, scopeEndTime, bvdfToEsRecordTime);
 		queryParam.setScopeEndTime(scopeEndTime);
+		// 查询房屋的总数量，如果总数量大于20000，ScopeEndTime取结束和开始的中间数，直至小于20000
+		queryBvdfScopeEndTime(queryParam);
 		List<BvdfHouseParam> bvdfHouseParamList = bvdfHouseService.queryBvdfHouseInfo(queryParam);
 		if (bvdfHouseParamList.isEmpty()) {
 			bvdfToEsRecordTime = mongoTemplate.findOne(query, BvdfToEsRecordTime.class);
 			if (null == bvdfToEsRecordTime) {
 				BvdfToEsRecordTime bvdfToEsForAdd = new BvdfToEsRecordTime();
 				bvdfToEsForAdd.setId(RecordTimeEnum.BVDF_HOUSE_ID.getCode());
-				bvdfToEsForAdd.setLastExcuteTime(scopeEndTime);
+				bvdfToEsForAdd.setLastExcuteTime(queryParam.getScopeEndTime());
 				bvdfToEsForAdd.setMatchType(MatchTypeEnum.BLD.getCode());
 				bvdfToEsForAdd.setDescribe(MatchTypeEnum.BLD.getDesc());
 				mongoTemplate.insert(bvdfToEsForAdd);
 			} else {
 				Query queryupdate = new Query(Criteria.where("id").is(RecordTimeEnum.BVDF_HOUSE_ID.getCode()));
-				Update update = new Update().set(RecordTimeEnum.LAST_EXCUTE_TIME.getCode(), scopeEndTime);
+				Update update = new Update().set(RecordTimeEnum.LAST_EXCUTE_TIME.getCode(), queryParam.getScopeEndTime());
 				mongoTemplate.updateFirst(queryupdate, update, BvdfToEsRecordTime.class);
 			}
 			log.info("没有bvdfHouseToEs的数据");
@@ -162,13 +162,13 @@ public class BvdfHouseBizImpl implements BvdfHouseBiz {
 		if (null == bvdfToEsRecordTime) {
 			BvdfToEsRecordTime bvdfToEsForAdd = new BvdfToEsRecordTime();
 			bvdfToEsForAdd.setId(RecordTimeEnum.BVDF_HOUSE_ID.getCode());
-			bvdfToEsForAdd.setLastExcuteTime(scopeEndTime);
+			bvdfToEsForAdd.setLastExcuteTime(queryParam.getScopeEndTime());
 			bvdfToEsForAdd.setMatchType(MatchTypeEnum.BLD.getCode());
 			bvdfToEsForAdd.setDescribe(MatchTypeEnum.BLD.getDesc());
 			mongoTemplate.insert(bvdfToEsForAdd);
 		} else {
 			Query queryupdate = new Query(Criteria.where("id").is(RecordTimeEnum.BVDF_HOUSE_ID.getCode()));
-			Update update = new Update().set(RecordTimeEnum.LAST_EXCUTE_TIME.getCode(), scopeEndTime);
+			Update update = new Update().set(RecordTimeEnum.LAST_EXCUTE_TIME.getCode(), queryParam.getScopeEndTime());
 			mongoTemplate.updateFirst(queryupdate, update, BvdfToEsRecordTime.class);
 		}
 
@@ -181,17 +181,11 @@ public class BvdfHouseBizImpl implements BvdfHouseBiz {
 	 * @param:
 	 * @return:
 	 */
-	private String queryBvdfScopeEndTime(String scopeBeginTime, String scopeEndTime, BvdfToEsRecordTime bvdfToEsRecordTime) {
-		BvdfHouseParam queryParam = new BvdfHouseParam();
-		// 状态正常
-		queryParam.setState(DataCenterEnum.NORMAL_STATE.getCode());
-		queryParam.setAppcode(DataCenterEnum.BVDF_APP_CODE_LOWER.getCode());
-		queryParam.setScopeBeginTime(scopeBeginTime);
-		queryParam.setScopeEndTime(scopeEndTime);
+	private void queryBvdfScopeEndTime(BvdfHouseParam queryParam) {
+		String scopeBeginTime = queryParam.getScopeBeginTime();
+		String scopeEndTime = queryParam.getScopeEndTime();
 		int countNum = bvdfHouseService.countBvdfHouseInfo(queryParam);
-		if (countNum < 20000) {
-			return scopeEndTime;
-		} else {
+		if (countNum > 20000) {
 			LocalDateTime scopeBeginTimeLocal = LocalDateTime.parse(scopeBeginTime, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
 			LocalDateTime scopeEndTimeLocal = LocalDateTime.parse(scopeEndTime, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
 			// 时间差
@@ -202,9 +196,9 @@ public class BvdfHouseBizImpl implements BvdfHouseBiz {
 			// 结束时间取中间数
 			scopeEndTimeLocal = scopeEndTimeLocal.minusMinutes(durationm);
 			scopeEndTime = df.format(scopeEndTimeLocal);
-			queryBvdfScopeEndTime(scopeBeginTime, scopeEndTime, bvdfToEsRecordTime);
+			queryParam.setScopeEndTime(scopeEndTime);
+			queryBvdfScopeEndTime(queryParam);
 		}
-		return scopeEndTime;
 	}
 	/**
 	 * @Author: yinxunyang

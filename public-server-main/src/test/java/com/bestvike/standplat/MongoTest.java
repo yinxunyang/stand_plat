@@ -62,7 +62,7 @@ public class MongoTest extends BaseTest {
 	public void test6() {
 		BvdfToEsRecordTime bvdfToEsRecordTime =new BvdfToEsRecordTime();
 		bvdfToEsRecordTime.setId(RecordTimeEnum.BVDF_HOUSE_ID.getCode());
-		bvdfToEsRecordTime.setLastExcuteTime("2000-12-19 10:53:01");
+		bvdfToEsRecordTime.setLastExcuteTime("2019-11-06 10:53:01");
 		bvdfToEsRecordTime.setMatchType(MatchTypeEnum.BLD.getCode());
 		bvdfToEsRecordTime.setDescribe(MatchTypeEnum.BLD.getDesc());
 		mongoTemplate.save(bvdfToEsRecordTime);
