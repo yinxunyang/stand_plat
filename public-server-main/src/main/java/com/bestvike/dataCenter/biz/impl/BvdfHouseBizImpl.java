@@ -9,19 +9,15 @@ import com.bestvike.commons.utils.UtilTool;
 import com.bestvike.dataCenter.biz.BvdfHouseBiz;
 import com.bestvike.dataCenter.entity.BvdfToEsRecordTime;
 import com.bestvike.dataCenter.param.BvdfBldParam;
-import com.bestvike.dataCenter.param.BvdfCorpParam;
-import com.bestvike.dataCenter.param.BvdfRegionParam;
+import com.bestvike.dataCenter.param.BvdfHouseParam;
 import com.bestvike.dataCenter.service.BvdfBldService;
 import com.bestvike.dataCenter.service.BvdfCorpService;
+import com.bestvike.dataCenter.service.BvdfHouseService;
 import com.bestvike.dataCenter.service.BvdfRegionService;
 import com.bestvike.elastic.service.ElasticSearchService;
 import lombok.extern.slf4j.Slf4j;
-import org.elasticsearch.client.transport.TransportClient;
-import org.elasticsearch.common.settings.Settings;
-import org.elasticsearch.common.transport.TransportAddress;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.common.xcontent.XContentFactory;
-import org.elasticsearch.transport.client.PreBuiltTransportClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -32,8 +28,6 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.List;
 
 @Service
@@ -84,6 +78,8 @@ public class BvdfHouseBizImpl implements BvdfHouseBiz {
 	private BvdfRegionService bvdfRegionService;
 	@Autowired
 	private BvdfCorpService bvdfCorpService;
+	@Autowired
+	private BvdfHouseService bvdfHouseService;
 
 	/**
 	 * @Author: yinxunyang
@@ -102,19 +98,21 @@ public class BvdfHouseBizImpl implements BvdfHouseBiz {
 			// 开始时间取上一次执行的最后时间
 			scopeBeginTime = bvdfToEsRecordTime.getLastExcuteTime();
 		}
-		BvdfBldParam queryParam = new BvdfBldParam();
+		// todo 查询房屋的总数量，如果总数量大于20000，ScopeEndTime取结束和开始的中间数，直至小于20000
+		BvdfHouseParam queryParam = new BvdfHouseParam();
 		// 状态正常
 		queryParam.setState(DataCenterEnum.NORMAL_STATE.getCode());
+		queryParam.setAppcode(DataCenterEnum.BVDF_APP_CODE_LOWER.getCode());
 		queryParam.setScopeBeginTime(scopeBeginTime);
 		String scopeEndTime = UtilTool.nowTime();
 		queryParam.setScopeEndTime(scopeEndTime);
-		List<BvdfBldParam> bvdfBldParamList = bvdfBldService.queryBvdfBldInfo(queryParam);
-		if (bvdfBldParamList.isEmpty()) {
-			log.info("没有bvdfBldToEs的数据");
+		List<BvdfHouseParam> bvdfHouseParamList = bvdfHouseService.queryBvdfHouseInfo(queryParam);
+		if (bvdfHouseParamList.isEmpty()) {
+			log.info("没有bvdfHouseToEs的数据");
 			return;
 		}
 		// 添加小区名称和开发企业名称
-		bvdfBldParamList.forEach(bvdfBldParam -> {
+		/*bvdfHouseParamList.forEach(bvdfBldParam -> {
 			BvdfRegionParam regionParam = new BvdfRegionParam();
 			regionParam.setRegionNo(bvdfBldParam.getRegionNo());
 			regionParam.setState(DataCenterEnum.NORMAL_STATE.getCode());
@@ -129,8 +127,8 @@ public class BvdfHouseBizImpl implements BvdfHouseBiz {
 			if (null != bvdfCorpParam) {
 				bvdfBldParam.setCorpName(bvdfCorpParam.getCorpName());
 			}
-		});
-		try (TransportClient client = new PreBuiltTransportClient(Settings.builder().put("cluster.name", esClusterName).build())
+		});*/
+		/*try (TransportClient client = new PreBuiltTransportClient(Settings.builder().put("cluster.name", esClusterName).build())
 				.addTransportAddress(new TransportAddress(InetAddress.getByName(esIP), Integer.parseInt(esPort)))) {
 			bvdfBldParamList.forEach(bvdfBldParam -> {
 				// 拼装新增es的数据
@@ -141,7 +139,7 @@ public class BvdfHouseBizImpl implements BvdfHouseBiz {
 		} catch (UnknownHostException e) {
 			log.error("创建elasticsearch客户端连接失败" + e);
 			throw new MsgException(ReturnCode.sdp_sys_error, "创建elasticsearch客户端连接失败");
-		}
+		}*/
 		// bvdfToEsRecordTime为空时新增一条数据
 		if (null == bvdfToEsRecordTime) {
 			BvdfToEsRecordTime bvdfToEsForAdd = new BvdfToEsRecordTime();

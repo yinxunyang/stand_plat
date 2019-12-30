@@ -97,7 +97,7 @@ public class BvdfRegionBizImpl implements BvdfRegionBiz {
 		BvdfRegionParam queryParam = new BvdfRegionParam();
 		// 状态正
 		queryParam.setState(DataCenterEnum.NORMAL_STATE.getCode());
-		queryParam.setAppcode(DataCenterEnum.BVDF_APP_CODE.getCode());
+		queryParam.setAppcode(DataCenterEnum.BVDF_APP_CODE_CAPITAL.getCode());
 		Query query = new Query(Criteria.where("_id").is(RecordTimeEnum.BVDF_REGION_ID.getCode()));
 		BvdfToEsRecordTime bvdfToEsRecordTime = mongoTemplate.findOne(query, BvdfToEsRecordTime.class);
 		String scopeBeginTime = null;

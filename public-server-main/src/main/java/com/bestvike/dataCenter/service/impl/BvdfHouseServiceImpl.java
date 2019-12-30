@@ -103,12 +103,12 @@ public class BvdfHouseServiceImpl implements BvdfHouseService {
 	 * @return:
 	 */
 	@Override
-	public List<BvdfHouseParam> queryBvdfHouseInfo(Map<String, Object> parameterMap) throws MsgException {
+	public List<BvdfHouseParam> queryBvdfHouseInfo(BvdfHouseParam queryParam) throws MsgException {
 		List<BvdfHouseParam> bvdfHouseParamList;
 		try {
-			bvdfHouseParamList = bvdfHouseDao.queryBvdfHouseInfo(parameterMap);
+			bvdfHouseParamList = bvdfHouseDao.queryBvdfHouseInfo(queryParam);
 		} catch (Exception e) {
-			log.error("查询bvdf房屋的数据失败");
+			log.error("查询bvdf房屋的数据失败" + e);
 			throw new MsgException(ReturnCode.sdp_select_fail, "查询bvdf房屋的数据失败");
 		}
 		return bvdfHouseParamList;

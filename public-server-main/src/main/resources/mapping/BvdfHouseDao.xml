@@ -138,35 +138,37 @@
 		</where>
 	</select>
 	<select id="queryBvdfHouseInfo" resultType="com.bestvike.dataCenter.param.BvdfHouseParam">
-			select * from (select  t1.sysguid,
-		        t1.buycertnos,
-		        t1.corpno,
-                t1.projectno,
-                t1.bldno,
-                t1.cellno,
-                t1.floorname,
-                t1.roomno,
-                t1.buynames,
-                t1.address,
-                t1.housetype
-		from arc_houseinfo t1
-		minus
-		select  t2.sysguid,
-		        t2.buycertnos,
-		        t2.corpno,
-                t2.projectno,
-                t2.bldno,
-                t2.cellno,
-                t2.floorname,
-                t2.roomno,
-                t2.buynames,
-                t2.address,
-                t2.housetype
-		from mid_aks.copy_houseinfo t2
-		)
-		<![CDATA[
-		where rownum <= #{houseMaxNum}
-		]]>
+		select t.sysguid as dataCenterId,
+		t.houseid,
+		t.housetype,
+		t.naturalid as bldno,
+		t.cellno,
+		t.floorno,
+		t.floorname,
+		t.showname,
+		t.roomno,
+		t.calculatebuildingarea as constructArea,
+		t.address,
+		t.versionnumber
+		from datasource_xjws.rev_house_info t
+		<where>
+			<if test="null != param.state and '' != param.state">
+				t.state = #{param.state,jdbcType=VARCHAR}
+			</if>
+			<if test="null != param.appcode and '' != param.appcode">
+				AND t.appcode = #{param.appcode,jdbcType=VARCHAR}
+			</if>
+			<if test="null != param.scopeBeginTime and '' != param.scopeBeginTime">
+				<![CDATA[
+				AND to_date(t.modifydate,'yyyy-mm-dd hh24:mi:ss') >= to_date(#{param.scopeBeginTime},'yyyy-mm-dd hh24:mi:ss')
+                ]]>
+			</if>
+			<if test="null != param.scopeEndTime and '' != param.scopeEndTime">
+				<![CDATA[
+				AND to_date(t.modifydate,'yyyy-mm-dd hh24:mi:ss') < to_date(#{param.scopeEndTime},'yyyy-mm-dd hh24:mi:ss')
+                ]]>
+			</if>
+		</where>
 	</select>
 	<select id="selectCorpNameByCorpNo" resultType="com.bestvike.dataCenter.param.BvdfCorpParam">
 		select corpName, licenseNo from arc_corpinfo where corpNo = #{corpNo,jdbcType=VARCHAR}

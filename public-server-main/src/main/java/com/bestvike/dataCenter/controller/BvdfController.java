@@ -15,7 +15,7 @@ public class BvdfController extends BaseController {
 	@ApiOperation(value = "将bvdf房屋信息迁移至elasticsearch", notes = "将bvdf房屋信息迁移至elasticsearch")
 	@GetMapping("/api/bvdf/bvdfhouseToEs")
 	public void bvdfHouseToEs() {
-		bvdfService.bvdfHouseToEs();
+		//bvdfService.bvdfHouseToEs();
 	}
 
 }

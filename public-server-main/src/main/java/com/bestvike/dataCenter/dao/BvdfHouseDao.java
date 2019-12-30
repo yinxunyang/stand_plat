@@ -69,7 +69,7 @@ public interface BvdfHouseDao {
 	 * @param:
 	 * @return:
 	 */
-	List<BvdfHouseParam> queryBvdfHouseInfo(Map<String, Object> parameterMap);
+	List<BvdfHouseParam> queryBvdfHouseInfo(@Param("param")BvdfHouseParam queryParam);
 
 	/**
 	 * @Author: yinxunyang

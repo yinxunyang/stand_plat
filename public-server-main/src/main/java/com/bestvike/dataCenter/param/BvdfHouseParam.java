@@ -13,21 +13,17 @@ import lombok.Setter;
 @Setter
 public class BvdfHouseParam {
 	/**
+	 * 数据中心主键
+	 */
+	private String dataCenterId;
+	/**
 	 * 主键
 	 */
-	private String sysguid;
+	private String houseid;
 	/**
-	 * 买受人身份证号
+	 * 房屋性质
 	 */
-	private String buycertnos;
-	/**
-	 * 企业编号
-	 */
-	private String corpno;
-	/**
-	 * 小区编号
-	 */
-	private String projectno;
+	private String housetype;
 	/**
 	 * 楼幢编号
 	 */
@@ -37,25 +33,49 @@ public class BvdfHouseParam {
 	 */
 	private String cellno;
 	/**
+	 * 楼层编号
+	 */
+	private String floorno;
+	/**
 	 * 楼层名称
 	 */
 	private String floorname;
+	/**
+	 * 房屋显示名称
+	 */
+	private String showname;
 	/**
 	 * 室号
 	 */
 	private String roomno;
 	/**
-	 * 房屋买受人
+	 * 建筑面积
 	 */
-	private String buynames;
+	private String constructArea;
 	/**
 	 * 房屋地址
 	 */
 	private String address;
 	/**
-	 * 房屋性质
+	 * 版本号
 	 */
-	private String housetype;
+	private String versionnumber;
+	/**
+	 * 状态 0正常
+	 */
+	private String state;
+	/**
+	 * appCode
+	 */
+	private String appcode;
+	/**
+	 * 开始时间
+	 */
+	private String scopeBeginTime;
+	/**
+	 * 结束时间
+	 */
+	private String scopeEndTime;
 
 	@Override
 	public String toString() {

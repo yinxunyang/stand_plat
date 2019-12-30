@@ -101,7 +101,7 @@ public class BvdfServiceImpl implements BvdfService {
 		BvdfCorpParam queryParam = new BvdfCorpParam();
 		// 状态正
 		queryParam.setState(DataCenterEnum.NORMAL_STATE.getCode());
-		queryParam.setAppcode(DataCenterEnum.BVDF_APP_CODE.getCode());
+		queryParam.setAppcode(DataCenterEnum.BVDF_APP_CODE_CAPITAL.getCode());
 		Query query = new Query(Criteria.where("_id").is(RecordTimeEnum.BVDF_CORP_ID.getCode()));
 		BvdfToEsRecordTime bvdfToEsRecordTime = mongoTemplate.findOne(query, BvdfToEsRecordTime.class);
 		String scopeBeginTime = null;
@@ -178,7 +178,7 @@ public class BvdfServiceImpl implements BvdfService {
 	 * @param:
 	 * @return:
 	 */
-	@Override
+	/*@Override
 	public void bvdfHouseToEs() {
 		try {
 			Map<String, Object> parameterMap = new HashMap<>();
@@ -194,7 +194,7 @@ public class BvdfServiceImpl implements BvdfService {
 		} catch (Exception e) {
 			log.error("定时任务：往ES迁移bvdf数据失败！" + e);
 		}
-	}
+	}*/
 
 	/**
 	 * @Author: yinxunyang
@@ -202,7 +202,7 @@ public class BvdfServiceImpl implements BvdfService {
 	 * @Date: 2019/12/9 13:26
 	 * @param:
 	 * @return:
-	 */
+	 *//*
 	private void addCopyHouseAndEs(List<BvdfHouseParam> bvdfHouseParamList) {
 		try (TransportClient client = new PreBuiltTransportClient(Settings.builder().put("cluster.name", esClusterName).build())
 				.addTransportAddress(new TransportAddress(InetAddress.getByName(esIP), Integer.parseInt(esPort)))) {
@@ -227,14 +227,14 @@ public class BvdfServiceImpl implements BvdfService {
 			log.error("批量新增房屋和es失败" + e);
 		}
 	}
-
+*/
 	/**
 	 * @Author: yinxunyang
 	 * @Description: 批量新增房屋和es
 	 * @Date: 2019/12/18 14:35
 	 * @param:
 	 * @return:
-	 */
+	 *//*
 	private void addHouseAndEsByBatch(List<BvdfHouseParam> bvdfHouseParamList, TransportClient client) {
 		List<BvdfHouseParam> bvdfHouseParamListForAdd = new ArrayList<>();
 		List<BvdfHouseParam> bvdfHouseParamListForEdit = new ArrayList<>();
@@ -247,14 +247,14 @@ public class BvdfServiceImpl implements BvdfService {
 			esHouseParamList.add(esHouseParam);
 		});
 		bvdfHouseService.insertCopyHouseAndEsByBatch(bvdfHouseParamListForAdd, bvdfHouseParamListForEdit, client, esHouseParamList);
-	}
+	}*/
 	/**
 	 * @Author: yinxunyang
 	 * @Description: 组织往elasticSearch推送的数据
 	 * @Date: 2019/12/10 13:29
 	 * @param:
 	 * @return:
-	 */
+	 *//*
 	private EsHouseParam organizeEsHouseParam(BvdfHouseParam bvdfHouseParam) {
 		try {
 			EsHouseParam esHouseParam = new EsHouseParam();
@@ -315,5 +315,5 @@ public class BvdfServiceImpl implements BvdfService {
 			log.error("组织往elasticSearch推送的数据失败" + e);
 			throw new MsgException(ReturnCode.sdp_select_fail, "组织往elasticSearch推送的数据失败");
 		}
-	}
+	}*/
 }

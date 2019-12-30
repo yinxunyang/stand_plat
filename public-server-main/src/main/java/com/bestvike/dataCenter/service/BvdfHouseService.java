@@ -26,5 +26,5 @@ public interface BvdfHouseService {
 	 * @param:
 	 * @return:
 	 */
-	List<BvdfHouseParam> queryBvdfHouseInfo(Map<String, Object> parameterMap);
+	List<BvdfHouseParam> queryBvdfHouseInfo(BvdfHouseParam queryParam);
 }

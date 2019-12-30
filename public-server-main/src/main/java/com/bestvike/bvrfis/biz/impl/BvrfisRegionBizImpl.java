@@ -152,8 +152,8 @@ public class BvrfisRegionBizImpl implements BvrfisRegionBiz {
 			try {
 				// 查询bvdf的小区信息
 				BvdfRegionParam queryParam = new BvdfRegionParam();
-				queryParam.setCorpNo(DataCenterEnum.BVDF_APP_CODE.getCode() + bvrfisRegionParam.getCorpNo());
-				queryParam.setRegionNo(DataCenterEnum.BVDF_APP_CODE.getCode() + bvrfisRegionParam.getRegionNo());
+				queryParam.setCorpNo(DataCenterEnum.BVDF_APP_CODE_CAPITAL.getCode() + bvrfisRegionParam.getCorpNo());
+				queryParam.setRegionNo(DataCenterEnum.BVDF_APP_CODE_CAPITAL.getCode() + bvrfisRegionParam.getRegionNo());
 				//queryParam.setDivisionCode(bvrfisRegionParam.getDivisionCode());
 				//queryParam.setFloorArea(bvrfisRegionParam.getFloorArea());
 				List<BvdfRegionParam> bvdfRegionParamList = bvdfRegionService.queryBvdfRegionInfo(queryParam);
