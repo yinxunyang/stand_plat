@@ -118,7 +118,7 @@ standplatConfig:
     # 定时时间 每隔5分钟执行一次
     cornTime: 0 0/5 * * * ?
     # 房屋信息表(arc_houseinfo)最大查询条数,防止内存溢出
-    houseMaxNum: 20000
+    houseMaxNum: 60000
     # 批量新增、修改bvdf表的数量
     bvdfBatchNum: 1
   corpToEsSchedule:

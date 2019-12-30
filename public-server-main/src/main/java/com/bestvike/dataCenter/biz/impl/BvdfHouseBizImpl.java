@@ -8,7 +8,6 @@ import com.bestvike.commons.exception.MsgException;
 import com.bestvike.commons.utils.UtilTool;
 import com.bestvike.dataCenter.biz.BvdfHouseBiz;
 import com.bestvike.dataCenter.entity.BvdfToEsRecordTime;
-import com.bestvike.dataCenter.param.BvdfBldParam;
 import com.bestvike.dataCenter.param.BvdfHouseParam;
 import com.bestvike.dataCenter.service.BvdfBldService;
 import com.bestvike.dataCenter.service.BvdfCorpService;
@@ -159,8 +158,6 @@ public class BvdfHouseBizImpl implements BvdfHouseBiz {
 			log.error("创建elasticsearch客户端连接失败" + e);
 			throw new MsgException(ReturnCode.sdp_sys_error, "创建elasticsearch客户端连接失败");
 		}
-		int countNum = bvdfHouseService.countBvdfHouseInfo(queryParam);
-		if (countNum == 0) {
 			// bvdfToEsRecordTime为空时新增一条数据
 			if (null == bvdfToEsRecordTime) {
 				BvdfToEsRecordTime bvdfToEsForAdd = new BvdfToEsRecordTime();
@@ -174,7 +171,6 @@ public class BvdfHouseBizImpl implements BvdfHouseBiz {
 				Update update = new Update().set(RecordTimeEnum.LAST_EXCUTE_TIME.getCode(), queryParam.getScopeEndTime());
 				mongoTemplate.updateFirst(queryupdate, update, BvdfToEsRecordTime.class);
 			}
-		}
 	}
 	/**
 	 * @Author: yinxunyang
