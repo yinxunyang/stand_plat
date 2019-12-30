@@ -1,7 +1,6 @@
 package com.bestvike.standplat;
 
 import com.bestvike.bvrfis.dao.BmatchAnResultDao;
-import com.bestvike.bvrfis.entity.BmatchAnResultInfo;
 import com.bestvike.dataCenter.dao.BvdfHouseDao;
 import com.bestvike.dataCenter.param.BvdfHouseParam;
 import org.elasticsearch.action.get.GetResponse;
@@ -15,7 +14,6 @@ import org.elasticsearch.transport.client.PreBuiltTransportClient;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.math.BigDecimal;
 import java.net.InetAddress;
 import java.util.HashMap;
 import java.util.List;
@@ -37,11 +35,11 @@ public class MidTableTest extends BaseTest {
 
 	@Test
 	public void test2() {
-		System.setProperty("es.set.netty.runtime.available.processors", "false");
+		/*System.setProperty("es.set.netty.runtime.available.processors", "false");
 		Map<String, Object> parameterMap = new HashMap<>();
 		parameterMap.put("houseMaxNum", 20);
 		List<BvdfHouseParam> bvdfHouseParamList = bvdfHouseDao.queryBvdfHouseInfo(parameterMap);
-		System.out.println("bvdfHouseParamList:" + bvdfHouseParamList);
+		System.out.println("bvdfHouseParamList:" + bvdfHouseParamList);*/
 	}
 	@Test
 	public void esSearchTest() throws Exception {

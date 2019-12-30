@@ -73,6 +73,14 @@ public interface BvdfHouseDao {
 
 	/**
 	 * @Author: yinxunyang
+	 * @Description: 查询bvdf房屋的数量
+	 * @Date: 2019/12/30 11:16
+	 * @param:
+	 * @return:
+	 */
+	int countBvdfHouseInfo(@Param("param") BvdfHouseParam queryParam);
+	/**
+	 * @Author: yinxunyang
 	 * @Description: 根据企业编号查询企业名称
 	 * @Date: 2019/12/10 13:50
 	 * @param:

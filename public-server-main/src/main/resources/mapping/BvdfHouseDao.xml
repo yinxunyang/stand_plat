@@ -170,6 +170,27 @@
 			</if>
 		</where>
 	</select>
+	<select id="countBvdfHouseInfo" resultType="java.lang.Integer">
+		select count(t.sysguid) from datasource_xjws.rev_house_info t
+		<where>
+			<if test="null != param.state and '' != param.state">
+				t.state = #{param.state,jdbcType=VARCHAR}
+			</if>
+			<if test="null != param.appcode and '' != param.appcode">
+				AND t.appcode = #{param.appcode,jdbcType=VARCHAR}
+			</if>
+			<if test="null != param.scopeBeginTime and '' != param.scopeBeginTime">
+				<![CDATA[
+				AND to_date(t.modifydate,'yyyy-mm-dd hh24:mi:ss') >= to_date(#{param.scopeBeginTime},'yyyy-mm-dd hh24:mi:ss')
+                ]]>
+			</if>
+			<if test="null != param.scopeEndTime and '' != param.scopeEndTime">
+				<![CDATA[
+				AND to_date(t.modifydate,'yyyy-mm-dd hh24:mi:ss') < to_date(#{param.scopeEndTime},'yyyy-mm-dd hh24:mi:ss')
+                ]]>
+			</if>
+		</where>
+	</select>
 	<select id="selectCorpNameByCorpNo" resultType="com.bestvike.dataCenter.param.BvdfCorpParam">
 		select corpName, licenseNo from arc_corpinfo where corpNo = #{corpNo,jdbcType=VARCHAR}
 	</select>

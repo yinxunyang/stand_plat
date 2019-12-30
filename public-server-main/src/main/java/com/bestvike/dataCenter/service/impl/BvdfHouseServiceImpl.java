@@ -18,7 +18,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 
 @Service
 @Slf4j
@@ -112,5 +111,24 @@ public class BvdfHouseServiceImpl implements BvdfHouseService {
 			throw new MsgException(ReturnCode.sdp_select_fail, "查询bvdf房屋的数据失败");
 		}
 		return bvdfHouseParamList;
+	}
+
+	/**
+	 * @Author: yinxunyang
+	 * @Description: 查询bvdf房屋的数量
+	 * @Date: 2019/12/30 11:15
+	 * @param:
+	 * @return:
+	 */
+	@Override
+	public int countBvdfHouseInfo(BvdfHouseParam queryParam) {
+		int countNum;
+		try {
+			countNum = bvdfHouseDao.countBvdfHouseInfo(queryParam);
+		} catch (Exception e) {
+			log.error("查询bvdf房屋的数量失败" + e);
+			throw new MsgException(ReturnCode.sdp_select_fail, "查询bvdf房屋的数量失败");
+		}
+		return countNum;
 	}
 }

@@ -65,7 +65,7 @@ public class MidTest extends BaseTest {
 
 	@Test
 	public void test12() {
-		BvdfHouseParam midHouseInfo = new BvdfHouseParam();
+		/*BvdfHouseParam midHouseInfo = new BvdfHouseParam();
 		midHouseInfo.setSysguid("602628467");
 		midHouseInfo.setBldno("123");
 		midHouseInfo.setCellno("12");
@@ -73,20 +73,20 @@ public class MidTest extends BaseTest {
 		midHouseInfo.setBuycertnos("456");
 		midHouseInfo.setProjectno("123");
 		midHouseInfo.setRoomno("77");
-		midHouseInfo.setAddress("123");
+		midHouseInfo.setAddress("123");*/
 		//midHouseDao.insertBvdfHouseInfo(midHouseInfo);
 	}
 	@Test
 	public void test15() {
 		BvdfHouseParam bvdfHouseParam = new BvdfHouseParam();
-		bvdfHouseParam.setSysguid("42f089a6-18dd-4756-9c31-7aa6ed7210b6");
+		/*bvdfHouseParam.setSysguid("42f089a6-18dd-4756-9c31-7aa6ed7210b6");
 		bvdfHouseParam.setFloorname("测试");
 		bvdfHouseParam.setRoomno("1");
 		bvdfHouseParam.setProjectno("2");
 		bvdfHouseParam.setBldno("2");
 		bvdfHouseParam.setCellno("2");
 		bvdfHouseParam.setBuynames("测试");
-		bvdfHouseParam.setBuycertnos("测试");
+		bvdfHouseParam.setBuycertnos("测试");*/
 		bvdfHouseParam.setAddress("测试");
 		//int ss  = midHouseService.updateBvdfHouseInfoById(bvdfHouseParam);
 		int i = 0;
@@ -94,7 +94,7 @@ public class MidTest extends BaseTest {
 	@Test
 	public void test14(){
 		// 定时任务
-		bvdfServiceImpl.bvdfHouseToEs();
+	//	bvdfServiceImpl.bvdfHouseToEs();
 	}
 
 	@Test

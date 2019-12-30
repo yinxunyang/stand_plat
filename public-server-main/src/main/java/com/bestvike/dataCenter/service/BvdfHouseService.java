@@ -1,12 +1,11 @@
 package com.bestvike.dataCenter.service;
 
-import com.bestvike.dataCenter.param.BvdfHouseParam;
 import com.bestvike.commons.exception.MsgException;
+import com.bestvike.dataCenter.param.BvdfHouseParam;
 import com.bestvike.elastic.param.EsHouseParam;
 import org.elasticsearch.client.transport.TransportClient;
 
 import java.util.List;
-import java.util.Map;
 
 public interface BvdfHouseService {
 	/**
@@ -27,4 +26,12 @@ public interface BvdfHouseService {
 	 * @return:
 	 */
 	List<BvdfHouseParam> queryBvdfHouseInfo(BvdfHouseParam queryParam);
+	/**
+	 * @Author: yinxunyang
+	 * @Description: 查询bvdf房屋的数量
+	 * @Date: 2019/12/9 13:14
+	 * @param:
+	 * @return:
+	 */
+	int countBvdfHouseInfo(BvdfHouseParam queryParam);
 }

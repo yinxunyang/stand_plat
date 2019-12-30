@@ -22,6 +22,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpSessionContext;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
@@ -480,5 +483,20 @@ public class BvrfisTest extends BaseTest {
 		// todo 使用bldNames查询 号楼
 		String[] blaNames = new String[]{bldName, bldName.replace("号楼", "").replace("栋", ""), bldName.replace("号楼", "").replace("栋", "") + "号楼"};
 		int i = 0;
+	}
+
+	@Test
+	public void test15() {
+		LocalDateTime scopeEndTimeLocal = LocalDateTime.parse("2019-12-30 11:30:11", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+		LocalDateTime scopeEndTimeLocal1 = LocalDateTime.parse("2019-12-30 10:35:11", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+		// 时间差
+		Duration duration = Duration.between(scopeEndTimeLocal1, scopeEndTimeLocal);
+		// 相差分钟数
+		long durationmillis = duration.toMinutes();
+		long durationm = durationmillis / 2;
+		scopeEndTimeLocal = scopeEndTimeLocal.minusMinutes(durationm);
+		System.out.println(scopeEndTimeLocal);
+		System.out.println("duration相差" + durationmillis + "分钟");
+		System.out.println("durationdedurationm相差" + durationm + "分钟");
 	}
 }

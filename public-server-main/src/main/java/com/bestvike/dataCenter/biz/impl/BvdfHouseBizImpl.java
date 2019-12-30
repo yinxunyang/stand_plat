@@ -28,6 +28,9 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Service
@@ -80,6 +83,7 @@ public class BvdfHouseBizImpl implements BvdfHouseBiz {
 	private BvdfCorpService bvdfCorpService;
 	@Autowired
 	private BvdfHouseService bvdfHouseService;
+	private static final DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
 	/**
 	 * @Author: yinxunyang
@@ -93,7 +97,7 @@ public class BvdfHouseBizImpl implements BvdfHouseBiz {
 	public void bvdfHouseToEs() {
 		Query query = new Query(Criteria.where("_id").is(RecordTimeEnum.BVDF_HOUSE_ID.getCode()));
 		BvdfToEsRecordTime bvdfToEsRecordTime = mongoTemplate.findOne(query, BvdfToEsRecordTime.class);
-		String scopeBeginTime = null;
+		String scopeBeginTime = "1970-01-01 08:00:00";
 		if (null != bvdfToEsRecordTime) {
 			// 开始时间取上一次执行的最后时间
 			scopeBeginTime = bvdfToEsRecordTime.getLastExcuteTime();
@@ -105,9 +109,22 @@ public class BvdfHouseBizImpl implements BvdfHouseBiz {
 		queryParam.setAppcode(DataCenterEnum.BVDF_APP_CODE_LOWER.getCode());
 		queryParam.setScopeBeginTime(scopeBeginTime);
 		String scopeEndTime = UtilTool.nowTime();
+		scopeEndTime = queryBvdfScopeEndTime(scopeBeginTime, scopeEndTime, bvdfToEsRecordTime);
 		queryParam.setScopeEndTime(scopeEndTime);
 		List<BvdfHouseParam> bvdfHouseParamList = bvdfHouseService.queryBvdfHouseInfo(queryParam);
 		if (bvdfHouseParamList.isEmpty()) {
+			if (null == bvdfToEsRecordTime) {
+				BvdfToEsRecordTime bvdfToEsForAdd = new BvdfToEsRecordTime();
+				bvdfToEsForAdd.setId(RecordTimeEnum.BVDF_HOUSE_ID.getCode());
+				bvdfToEsForAdd.setLastExcuteTime(scopeEndTime);
+				bvdfToEsForAdd.setMatchType(MatchTypeEnum.BLD.getCode());
+				bvdfToEsForAdd.setDescribe(MatchTypeEnum.BLD.getDesc());
+				mongoTemplate.insert(bvdfToEsForAdd);
+			} else {
+				Query queryupdate = new Query(Criteria.where("id").is(RecordTimeEnum.BVDF_HOUSE_ID.getCode()));
+				Update update = new Update().set(RecordTimeEnum.LAST_EXCUTE_TIME.getCode(), scopeEndTime);
+				mongoTemplate.updateFirst(queryupdate, update, BvdfToEsRecordTime.class);
+			}
 			log.info("没有bvdfHouseToEs的数据");
 			return;
 		}
@@ -145,8 +162,8 @@ public class BvdfHouseBizImpl implements BvdfHouseBiz {
 			BvdfToEsRecordTime bvdfToEsForAdd = new BvdfToEsRecordTime();
 			bvdfToEsForAdd.setId(RecordTimeEnum.BVDF_HOUSE_ID.getCode());
 			bvdfToEsForAdd.setLastExcuteTime(scopeEndTime);
-			bvdfToEsRecordTime.setMatchType(MatchTypeEnum.BLD.getCode());
-			bvdfToEsRecordTime.setDescribe(MatchTypeEnum.BLD.getDesc());
+			bvdfToEsForAdd.setMatchType(MatchTypeEnum.BLD.getCode());
+			bvdfToEsForAdd.setDescribe(MatchTypeEnum.BLD.getDesc());
 			mongoTemplate.insert(bvdfToEsForAdd);
 		} else {
 			Query queryupdate = new Query(Criteria.where("id").is(RecordTimeEnum.BVDF_HOUSE_ID.getCode()));
@@ -156,6 +173,51 @@ public class BvdfHouseBizImpl implements BvdfHouseBiz {
 
 	}
 
+	/**
+	 * @Author: yinxunyang
+	 * @Description: 获取房屋的取值结束时间
+	 * @Date: 2019/12/30 11:03
+	 * @param:
+	 * @return:
+	 */
+	private String queryBvdfScopeEndTime(String scopeBeginTime, String scopeEndTime, BvdfToEsRecordTime bvdfToEsRecordTime) {
+		BvdfHouseParam queryParam = new BvdfHouseParam();
+		// 状态正常
+		queryParam.setState(DataCenterEnum.NORMAL_STATE.getCode());
+		queryParam.setAppcode(DataCenterEnum.BVDF_APP_CODE_LOWER.getCode());
+		queryParam.setScopeBeginTime(scopeBeginTime);
+		queryParam.setScopeEndTime(scopeEndTime);
+		int countNum = bvdfHouseService.countBvdfHouseInfo(queryParam);
+		if (countNum < 20000) {
+			return scopeEndTime;
+		} else {
+			LocalDateTime scopeBeginTimeLocal = LocalDateTime.parse(scopeBeginTime, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+			LocalDateTime scopeEndTimeLocal = LocalDateTime.parse(scopeEndTime, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+			// 时间差
+			Duration duration = Duration.between(scopeBeginTimeLocal, scopeEndTimeLocal);
+			// 相差分钟数
+			long durationMinute = duration.toMinutes();
+			long durationm = durationMinute / 2;
+			// 结束时间取中间数
+			scopeEndTimeLocal = scopeEndTimeLocal.minusMinutes(durationm);
+			scopeEndTime = df.format(scopeEndTimeLocal);
+			/*// bvdfToEsRecordTime为空时新增一条数据
+			if (null == bvdfToEsRecordTime) {
+				BvdfToEsRecordTime bvdfToEsForAdd = new BvdfToEsRecordTime();
+				bvdfToEsForAdd.setId(RecordTimeEnum.BVDF_HOUSE_ID.getCode());
+				bvdfToEsForAdd.setLastExcuteTime(scopeEndTime);
+				bvdfToEsForAdd.setMatchType(MatchTypeEnum.BLD.getCode());
+				bvdfToEsForAdd.setDescribe(MatchTypeEnum.BLD.getDesc());
+				mongoTemplate.insert(bvdfToEsForAdd);
+			} else {
+				Query queryupdate = new Query(Criteria.where("id").is(RecordTimeEnum.BVDF_HOUSE_ID.getCode()));
+				Update update = new Update().set(RecordTimeEnum.LAST_EXCUTE_TIME.getCode(), scopeEndTime);
+				mongoTemplate.updateFirst(queryupdate, update, BvdfToEsRecordTime.class);
+			}*/
+			queryBvdfScopeEndTime(scopeBeginTime, scopeEndTime, bvdfToEsRecordTime);
+		}
+		return scopeEndTime;
+	}
 	/**
 	 * @Author: yinxunyang
 	 * @Description: 拼装regionToElasticSearch的数据
