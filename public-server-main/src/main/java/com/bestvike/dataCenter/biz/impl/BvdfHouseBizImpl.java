@@ -102,17 +102,18 @@ public class BvdfHouseBizImpl implements BvdfHouseBiz {
 			// 开始时间取上一次执行的最后时间
 			scopeBeginTime = bvdfToEsRecordTime.getLastExcuteTime();
 		}
-		// todo 查询房屋的总数量，如果总数量大于20000，ScopeEndTime取结束和开始的中间数，直至小于20000
 		BvdfHouseParam queryParam = new BvdfHouseParam();
 		// 状态正常
 		queryParam.setState(DataCenterEnum.NORMAL_STATE.getCode());
 		queryParam.setAppcode(DataCenterEnum.BVDF_APP_CODE_LOWER.getCode());
 		queryParam.setScopeBeginTime(scopeBeginTime);
 		String scopeEndTime = UtilTool.nowTime();
+		// 查询房屋的总数量，如果总数量大于20000，ScopeEndTime取结束和开始的中间数，直至小于20000
 		scopeEndTime = queryBvdfScopeEndTime(scopeBeginTime, scopeEndTime, bvdfToEsRecordTime);
 		queryParam.setScopeEndTime(scopeEndTime);
 		List<BvdfHouseParam> bvdfHouseParamList = bvdfHouseService.queryBvdfHouseInfo(queryParam);
 		if (bvdfHouseParamList.isEmpty()) {
+			bvdfToEsRecordTime = mongoTemplate.findOne(query, BvdfToEsRecordTime.class);
 			if (null == bvdfToEsRecordTime) {
 				BvdfToEsRecordTime bvdfToEsForAdd = new BvdfToEsRecordTime();
 				bvdfToEsForAdd.setId(RecordTimeEnum.BVDF_HOUSE_ID.getCode());
@@ -201,19 +202,6 @@ public class BvdfHouseBizImpl implements BvdfHouseBiz {
 			// 结束时间取中间数
 			scopeEndTimeLocal = scopeEndTimeLocal.minusMinutes(durationm);
 			scopeEndTime = df.format(scopeEndTimeLocal);
-			/*// bvdfToEsRecordTime为空时新增一条数据
-			if (null == bvdfToEsRecordTime) {
-				BvdfToEsRecordTime bvdfToEsForAdd = new BvdfToEsRecordTime();
-				bvdfToEsForAdd.setId(RecordTimeEnum.BVDF_HOUSE_ID.getCode());
-				bvdfToEsForAdd.setLastExcuteTime(scopeEndTime);
-				bvdfToEsForAdd.setMatchType(MatchTypeEnum.BLD.getCode());
-				bvdfToEsForAdd.setDescribe(MatchTypeEnum.BLD.getDesc());
-				mongoTemplate.insert(bvdfToEsForAdd);
-			} else {
-				Query queryupdate = new Query(Criteria.where("id").is(RecordTimeEnum.BVDF_HOUSE_ID.getCode()));
-				Update update = new Update().set(RecordTimeEnum.LAST_EXCUTE_TIME.getCode(), scopeEndTime);
-				mongoTemplate.updateFirst(queryupdate, update, BvdfToEsRecordTime.class);
-			}*/
 			queryBvdfScopeEndTime(scopeBeginTime, scopeEndTime, bvdfToEsRecordTime);
 		}
 		return scopeEndTime;

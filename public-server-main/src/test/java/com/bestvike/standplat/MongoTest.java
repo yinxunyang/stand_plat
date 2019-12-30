@@ -58,4 +58,14 @@ public class MongoTest extends BaseTest {
 		mongoTemplate.dropCollection(BvdfToEsRecordTime.class);
 		int i = 0;
 	}
+	@Test
+	public void test6() {
+		BvdfToEsRecordTime bvdfToEsRecordTime =new BvdfToEsRecordTime();
+		bvdfToEsRecordTime.setId(RecordTimeEnum.BVDF_HOUSE_ID.getCode());
+		bvdfToEsRecordTime.setLastExcuteTime("2000-12-19 10:53:01");
+		bvdfToEsRecordTime.setMatchType(MatchTypeEnum.BLD.getCode());
+		bvdfToEsRecordTime.setDescribe(MatchTypeEnum.BLD.getDesc());
+		mongoTemplate.save(bvdfToEsRecordTime);
+		int i = 0;
+	}
 }
