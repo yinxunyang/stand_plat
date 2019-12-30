@@ -70,6 +70,14 @@ public interface BvdfHouseDao {
 	 * @return:
 	 */
 	List<BvdfHouseParam> queryBvdfHouseInfo(@Param("param")BvdfHouseParam queryParam);
+	/**
+	 * @Author: yinxunyang
+	 * @Description: 查询房屋信息
+	 * @Date: 2019/12/5 11:34
+	 * @param:
+	 * @return:
+	 */
+	BvdfHouseParam selectBvdfHouseInfo(@Param("param")BvdfHouseParam queryParam);
 
 	/**
 	 * @Author: yinxunyang

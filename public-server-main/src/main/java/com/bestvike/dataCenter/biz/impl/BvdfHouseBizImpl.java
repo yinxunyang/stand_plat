@@ -14,10 +14,15 @@ import com.bestvike.dataCenter.service.BvdfBldService;
 import com.bestvike.dataCenter.service.BvdfCorpService;
 import com.bestvike.dataCenter.service.BvdfHouseService;
 import com.bestvike.dataCenter.service.BvdfRegionService;
+import com.bestvike.elastic.param.EsHouseParam;
 import com.bestvike.elastic.service.ElasticSearchService;
 import lombok.extern.slf4j.Slf4j;
+import org.elasticsearch.client.transport.TransportClient;
+import org.elasticsearch.common.settings.Settings;
+import org.elasticsearch.common.transport.TransportAddress;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.common.xcontent.XContentFactory;
+import org.elasticsearch.transport.client.PreBuiltTransportClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -28,9 +33,10 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.time.Duration;
-import java.time.LocalDateTime;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -116,82 +122,91 @@ public class BvdfHouseBizImpl implements BvdfHouseBiz {
 			log.info("没有bvdfHouseToEs的数据");
 			return;
 		}
-		// TODO 组织es的数据
-		// 添加小区名称和开发企业名称
-		/*bvdfHouseParamList.forEach(bvdfBldParam -> {
-			BvdfRegionParam regionParam = new BvdfRegionParam();
-			regionParam.setRegionNo(bvdfBldParam.getRegionNo());
-			regionParam.setState(DataCenterEnum.NORMAL_STATE.getCode());
-			BvdfRegionParam bvdfRegionParam = bvdfRegionService.selectBvdfRegionInfo(regionParam);
-			if (null != bvdfRegionParam) {
-				bvdfBldParam.setRegionName(bvdfRegionParam.getRegionName());
-			}
-			BvdfCorpParam corpParam = new BvdfCorpParam();
-			corpParam.setCorpId(bvdfBldParam.getCorpNo());
-			corpParam.setState(DataCenterEnum.NORMAL_STATE.getCode());
-			BvdfCorpParam bvdfCorpParam = bvdfCorpService.selectBvdfCorpInfo(corpParam);
-			if (null != bvdfCorpParam) {
-				bvdfBldParam.setCorpName(bvdfCorpParam.getCorpName());
-			}
-		});*/
-		/*try (TransportClient client = new PreBuiltTransportClient(Settings.builder().put("cluster.name", esClusterName).build())
+		List<EsHouseParam> esHouseParamList = new ArrayList<>();
+		// 组织es的数据 添加小区名称和开发企业名称等
+		bvdfHouseParamList.stream().forEach(bvdfHouseParam -> {
+			BvdfHouseParam bvdfHouse = bvdfHouseService.selectBvdfHouseInfo(bvdfHouseParam);
+			EsHouseParam esHouseParam = new EsHouseParam();
+			// todo
+			esHouseParam.setDevelopName(null);
+			esHouseParam.setDataCenterId(bvdfHouse.getDataCenterId());
+			esHouseParam.setHouseId(bvdfHouse.getHouseid());
+			esHouseParam.setHouseType(bvdfHouse.getHousetype());
+			esHouseParam.setBldNo(bvdfHouse.getBldno());
+			// todo
+			esHouseParam.setBldName(null);
+			esHouseParam.setCellNo(bvdfHouse.getCellno());
+			// todo
+			esHouseParam.setCellName(null);
+			esHouseParam.setFloorNo(bvdfHouse.getFloorno());
+			esHouseParam.setFloorName(bvdfHouse.getFloorname());
+			esHouseParam.setShowName(bvdfHouse.getShowname());
+			esHouseParam.setRoomNo(bvdfHouse.getRoomno());
+			esHouseParam.setConstructArea(bvdfHouse.getConstructArea());
+			esHouseParam.setHouseAddress(bvdfHouse.getAddress());
+			esHouseParam.setVersionnumber(bvdfHouse.getVersionnumber());
+			esHouseParamList.add(esHouseParam);
+		});
+		try (TransportClient client = new PreBuiltTransportClient(Settings.builder().put("cluster.name", esClusterName).build())
 				.addTransportAddress(new TransportAddress(InetAddress.getByName(esIP), Integer.parseInt(esPort)))) {
-			bvdfBldParamList.forEach(bvdfBldParam -> {
+			esHouseParamList.forEach(esHouseParam -> {
 				// 拼装新增es的数据
-				XContentBuilder doc = organizeBldToEsData(bvdfBldParam);
+				XContentBuilder doc = organizeHouseToEsData(esHouseParam);
 				// 往elasticsearch迁移一条数据，elasticsearch主键相同会覆盖原数据，该处不用判断
-				elasticSearchService.insertElasticSearch(client, doc, houseindex, housetype, bvdfBldParam.getBldNo());
+				elasticSearchService.insertElasticSearch(client, doc, houseindex, housetype, esHouseParam.getHouseId());
 			});
 		} catch (UnknownHostException e) {
 			log.error("创建elasticsearch客户端连接失败" + e);
 			throw new MsgException(ReturnCode.sdp_sys_error, "创建elasticsearch客户端连接失败");
-		}*/
-		// bvdfToEsRecordTime为空时新增一条数据
-		if (null == bvdfToEsRecordTime) {
-			BvdfToEsRecordTime bvdfToEsForAdd = new BvdfToEsRecordTime();
-			bvdfToEsForAdd.setId(RecordTimeEnum.BVDF_HOUSE_ID.getCode());
-			bvdfToEsForAdd.setLastExcuteTime(queryParam.getScopeEndTime());
-			bvdfToEsForAdd.setMatchType(MatchTypeEnum.BLD.getCode());
-			bvdfToEsForAdd.setDescribe(MatchTypeEnum.BLD.getDesc());
-			mongoTemplate.insert(bvdfToEsForAdd);
-		} else {
-			Query queryupdate = new Query(Criteria.where("id").is(RecordTimeEnum.BVDF_HOUSE_ID.getCode()));
-			Update update = new Update().set(RecordTimeEnum.LAST_EXCUTE_TIME.getCode(), queryParam.getScopeEndTime());
-			mongoTemplate.updateFirst(queryupdate, update, BvdfToEsRecordTime.class);
 		}
-
+		int countNum = bvdfHouseService.countBvdfHouseInfo(queryParam);
+		if (countNum == 0) {
+			// bvdfToEsRecordTime为空时新增一条数据
+			if (null == bvdfToEsRecordTime) {
+				BvdfToEsRecordTime bvdfToEsForAdd = new BvdfToEsRecordTime();
+				bvdfToEsForAdd.setId(RecordTimeEnum.BVDF_HOUSE_ID.getCode());
+				bvdfToEsForAdd.setLastExcuteTime(queryParam.getScopeEndTime());
+				bvdfToEsForAdd.setMatchType(MatchTypeEnum.BLD.getCode());
+				bvdfToEsForAdd.setDescribe(MatchTypeEnum.BLD.getDesc());
+				mongoTemplate.insert(bvdfToEsForAdd);
+			} else {
+				Query queryupdate = new Query(Criteria.where("id").is(RecordTimeEnum.BVDF_HOUSE_ID.getCode()));
+				Update update = new Update().set(RecordTimeEnum.LAST_EXCUTE_TIME.getCode(), queryParam.getScopeEndTime());
+				mongoTemplate.updateFirst(queryupdate, update, BvdfToEsRecordTime.class);
+			}
+		}
 	}
 	/**
 	 * @Author: yinxunyang
-	 * @Description: 拼装regionToElasticSearch的数据
+	 * @Description: 拼装houseToElasticSearch的数据
 	 * @Date: 2019/12/19 14:23
 	 * @param:
 	 * @return:
 	 */
-	private XContentBuilder organizeBldToEsData(BvdfBldParam bvdfBldParam) {
+	private XContentBuilder organizeHouseToEsData(EsHouseParam esHouseParam) {
 		XContentBuilder doc;
 		try {
 			doc = XContentFactory.jsonBuilder()
 					.startObject()
-					.field("dataCenterId", bvdfBldParam.getDataCenterId())
-					.field("bldNo", bvdfBldParam.getBldNo())
-					.field("bldName", bvdfBldParam.getBldName())
-					.field("bldNameForKey", bvdfBldParam.getBldName())
-					.field("address", bvdfBldParam.getAddress())
-					.field("addressForKey", bvdfBldParam.getAddress())
-					.field("totalArea", bvdfBldParam.getTotalArea())
-					.field("startdate", bvdfBldParam.getStartdate())
-					.field("finishdate", bvdfBldParam.getFinishdate())
-					.field("regionNo", bvdfBldParam.getRegionNo())
-					.field("regionName", bvdfBldParam.getRegionName())
-					.field("corpNo", bvdfBldParam.getCorpNo())
-					.field("corpName", bvdfBldParam.getCorpName())
-					.field("versionnumber", bvdfBldParam.getVersionnumber())
-					.field("divisionCode", bvdfBldParam.getDivisionCode())
+					.field("developName", esHouseParam.getDevelopName())
+					.field("dataCenterId", esHouseParam.getDataCenterId())
+					.field("houseId", esHouseParam.getHouseId())
+					.field("houseType", esHouseParam.getHouseType())
+					.field("bldNo", esHouseParam.getBldNo())
+					.field("bldName", esHouseParam.getBldName())
+					.field("cellNo", esHouseParam.getCellNo())
+					.field("cellName", esHouseParam.getCellName())
+					.field("floorNo", esHouseParam.getFloorNo())
+					.field("floorName", esHouseParam.getFloorName())
+					.field("showName", esHouseParam.getShowName())
+					.field("roomNo", esHouseParam.getRoomNo())
+					.field("constructArea", esHouseParam.getConstructArea())
+					.field("houseAddress", esHouseParam.getHouseAddress())
+					.field("versionnumber", esHouseParam.getVersionnumber())
 					.endObject();
 		} catch (IOException e) {
-			log.error("拼装bldToElasticSearch的数据失败" + e);
-			throw new MsgException(ReturnCode.fail, "拼装bldToElasticSearch的数据失败");
+			log.error("拼装houseToElasticSearch的数据失败" + e);
+			throw new MsgException(ReturnCode.fail, "拼装houseToElasticSearch的数据失败");
 		}
 		return doc;
 	}

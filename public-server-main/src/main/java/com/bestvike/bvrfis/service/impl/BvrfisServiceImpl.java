@@ -176,7 +176,7 @@ public class BvrfisServiceImpl implements BvrfisService {
 			licenseNo = "无";
 		}
 		esHouseParam.setDevelopName(developName);
-		esHouseParam.setLicenseNo(licenseNo);
+		//esHouseParam.setLicenseNo(licenseNo);
 		String cellNo = bvrfisHouseParam.getCellNo();
 		String cellName = null;
 		String houseProp = bvrfisHouseParam.getHouseProp();
@@ -204,7 +204,7 @@ public class BvrfisServiceImpl implements BvrfisService {
 			floorName = "无";
 		}
 		esHouseParam.setFloorName(floorName);
-		esHouseParam.setRoomno(bvrfisHouseParam.getRoomNo());
+		//esHouseParam.setRoomno(bvrfisHouseParam.getRoomNo());
 		String houseGuid = bvrfisHouseParam.getSysGuid();
 		StringBuilder buyCertNos = new StringBuilder();
 		StringBuilder buyNames = new StringBuilder();
@@ -253,8 +253,8 @@ public class BvrfisServiceImpl implements BvrfisService {
 		if (StringUtils.isEmpty(buyNames.toString())) {
 			buyNames.append("无");
 		}
-		esHouseParam.setBuyCertNos(buyCertNos.toString());
-		esHouseParam.setBuyNames(buyNames.toString());
+		//esHouseParam.setBuyCertNos(buyCertNos.toString());
+		//esHouseParam.setBuyNames(buyNames.toString());
 		esHouseParam.setHouseAddress(bvrfisHouseParam.getAddress());
 		return esHouseParam;
 	}

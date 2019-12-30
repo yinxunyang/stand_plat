@@ -169,6 +169,27 @@
 			</if>
 		</where>
 	</select>
+	<select id="selectBvdfHouseInfo" resultType="com.bestvike.dataCenter.param.BvdfHouseParam">
+		select
+		t1.sysguid as dataCenterId,
+		t1.houseid,
+		t1.housetype,
+		t1.naturalid as bldno,
+		t1.cellno,
+		t1.floorno,
+		t1.floorname,
+		t1.showname,
+		t1.roomno,
+		t1.calculatebuildingarea as constructArea,
+		t1.address,
+		t1.versionnumber
+		from datasource_xjws.rev_house_info t1
+		<where>
+			<if test="null != param.dataCenterId and '' != param.dataCenterId">
+				t1.sysguid = #{param.dataCenterId,jdbcType=VARCHAR}
+			</if>
+		</where>
+	</select>
 	<select id="countBvdfHouseInfo" resultType="java.lang.Integer">
 		select count(t.sysguid) from datasource_xjws.rev_house_info t
 		<where>

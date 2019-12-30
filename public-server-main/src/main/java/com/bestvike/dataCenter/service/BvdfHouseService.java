@@ -28,6 +28,14 @@ public interface BvdfHouseService {
 	List<BvdfHouseParam> queryBvdfHouseInfo(BvdfHouseParam queryParam);
 	/**
 	 * @Author: yinxunyang
+	 * @Description: 查询bvdf房屋的数据
+	 * @Date: 2019/12/9 13:14
+	 * @param:
+	 * @return:
+	 */
+	BvdfHouseParam selectBvdfHouseInfo(BvdfHouseParam queryParam);
+	/**
+	 * @Author: yinxunyang
 	 * @Description: 查询bvdf房屋的数量
 	 * @Date: 2019/12/9 13:14
 	 * @param:

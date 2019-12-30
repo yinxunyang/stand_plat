@@ -52,7 +52,7 @@ public class BvdfHouseServiceImpl implements BvdfHouseService {
 			// 拼装新增es的数据
 			XContentBuilder doc = organizeEsData(esHouseParam);
 			// 往elasticsearch迁移一条数据，elasticsearch主键相同会覆盖原数据，该处不用判断
-			elasticSearchService.insertElasticSearch(client, doc, index, type, esHouseParam.getId());
+			//elasticSearchService.insertElasticSearch(client, doc, index, type, esHouseParam.getId());
 		});
 	}
 
@@ -68,7 +68,7 @@ public class BvdfHouseServiceImpl implements BvdfHouseService {
 		try {
 			doc = XContentFactory.jsonBuilder()
 					.startObject()
-					.field("buyCertNos", esHouseParam.getBuyCertNos())
+					/*.field("buyCertNos", esHouseParam.getBuyCertNos())
 					.field("developName", esHouseParam.getDevelopName())
 					.field("licenseNo", esHouseParam.getLicenseNo())
 					.field("bldName", esHouseParam.getBldName())
@@ -85,7 +85,7 @@ public class BvdfHouseServiceImpl implements BvdfHouseService {
 					.field("floorNameForKey", esHouseParam.getFloorName())
 					.field("roomNoForKey", esHouseParam.getRoomno())
 					.field("buyNamesForKey", esHouseParam.getBuyNames())
-					.field("houseAddressForKey", esHouseParam.getHouseAddress())
+					.field("houseAddressForKey", esHouseParam.getHouseAddress())*/
 					.endObject();
 		} catch (IOException e) {
 			log.error("拼装ElasticSearch的数据失败" + e);
@@ -111,6 +111,24 @@ public class BvdfHouseServiceImpl implements BvdfHouseService {
 			throw new MsgException(ReturnCode.sdp_select_fail, "查询bvdf房屋的数据失败");
 		}
 		return bvdfHouseParamList;
+	}
+	/**
+	 * @Author: yinxunyang
+	 * @Description: 查询bvdf房屋的数据
+	 * @Date: 2019/12/9 13:15
+	 * @param:
+	 * @return:
+	 */
+	@Override
+	public BvdfHouseParam selectBvdfHouseInfo(BvdfHouseParam queryParam) throws MsgException {
+		BvdfHouseParam bvdfHouseParam;
+		try {
+			bvdfHouseParam = bvdfHouseDao.selectBvdfHouseInfo(queryParam);
+		} catch (Exception e) {
+			log.error("查询bvdf房屋的数据失败" + e);
+			throw new MsgException(ReturnCode.sdp_select_fail, "查询bvdf房屋的数据失败");
+		}
+		return bvdfHouseParam;
 	}
 
 	/**
