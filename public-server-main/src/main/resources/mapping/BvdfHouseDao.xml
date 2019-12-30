@@ -138,35 +138,34 @@
 		</where>
 	</select>
 	<select id="queryBvdfHouseInfo" resultType="com.bestvike.dataCenter.param.BvdfHouseParam">
-		select t.sysguid as dataCenterId,
-		t.houseid,
-		t.housetype,
-		t.naturalid as bldno,
-		t.cellno,
-		t.floorno,
-		t.floorname,
-		t.showname,
-		t.roomno,
-		t.calculatebuildingarea as constructArea,
-		t.address,
-		t.versionnumber
-		from datasource_xjws.rev_house_info t
+		select *
+		from (
+		select t1.sysguid as dataCenterId
+		from datasource_xjws.rev_house_info t1
 		<where>
 			<if test="null != param.state and '' != param.state">
-				t.state = #{param.state,jdbcType=VARCHAR}
+				t1.state = #{param.state,jdbcType=VARCHAR}
 			</if>
 			<if test="null != param.appcode and '' != param.appcode">
-				AND t.appcode = #{param.appcode,jdbcType=VARCHAR}
+				AND t1.appcode = #{param.appcode,jdbcType=VARCHAR}
 			</if>
 			<if test="null != param.scopeBeginTime and '' != param.scopeBeginTime">
 				<![CDATA[
-				AND to_date(t.modifydate,'yyyy-mm-dd hh24:mi:ss') >= to_date(#{param.scopeBeginTime},'yyyy-mm-dd hh24:mi:ss')
+				AND to_date(t1.modifydate,'yyyy-mm-dd hh24:mi:ss') >= to_date(#{param.scopeBeginTime},'yyyy-mm-dd hh24:mi:ss')
                 ]]>
 			</if>
 			<if test="null != param.scopeEndTime and '' != param.scopeEndTime">
 				<![CDATA[
-				AND to_date(t.modifydate,'yyyy-mm-dd hh24:mi:ss') < to_date(#{param.scopeEndTime},'yyyy-mm-dd hh24:mi:ss')
+				AND to_date(t1.modifydate,'yyyy-mm-dd hh24:mi:ss') < to_date(#{param.scopeEndTime},'yyyy-mm-dd hh24:mi:ss')
                 ]]>
+			</if>
+		</where>
+		minus select t2.datacenterid from bvrfis_xjws.arc_houseinfo t2)
+		<where>
+			<if test="null != param.houseMaxNum">
+				<![CDATA[
+				AND rownum <= #{param.houseMaxNum}
+				]]>
 			</if>
 		</where>
 	</select>

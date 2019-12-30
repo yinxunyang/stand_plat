@@ -107,28 +107,16 @@ public class BvdfHouseBizImpl implements BvdfHouseBiz {
 		queryParam.setState(DataCenterEnum.NORMAL_STATE.getCode());
 		queryParam.setAppcode(DataCenterEnum.BVDF_APP_CODE_LOWER.getCode());
 		queryParam.setScopeBeginTime(scopeBeginTime);
+		// 最多查询2万条
+		queryParam.setHouseMaxNum(Integer.parseInt(houseMaxNum));
 		String scopeEndTime = UtilTool.nowTime();
 		queryParam.setScopeEndTime(scopeEndTime);
-		// 查询房屋的总数量，如果总数量大于20000，ScopeEndTime取结束和开始的中间数，直至小于20000
-		queryBvdfScopeEndTime(queryParam);
 		List<BvdfHouseParam> bvdfHouseParamList = bvdfHouseService.queryBvdfHouseInfo(queryParam);
 		if (bvdfHouseParamList.isEmpty()) {
-			bvdfToEsRecordTime = mongoTemplate.findOne(query, BvdfToEsRecordTime.class);
-			if (null == bvdfToEsRecordTime) {
-				BvdfToEsRecordTime bvdfToEsForAdd = new BvdfToEsRecordTime();
-				bvdfToEsForAdd.setId(RecordTimeEnum.BVDF_HOUSE_ID.getCode());
-				bvdfToEsForAdd.setLastExcuteTime(queryParam.getScopeEndTime());
-				bvdfToEsForAdd.setMatchType(MatchTypeEnum.BLD.getCode());
-				bvdfToEsForAdd.setDescribe(MatchTypeEnum.BLD.getDesc());
-				mongoTemplate.insert(bvdfToEsForAdd);
-			} else {
-				Query queryupdate = new Query(Criteria.where("id").is(RecordTimeEnum.BVDF_HOUSE_ID.getCode()));
-				Update update = new Update().set(RecordTimeEnum.LAST_EXCUTE_TIME.getCode(), queryParam.getScopeEndTime());
-				mongoTemplate.updateFirst(queryupdate, update, BvdfToEsRecordTime.class);
-			}
 			log.info("没有bvdfHouseToEs的数据");
 			return;
 		}
+		// TODO 组织es的数据
 		// 添加小区名称和开发企业名称
 		/*bvdfHouseParamList.forEach(bvdfBldParam -> {
 			BvdfRegionParam regionParam = new BvdfRegionParam();
@@ -172,33 +160,6 @@ public class BvdfHouseBizImpl implements BvdfHouseBiz {
 			mongoTemplate.updateFirst(queryupdate, update, BvdfToEsRecordTime.class);
 		}
 
-	}
-
-	/**
-	 * @Author: yinxunyang
-	 * @Description: 获取房屋的取值结束时间
-	 * @Date: 2019/12/30 11:03
-	 * @param:
-	 * @return:
-	 */
-	private void queryBvdfScopeEndTime(BvdfHouseParam queryParam) {
-		String scopeBeginTime = queryParam.getScopeBeginTime();
-		String scopeEndTime = queryParam.getScopeEndTime();
-		int countNum = bvdfHouseService.countBvdfHouseInfo(queryParam);
-		if (countNum > 20000) {
-			LocalDateTime scopeBeginTimeLocal = LocalDateTime.parse(scopeBeginTime, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-			LocalDateTime scopeEndTimeLocal = LocalDateTime.parse(scopeEndTime, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-			// 时间差
-			Duration duration = Duration.between(scopeBeginTimeLocal, scopeEndTimeLocal);
-			// 相差分钟数
-			long durationMinute = duration.toMinutes();
-			long durationm = durationMinute / 2;
-			// 结束时间取中间数
-			scopeEndTimeLocal = scopeEndTimeLocal.minusMinutes(durationm);
-			scopeEndTime = df.format(scopeEndTimeLocal);
-			queryParam.setScopeEndTime(scopeEndTime);
-			queryBvdfScopeEndTime(queryParam);
-		}
 	}
 	/**
 	 * @Author: yinxunyang

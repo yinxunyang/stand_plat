@@ -76,7 +76,10 @@ public class BvdfHouseParam {
 	 * 结束时间
 	 */
 	private String scopeEndTime;
-
+	/**
+	 * 最多查询数量
+	 */
+	private Integer houseMaxNum;
 	@Override
 	public String toString() {
 		return JSONObject.toJSONString(this);
