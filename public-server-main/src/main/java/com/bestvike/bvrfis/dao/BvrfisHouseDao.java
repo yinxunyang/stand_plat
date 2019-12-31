@@ -71,7 +71,7 @@ public interface BvrfisHouseDao {
 	 * @param:
 	 * @return:
 	 */
-	List<BvrfisHouseParam> queryBvrfisHouseInfo(Map<String, Object> parameterMap);
+	List<BvrfisHouseParam> queryBvrfisHouseInfo(@Param("param")BvrfisHouseParam queryParam);
 
 	/**
 	 * @Author: yinxunyang

@@ -31,10 +31,10 @@ public class BvrfisHouseServiceImpl implements BvrfisHouseService {
 	 * @return:
 	 */
 	@Override
-	public List<BvrfisHouseParam> queryBvrfisHouseInfo(Map<String, Object> parameterMap) throws MsgException {
+	public List<BvrfisHouseParam> queryBvrfisHouseInfo(BvrfisHouseParam queryParam) throws MsgException {
 		List<BvrfisHouseParam> bvrfisHouseParamList;
 		try {
-			bvrfisHouseParamList = bvrfisHouseDao.queryBvrfisHouseInfo(parameterMap);
+			bvrfisHouseParamList = bvrfisHouseDao.queryBvrfisHouseInfo(queryParam);
 		} catch (Exception e) {
 			log.error("查询bvrfis房屋的数据失败" + e);
 			throw new MsgException(ReturnCode.sdp_select_fail, "查询bvrfis房屋的数据失败");

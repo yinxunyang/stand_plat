@@ -2,6 +2,7 @@ package com.bestvike.bvrfis.controller;
 
 import com.bestvike.bvrfis.biz.BDataRelationBiz;
 import com.bestvike.bvrfis.biz.BvrfisCorpBiz;
+import com.bestvike.bvrfis.biz.BvrfisHouseBiz;
 import com.bestvike.bvrfis.biz.BvrfisRegionBiz;
 import com.bestvike.bvrfis.service.BvrfisService;
 import com.bestvike.commons.enums.MatchTypeEnum;
@@ -19,7 +20,7 @@ public class BvrfisController extends BaseController {
 	@Autowired
 	private BvrfisCorpBiz bvrfisCorpBiz;
 	@Autowired
-	private BvrfisService bvrfisService;
+	private BvrfisHouseBiz bvrfisHouseBiz;
 	@Autowired
 	private BDataRelationBiz bDataRelationBiz;
 	@Autowired
@@ -62,9 +63,9 @@ public class BvrfisController extends BaseController {
 	}
 	@ApiOperation(value = "将bvrfis房屋信息跟es中的匹配", notes = "将bvrfis房屋信息跟es中的匹配")
 	@GetMapping("/api/bvrfis/bvrfisHouseMatchEs")
-	public void bvrfisHouseMatchEs() {
+	public void bvrfisHouseMatchEs(HttpSession httpSession) {
 		try {
-			bvrfisService.bvrfisHouseMatchEs();
+			bvrfisHouseBiz.bvrfisHouseMatchEs(httpSession);
 		} catch (MsgException e) {
 			logger.error("将bvrfis房屋信息跟es中的匹配失败");
 		}

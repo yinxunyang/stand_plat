@@ -13,9 +13,17 @@ import lombok.Setter;
 @Setter
 public class BvrfisHouseParam {
 	/**
+	 * 数据中心Id
+	 */
+	private String datacenterId;
+	/**
 	 * 主键
 	 */
 	private String sysGuid;
+	/**
+	 * 状态 0正常
+	 */
+	private String state;
 	/**
 	 * 楼幢编号
 	 */
@@ -33,6 +41,10 @@ public class BvrfisHouseParam {
 	 */
 	private String roomNo;
 	/**
+	 * 显示名称
+	 */
+	private String showName;
+	/**
 	 * 房屋地址
 	 */
 	private String address;
@@ -40,7 +52,14 @@ public class BvrfisHouseParam {
 	 * 房屋性质
 	 */
 	private String houseProp;
-
+	/**
+	 * 建筑面积
+	 */
+	private String constructArea;
+	/**
+	 * 最多查询数量
+	 */
+	private Integer houseMaxNum;
 	@Override
 	public String toString() {
 		return JSONObject.toJSONString(this);

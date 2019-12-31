@@ -3,7 +3,6 @@ package com.bestvike.bvrfis.service;
 import com.bestvike.bvrfis.param.BvrfisHouseParam;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * @Author: yinxunyang
@@ -19,5 +18,5 @@ public interface BvrfisHouseService {
 	 * @param:
 	 * @return:
 	 */
-	List<BvrfisHouseParam> queryBvrfisHouseInfo(Map<String, Object> parameterMap);
+	List<BvrfisHouseParam> queryBvrfisHouseInfo(BvrfisHouseParam queryParam);
 }

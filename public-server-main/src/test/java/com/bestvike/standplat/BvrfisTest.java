@@ -2,6 +2,7 @@ package com.bestvike.standplat;
 
 import com.bestvike.bvrfis.biz.BDataRelationBiz;
 import com.bestvike.bvrfis.biz.BvrfisBldBiz;
+import com.bestvike.bvrfis.biz.BvrfisHouseBiz;
 import com.bestvike.bvrfis.biz.BvrfisRegionBiz;
 import com.bestvike.bvrfis.biz.impl.BvrfisCorpBizImpl;
 import com.bestvike.bvrfis.dao.BvrfisHouseDao;
@@ -53,12 +54,14 @@ public class BvrfisTest extends BaseTest {
 	private BvrfisRegionBiz bvrfisRegionBiz;
 	@Autowired
 	private BvrfisBldBiz bvrfisBldBiz;
+	@Autowired
+	private BvrfisHouseBiz bvrfisHouseBiz;
 
 	@Test
 	public void test1() {
 		Map<String, Object> parameterMap = new HashMap<>();
 		parameterMap.put("houseMaxNum", "20");
-		List<BvrfisHouseParam> list = bvrfisHouseService.queryBvrfisHouseInfo(parameterMap);
+		//List<BvrfisHouseParam> list = bvrfisHouseService.queryBvrfisHouseInfo(parameterMap);
 		int i = 0;
 	}
 
@@ -498,5 +501,86 @@ public class BvrfisTest extends BaseTest {
 		System.out.println(scopeEndTimeLocal);
 		System.out.println("duration相差" + durationmillis + "分钟");
 		System.out.println("durationdedurationm相差" + durationm + "分钟");
+	}
+	@Test
+	public void test16(){
+		HttpSession httpSession = new HttpSession() {
+			@Override
+			public long getCreationTime() {
+				return 0;
+			}
+
+			@Override
+			public String getId() {
+				return null;
+			}
+
+			@Override
+			public long getLastAccessedTime() {
+				return 0;
+			}
+
+			@Override
+			public ServletContext getServletContext() {
+				return null;
+			}
+
+			@Override
+			public void setMaxInactiveInterval(int interval) {
+			}
+			@Override
+			public int getMaxInactiveInterval() {
+				return 0;
+			}
+
+			@Override
+			public HttpSessionContext getSessionContext() {
+				return null;
+			}
+
+			@Override
+			public Object getAttribute(String name) {
+				return null;
+			}
+
+			@Override
+			public Object getValue(String name) {
+				return null;
+			}
+
+			@Override
+			public Enumeration<String> getAttributeNames() {
+				return null;
+			}
+
+			@Override
+			public String[] getValueNames() {
+				return new String[0];
+			}
+
+			@Override
+			public void setAttribute(String name, Object value) {
+			}
+			@Override
+			public void putValue(String name, Object value) {
+			}
+			@Override
+			public void removeAttribute(String name) {
+			}
+			@Override
+			public void removeValue(String name) {
+			}
+			@Override
+			public void invalidate() {
+
+			}
+
+			@Override
+			public boolean isNew() {
+				return false;
+			}
+		};
+
+		bvrfisHouseBiz.bvrfisHouseMatchEs(httpSession);
 	}
 }

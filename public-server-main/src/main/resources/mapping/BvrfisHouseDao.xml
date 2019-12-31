@@ -73,30 +73,30 @@
 		</where>
 	</select>
 	<select id="queryBvrfisHouseInfo" resultType="com.bestvike.bvrfis.param.BvrfisHouseParam">
-			select * from (select
-							t1.sysGuid,
-							t1.bldNo,
-							t1.cellNo,
-							t1.floorNo,
-							t1.roomNo,
-							t1.address,
-							t1.houseProp
-		from bvrfis_aks.arc_houseinfo t1
-		minus
 		select
-				t2.sysGuid,
-				t2.bldNo,
-				t2.cellNo,
-				t2.floorNo,
-				t2.roomNo,
-				t2.address,
-				t2.houseProp
-		from mid_aks.arc_houseinfo t2
-		)
-		<![CDATA[
-		where rownum <= #{houseMaxNum}
-
-		]]>
+		t.sysGuid,
+		t.bldNo,
+		t.cellNo,
+		t.floorNo,
+		t.roomNo,
+		t.showName,
+		t.address,
+		t.houseProp,
+		t.constructArea from
+		bvrfis_xjws.arc_houseinfo t
+		<where>
+			<if test="null != param.state and '' != param.state">
+				t.state = #{param.state,jdbcType=VARCHAR}
+			</if>
+			<if test="null != param.datacenterId and '' != param.datacenterId">
+				AND t.datacenterid IS NULL
+			</if>
+			<if test="null != param.houseMaxNum">
+				<![CDATA[
+				AND rownum <= #{param.houseMaxNum}
+				]]>
+			</if>
+		</where>
 	</select>
 	<select id="queryBldInfoByBldNo" resultType="com.bestvike.bvrfis.param.BvrfisBldParam">
 		select bldName from bvrfis_aks.Arc_BldInfo where bldNo = #{bldNo,jdbcType=VARCHAR}

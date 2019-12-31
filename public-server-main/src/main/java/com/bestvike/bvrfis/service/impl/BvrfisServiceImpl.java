@@ -82,25 +82,7 @@ public class BvrfisServiceImpl implements BvrfisService {
 	private ElasticSearchService elasticSearchService;
 	@Autowired
 	private BmatchAnResultService bmatchAnResultService;
-	/**
-	 * @Author: yinxunyang
-	 * @Description: 将bvrfis房屋信息跟es中的匹配
-	 * @Date: 2019/12/10 13:15
-	 * @param:
-	 * @return:
-	 */
-	@Override
-	public void bvrfisHouseMatchEs() throws MsgException {
-		Map<String, Object> parameterMap = new HashMap<>();
-		parameterMap.put("houseMaxNum", HOUSE_MAX_NUM);
-		List<BvrfisHouseParam> bvrfisHouseParamList = bvrfisHouseService.queryBvrfisHouseInfo(parameterMap);
-		if (bvrfisHouseParamList.isEmpty()) {
-			log.info("bvrfis没有需要跟elasticsearch匹配的房屋数据");
-			return;
-		}
-		// 跟es匹配和往中间库新增数据
-		matchEsAndInsertMid(bvrfisHouseParamList);
-	}
+
 
 	/**
 	 * @Author: yinxunyang
