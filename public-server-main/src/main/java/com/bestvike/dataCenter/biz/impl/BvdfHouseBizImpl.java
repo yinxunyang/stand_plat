@@ -5,9 +5,11 @@ import com.bestvike.commons.enums.MatchTypeEnum;
 import com.bestvike.commons.enums.RecordTimeEnum;
 import com.bestvike.commons.enums.ReturnCode;
 import com.bestvike.commons.exception.MsgException;
+import com.bestvike.commons.utils.StringUtils;
 import com.bestvike.commons.utils.UtilTool;
 import com.bestvike.dataCenter.biz.BvdfHouseBiz;
 import com.bestvike.dataCenter.entity.BvdfToEsRecordTime;
+import com.bestvike.dataCenter.param.BvdfBldParam;
 import com.bestvike.dataCenter.param.BvdfHouseParam;
 import com.bestvike.dataCenter.service.BvdfBldService;
 import com.bestvike.dataCenter.service.BvdfCorpService;
@@ -132,8 +134,18 @@ public class BvdfHouseBizImpl implements BvdfHouseBiz {
 			esHouseParam.setHouseId(bvdfHouse.getHouseid());
 			esHouseParam.setHouseType(bvdfHouse.getHousetype());
 			esHouseParam.setBldNo(bvdfHouse.getBldno());
-			// todo
-			esHouseParam.setBldName(null);
+			BvdfBldParam bldQueryParam = new BvdfBldParam();
+			bldQueryParam.setBldNo(bvdfHouse.getBldno());
+			// 根据自然幢编号查询自然幢名称
+			BvdfBldParam bvdfBldParam = bvdfBldService.selectBvdfBldInfo(bldQueryParam);
+			String bldName = null;
+			if (null != bvdfBldParam) {
+				bldName = bvdfBldParam.getBldName();
+			}
+			if (StringUtils.isEmpty(bldName)) {
+				bldName = "无";
+			}
+			esHouseParam.setBldName(bldName);
 			esHouseParam.setCellNo(bvdfHouse.getCellno());
 			// todo
 			esHouseParam.setCellName(null);

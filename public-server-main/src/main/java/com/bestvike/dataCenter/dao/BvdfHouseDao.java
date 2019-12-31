@@ -64,6 +64,15 @@ public interface BvdfHouseDao {
 
 	/**
 	 * @Author: yinxunyang
+	 * @Description: 查询自然幢信息
+	 * @Date: 2019/12/5 11:34
+	 * @param:
+	 * @return:
+	 */
+	BvdfBldParam selectBvdfBldInfo(@Param("param") BvdfBldParam queryParam);
+
+	/**
+	 * @Author: yinxunyang
 	 * @Description: 查询房屋信息
 	 * @Date: 2019/12/5 11:34
 	 * @param:

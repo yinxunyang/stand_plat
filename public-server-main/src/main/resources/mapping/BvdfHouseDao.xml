@@ -137,6 +137,38 @@
 			</if>
 		</where>
 	</select>
+	<select id="selectBvdfBldInfo" resultType="com.bestvike.dataCenter.param.BvdfBldParam">
+		select
+		t.sysguid as dataCenterId,
+		t.naturalid as bldNo,
+		t.buildingname as bldName,
+		t.address,
+		t.coverarea as totalArea,
+		t.startdate,
+		t.finishdate,
+		t.projectid as regionNo,
+		t.developid as corpNo,
+		t.versionnumber,
+		t.divisionCode
+		from datasource_xjws.rev_natural_building t
+		<where>
+			<if test="null != param.bldNo and '' != param.bldNo">
+				t.naturalid = #{param.bldNo,jdbcType=VARCHAR}
+			</if>
+			<if test="null != param.state and '' != param.state">
+				AND t.state = #{param.state,jdbcType=VARCHAR}
+			</if>
+			<if test="null != param.appcode and '' != param.appcode">
+				AND t.appcode = #{param.appcode,jdbcType=VARCHAR}
+			</if>
+			<if test="null != param.bldName and '' != param.bldName">
+				AND t.buildingname = #{param.bldName,jdbcType=VARCHAR}
+			</if>
+			<if test="null != param.regionNo and '' != param.regionNo">
+				AND t.projectid = #{param.regionNo,jdbcType=VARCHAR}
+			</if>
+		</where>
+	</select>
 	<select id="queryBvdfHouseInfo" resultType="com.bestvike.dataCenter.param.BvdfHouseParam">
 		select *
 		from (
