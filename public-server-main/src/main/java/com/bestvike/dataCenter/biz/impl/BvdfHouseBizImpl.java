@@ -5,7 +5,6 @@ import com.bestvike.commons.enums.MatchTypeEnum;
 import com.bestvike.commons.enums.RecordTimeEnum;
 import com.bestvike.commons.enums.ReturnCode;
 import com.bestvike.commons.exception.MsgException;
-import com.bestvike.commons.utils.StringUtils;
 import com.bestvike.commons.utils.UtilTool;
 import com.bestvike.dataCenter.biz.BvdfHouseBiz;
 import com.bestvike.dataCenter.entity.BvdfToEsRecordTime;
@@ -131,64 +130,7 @@ public class BvdfHouseBizImpl implements BvdfHouseBiz {
 		}
 		List<EsHouseParam> esHouseParamList = new ArrayList<>();
 		// 组织es的数据 添加小区名称和开发企业名称等
-		bvdfHouseParamList.stream().forEach(bvdfHouseParam -> {
-			BvdfHouseParam bvdfHouse = bvdfHouseService.selectBvdfHouseInfo(bvdfHouseParam);
-			EsHouseParam esHouseParam = new EsHouseParam();
-			esHouseParam.setDataCenterId(bvdfHouse.getDataCenterId());
-			esHouseParam.setHouseId(bvdfHouse.getHouseid());
-			esHouseParam.setHouseType(bvdfHouse.getHousetype());
-			esHouseParam.setBldNo(bvdfHouse.getBldno());
-			BvdfBldParam bldQueryParam = new BvdfBldParam();
-			bldQueryParam.setBldNo(bvdfHouse.getBldno());
-			// 根据自然幢编号查询自然幢名称
-			BvdfBldParam bvdfBldParam = bvdfBldService.selectBvdfBldInfo(bldQueryParam);
-			String bldName = "无";
-			String corpNo = "无";
-			String regionNo = "无";
-			if (null != bvdfBldParam) {
-				bldName = bvdfBldParam.getBldName();
-				corpNo = bvdfBldParam.getCorpNo();
-				regionNo = bvdfBldParam.getRegionNo();
-			}
-			esHouseParam.setBldName(bldName);
-			String developName = "无";
-			BvdfCorpParam corpQueryParam = new BvdfCorpParam();
-			corpQueryParam.setCorpId(corpNo);
-			// 查询开发企业名称
-			BvdfCorpParam bvdfCorpParam = bvdfCorpService.selectBvdfCorpInfo(corpQueryParam);
-			if (null != bvdfCorpParam) {
-				developName = bvdfCorpParam.getCorpName();
-			}
-			esHouseParam.setDevelopName(developName);
-			BvdfRegionParam regionQueryParam = new BvdfRegionParam();
-			regionQueryParam.setRegionNo(regionNo);
-			BvdfRegionParam bvdfRegionParam = bvdfRegionService.selectBvdfRegionInfo(regionQueryParam);
-			String regionName = "无";
-			if (null != bvdfRegionParam) {
-				regionName = bvdfRegionParam.getRegionName();
-			}
-			esHouseParam.setRegionName(regionName);
-			esHouseParam.setCellNo(bvdfHouse.getCellno());
-			BvdfCellParam cellQueryParam = new BvdfCellParam();
-			cellQueryParam.setBldNo(bvdfHouse.getBldno());
-			cellQueryParam.setCellNo(bvdfHouse.getCellno());
-			cellQueryParam.setHouseType(bvdfHouse.getHousetype());
-			// 查询单元名称
-			BvdfCellParam bvdfCellParam = bvdfCellService.selectBvdfCellInfo(cellQueryParam);
-			String cellName = "无";
-			if (null != bvdfCellParam) {
-				cellName = bvdfCellParam.getCellName();
-			}
-			esHouseParam.setCellName(cellName);
-			esHouseParam.setFloorNo(bvdfHouse.getFloorno());
-			esHouseParam.setFloorName(bvdfHouse.getFloorname());
-			esHouseParam.setShowName(bvdfHouse.getShowname());
-			esHouseParam.setRoomNo(bvdfHouse.getRoomno());
-			esHouseParam.setConstructArea(bvdfHouse.getConstructArea());
-			esHouseParam.setHouseAddress(bvdfHouse.getAddress());
-			esHouseParam.setVersionnumber(bvdfHouse.getVersionnumber());
-			esHouseParamList.add(esHouseParam);
-		});
+		organizeEsHouseParamList(bvdfHouseParamList, esHouseParamList);
 		try (TransportClient client = new PreBuiltTransportClient(Settings.builder().put("cluster.name", esClusterName).build())
 				.addTransportAddress(new TransportAddress(InetAddress.getByName(esIP), Integer.parseInt(esPort)))) {
 			esHouseParamList.forEach(esHouseParam -> {
@@ -201,19 +143,92 @@ public class BvdfHouseBizImpl implements BvdfHouseBiz {
 			log.error("创建elasticsearch客户端连接失败" + e);
 			throw new MsgException(ReturnCode.sdp_sys_error, "创建elasticsearch客户端连接失败");
 		}
-			// bvdfToEsRecordTime为空时新增一条数据
-			if (null == bvdfToEsRecordTime) {
-				BvdfToEsRecordTime bvdfToEsForAdd = new BvdfToEsRecordTime();
-				bvdfToEsForAdd.setId(RecordTimeEnum.BVDF_HOUSE_ID.getCode());
-				bvdfToEsForAdd.setLastExcuteTime(queryParam.getScopeEndTime());
-				bvdfToEsForAdd.setMatchType(MatchTypeEnum.HOUSE.getCode());
-				bvdfToEsForAdd.setDescribe(MatchTypeEnum.HOUSE.getDesc());
-				mongoTemplate.insert(bvdfToEsForAdd);
-			} else {
-				Query queryupdate = new Query(Criteria.where("id").is(RecordTimeEnum.BVDF_HOUSE_ID.getCode()));
-				Update update = new Update().set(RecordTimeEnum.LAST_EXCUTE_TIME.getCode(), queryParam.getScopeEndTime());
-				mongoTemplate.updateFirst(queryupdate, update, BvdfToEsRecordTime.class);
+		// bvdfToEsRecordTime为空时新增一条数据
+		if (null == bvdfToEsRecordTime) {
+			BvdfToEsRecordTime bvdfToEsForAdd = new BvdfToEsRecordTime();
+			bvdfToEsForAdd.setId(RecordTimeEnum.BVDF_HOUSE_ID.getCode());
+			bvdfToEsForAdd.setLastExcuteTime(queryParam.getScopeEndTime());
+			bvdfToEsForAdd.setMatchType(MatchTypeEnum.HOUSE.getCode());
+			bvdfToEsForAdd.setDescribe(MatchTypeEnum.HOUSE.getDesc());
+			mongoTemplate.insert(bvdfToEsForAdd);
+		} else {
+			Query queryupdate = new Query(Criteria.where("id").is(RecordTimeEnum.BVDF_HOUSE_ID.getCode()));
+			Update update = new Update().set(RecordTimeEnum.LAST_EXCUTE_TIME.getCode(), queryParam.getScopeEndTime());
+			mongoTemplate.updateFirst(queryupdate, update, BvdfToEsRecordTime.class);
+		}
+	}
+
+	/**
+	 * @Author: yinxunyang
+	 * @Description: 组织房屋信息推送es的数据 添加小区名称和开发企业名称等
+	 * @Date: 2019/12/31 15:04
+	 * @param:
+	 * @return:
+	 */
+	private void organizeEsHouseParamList(List<BvdfHouseParam> bvdfHouseParamList, List<EsHouseParam> esHouseParamList) {
+		bvdfHouseParamList.stream().forEach(bvdfHouseParam -> {
+			try {
+				BvdfHouseParam bvdfHouse = bvdfHouseService.selectBvdfHouseInfo(bvdfHouseParam);
+				EsHouseParam esHouseParam = new EsHouseParam();
+				esHouseParam.setDataCenterId(bvdfHouse.getDataCenterId());
+				esHouseParam.setHouseId(bvdfHouse.getHouseid());
+				esHouseParam.setHouseType(bvdfHouse.getHousetype());
+				esHouseParam.setBldNo(bvdfHouse.getBldno());
+				BvdfBldParam bldQueryParam = new BvdfBldParam();
+				bldQueryParam.setBldNo(bvdfHouse.getBldno());
+				// 根据自然幢编号查询自然幢名称
+				BvdfBldParam bvdfBldParam = bvdfBldService.selectBvdfBldInfo(bldQueryParam);
+				String bldName = "无";
+				String corpNo = "无";
+				String regionNo = "无";
+				if (null != bvdfBldParam) {
+					bldName = bvdfBldParam.getBldName();
+					corpNo = bvdfBldParam.getCorpNo();
+					regionNo = bvdfBldParam.getRegionNo();
+				}
+				esHouseParam.setBldName(bldName);
+				String developName = "无";
+				BvdfCorpParam corpQueryParam = new BvdfCorpParam();
+				corpQueryParam.setCorpId(corpNo);
+				// 查询开发企业名称
+				BvdfCorpParam bvdfCorpParam = bvdfCorpService.selectBvdfCorpInfo(corpQueryParam);
+				if (null != bvdfCorpParam) {
+					developName = bvdfCorpParam.getCorpName();
+				}
+				esHouseParam.setDevelopName(developName);
+				BvdfRegionParam regionQueryParam = new BvdfRegionParam();
+				regionQueryParam.setRegionNo(regionNo);
+				BvdfRegionParam bvdfRegionParam = bvdfRegionService.selectBvdfRegionInfo(regionQueryParam);
+				String regionName = "无";
+				if (null != bvdfRegionParam) {
+					regionName = bvdfRegionParam.getRegionName();
+				}
+				esHouseParam.setRegionName(regionName);
+				esHouseParam.setCellNo(bvdfHouse.getCellno());
+				BvdfCellParam cellQueryParam = new BvdfCellParam();
+				cellQueryParam.setBldNo(bvdfHouse.getBldno());
+				cellQueryParam.setCellNo(bvdfHouse.getCellno());
+				cellQueryParam.setHouseType(bvdfHouse.getHousetype());
+				// 查询单元名称
+				BvdfCellParam bvdfCellParam = bvdfCellService.selectBvdfCellInfo(cellQueryParam);
+				String cellName = "无";
+				if (null != bvdfCellParam) {
+					cellName = bvdfCellParam.getCellName();
+				}
+				esHouseParam.setCellName(cellName);
+				esHouseParam.setFloorNo(bvdfHouse.getFloorno());
+				esHouseParam.setFloorName(bvdfHouse.getFloorname());
+				esHouseParam.setShowName(bvdfHouse.getShowname());
+				esHouseParam.setRoomNo(bvdfHouse.getRoomno());
+				esHouseParam.setConstructArea(bvdfHouse.getConstructArea());
+				esHouseParam.setHouseAddress(bvdfHouse.getAddress());
+				esHouseParam.setVersionnumber(bvdfHouse.getVersionnumber());
+				esHouseParamList.add(esHouseParam);
+			} catch (Exception e) {
+				log.error("组织房屋信息推送es的数据失败,bvdfHouseParam为{}",bvdfHouseParam,e);
 			}
+		});
+
 	}
 	/**
 	 * @Author: yinxunyang
@@ -227,6 +242,7 @@ public class BvdfHouseBizImpl implements BvdfHouseBiz {
 		try {
 			doc = XContentFactory.jsonBuilder()
 					.startObject()
+					.field("regionName", esHouseParam.getRegionName())
 					.field("developName", esHouseParam.getDevelopName())
 					.field("dataCenterId", esHouseParam.getDataCenterId())
 					.field("houseId", esHouseParam.getHouseId())
