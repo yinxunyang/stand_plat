@@ -1,0 +1,12 @@
+package com.bestvike.dataCenter.biz;
+
+public interface BvdfCorpBiz {
+	/**
+	 * @Author: yinxunyang
+	 * @Description: 将bvdf开发公司信息迁移至elasticsearch
+	 * @Date: 2019/12/19 11:24
+	 * @param:
+	 * @return:
+	 */
+	void bvdfCorpToEs();
+}

@@ -1,4 +1,4 @@
-package com.bestvike.dataCenter.service.impl;
+package com.bestvike.dataCenter.biz.impl;
 
 import com.bestvike.commons.enums.DataCenterEnum;
 import com.bestvike.commons.enums.MatchTypeEnum;
@@ -6,14 +6,12 @@ import com.bestvike.commons.enums.RecordTimeEnum;
 import com.bestvike.commons.enums.ReturnCode;
 import com.bestvike.commons.exception.MsgException;
 import com.bestvike.commons.utils.UtilTool;
+import com.bestvike.dataCenter.biz.BvdfCorpBiz;
 import com.bestvike.dataCenter.dao.BvdfHouseDao;
 import com.bestvike.dataCenter.entity.BvdfToEsRecordTime;
 import com.bestvike.dataCenter.param.BvdfCorpParam;
-import com.bestvike.dataCenter.param.BvdfHouseParam;
 import com.bestvike.dataCenter.service.BvdfCorpService;
 import com.bestvike.dataCenter.service.BvdfHouseService;
-import com.bestvike.dataCenter.service.BvdfService;
-import com.bestvike.elastic.param.EsHouseParam;
 import com.bestvike.elastic.service.ElasticSearchService;
 import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.client.transport.TransportClient;
@@ -29,20 +27,15 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 @Service
 @Slf4j
-public class BvdfServiceImpl implements BvdfService {
+public class BvdfCorpBizImpl implements BvdfCorpBiz {
 	/**
 	 * es集群的名称
 	 */
