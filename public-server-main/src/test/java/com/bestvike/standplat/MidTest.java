@@ -7,7 +7,6 @@ import com.bestvike.commons.utils.UtilTool;
 import com.bestvike.dataCenter.dao.BvdfHouseDao;
 import com.bestvike.dataCenter.param.BvdfCorpParam;
 import com.bestvike.dataCenter.param.BvdfHouseParam;
-import com.bestvike.dataCenter.service.impl.BvdfServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.transport.TransportClient;
@@ -40,8 +39,6 @@ import java.util.Map;
  */
 @Slf4j
 public class MidTest extends BaseTest {
-	@Autowired
-	private BvdfServiceImpl bvdfServiceImpl;
 	@Autowired
 	private BvdfHouseDao bvdfHouseDao;
 	@Autowired
