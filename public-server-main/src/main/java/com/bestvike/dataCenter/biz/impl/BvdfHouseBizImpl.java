@@ -10,9 +10,11 @@ import com.bestvike.commons.utils.UtilTool;
 import com.bestvike.dataCenter.biz.BvdfHouseBiz;
 import com.bestvike.dataCenter.entity.BvdfToEsRecordTime;
 import com.bestvike.dataCenter.param.BvdfBldParam;
+import com.bestvike.dataCenter.param.BvdfCellParam;
 import com.bestvike.dataCenter.param.BvdfCorpParam;
 import com.bestvike.dataCenter.param.BvdfHouseParam;
 import com.bestvike.dataCenter.service.BvdfBldService;
+import com.bestvike.dataCenter.service.BvdfCellService;
 import com.bestvike.dataCenter.service.BvdfCorpService;
 import com.bestvike.dataCenter.service.BvdfHouseService;
 import com.bestvike.dataCenter.service.BvdfRegionService;
@@ -91,6 +93,8 @@ public class BvdfHouseBizImpl implements BvdfHouseBiz {
 	private BvdfCorpService bvdfCorpService;
 	@Autowired
 	private BvdfHouseService bvdfHouseService;
+	@Autowired
+	private BvdfCellService bvdfCellService;
 	private static final DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
 	/**
@@ -160,8 +164,20 @@ public class BvdfHouseBizImpl implements BvdfHouseBiz {
 			}
 			esHouseParam.setDevelopName(developName);
 			esHouseParam.setCellNo(bvdfHouse.getCellno());
-			// todo
-			esHouseParam.setCellName(null);
+			BvdfCellParam cellQueryParam = new BvdfCellParam();
+			cellQueryParam.setBldNo(bvdfHouse.getBldno());
+			cellQueryParam.setCellNo(bvdfHouse.getCellno());
+			cellQueryParam.setHouseType(bvdfHouse.getHousetype());
+			// 查询单元名称
+			BvdfCellParam bvdfCellParam = bvdfCellService.selectBvdfCellInfo(cellQueryParam);
+			String cellName = null;
+			if (null != bvdfCellParam) {
+				cellName = bvdfCellParam.getCellName();
+			}
+			if (StringUtils.isEmpty(cellName)) {
+				cellName = "无";
+			}
+			esHouseParam.setCellName(cellName);
 			esHouseParam.setFloorNo(bvdfHouse.getFloorno());
 			esHouseParam.setFloorName(bvdfHouse.getFloorname());
 			esHouseParam.setShowName(bvdfHouse.getShowname());

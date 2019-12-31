@@ -169,6 +169,21 @@
 			</if>
 		</where>
 	</select>
+	<select id="selectBvdfCellInfo" resultType="com.bestvike.dataCenter.param.BvdfCellParam">
+		select t.cellNo, t.cellName
+		from datasource_xjws.rev_cell_info t
+		<where>
+			<if test="null != param.bldNo and '' != param.bldNo">
+				t.naturalId = #{param.bldNo,jdbcType=VARCHAR}
+			</if>
+			<if test="null != param.houseType and '' != param.houseType">
+				AND t.houseType = #{param.houseType,jdbcType=VARCHAR}
+			</if>
+			<if test="null != param.cellName and '' != param.cellName">
+				AND t.cellName = #{param.cellName,jdbcType=VARCHAR}
+			</if>
+		</where>
+	</select>
 	<select id="queryBvdfHouseInfo" resultType="com.bestvike.dataCenter.param.BvdfHouseParam">
 		select *
 		from (

@@ -1,6 +1,7 @@
 package com.bestvike.dataCenter.dao;
 
 import com.bestvike.dataCenter.param.BvdfBldParam;
+import com.bestvike.dataCenter.param.BvdfCellParam;
 import com.bestvike.dataCenter.param.BvdfCorpParam;
 import com.bestvike.dataCenter.param.BvdfHouseParam;
 import com.bestvike.dataCenter.param.BvdfRegionParam;
@@ -70,6 +71,15 @@ public interface BvdfHouseDao {
 	 * @return:
 	 */
 	BvdfBldParam selectBvdfBldInfo(@Param("param") BvdfBldParam queryParam);
+
+	/**
+	 * @Author: yinxunyang
+	 * @Description: 查询单元信息
+	 * @Date: 2019/12/5 11:34
+	 * @param:
+	 * @return:
+	 */
+	BvdfCellParam selectBvdfCellInfo(@Param("param") BvdfCellParam queryParam);
 
 	/**
 	 * @Author: yinxunyang
