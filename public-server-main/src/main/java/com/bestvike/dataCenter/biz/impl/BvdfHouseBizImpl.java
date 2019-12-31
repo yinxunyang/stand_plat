@@ -223,6 +223,8 @@ public class BvdfHouseBizImpl implements BvdfHouseBiz {
 				esHouseParam.setConstructArea(bvdfHouse.getConstructArea());
 				esHouseParam.setHouseAddress(bvdfHouse.getAddress());
 				esHouseParam.setVersionnumber(bvdfHouse.getVersionnumber());
+				// 标准化处理跟es交互的数据
+				elasticSearchService.bvdfHouseParamFormat(esHouseParam);
 				esHouseParamList.add(esHouseParam);
 			} catch (Exception e) {
 				log.error("组织房屋信息推送es的数据失败,bvdfHouseParam为{}",bvdfHouseParam,e);
