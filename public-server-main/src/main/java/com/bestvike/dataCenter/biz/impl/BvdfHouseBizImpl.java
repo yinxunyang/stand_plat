@@ -163,8 +163,8 @@ public class BvdfHouseBizImpl implements BvdfHouseBiz {
 				BvdfToEsRecordTime bvdfToEsForAdd = new BvdfToEsRecordTime();
 				bvdfToEsForAdd.setId(RecordTimeEnum.BVDF_HOUSE_ID.getCode());
 				bvdfToEsForAdd.setLastExcuteTime(queryParam.getScopeEndTime());
-				bvdfToEsForAdd.setMatchType(MatchTypeEnum.BLD.getCode());
-				bvdfToEsForAdd.setDescribe(MatchTypeEnum.BLD.getDesc());
+				bvdfToEsForAdd.setMatchType(MatchTypeEnum.HOUSE.getCode());
+				bvdfToEsForAdd.setDescribe(MatchTypeEnum.HOUSE.getDesc());
 				mongoTemplate.insert(bvdfToEsForAdd);
 			} else {
 				Query queryupdate = new Query(Criteria.where("id").is(RecordTimeEnum.BVDF_HOUSE_ID.getCode()));
