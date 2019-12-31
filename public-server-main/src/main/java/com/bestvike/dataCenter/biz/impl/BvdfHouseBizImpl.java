@@ -10,6 +10,7 @@ import com.bestvike.commons.utils.UtilTool;
 import com.bestvike.dataCenter.biz.BvdfHouseBiz;
 import com.bestvike.dataCenter.entity.BvdfToEsRecordTime;
 import com.bestvike.dataCenter.param.BvdfBldParam;
+import com.bestvike.dataCenter.param.BvdfCorpParam;
 import com.bestvike.dataCenter.param.BvdfHouseParam;
 import com.bestvike.dataCenter.service.BvdfBldService;
 import com.bestvike.dataCenter.service.BvdfCorpService;
@@ -128,8 +129,6 @@ public class BvdfHouseBizImpl implements BvdfHouseBiz {
 		bvdfHouseParamList.stream().forEach(bvdfHouseParam -> {
 			BvdfHouseParam bvdfHouse = bvdfHouseService.selectBvdfHouseInfo(bvdfHouseParam);
 			EsHouseParam esHouseParam = new EsHouseParam();
-			// todo
-			esHouseParam.setDevelopName(null);
 			esHouseParam.setDataCenterId(bvdfHouse.getDataCenterId());
 			esHouseParam.setHouseId(bvdfHouse.getHouseid());
 			esHouseParam.setHouseType(bvdfHouse.getHousetype());
@@ -139,13 +138,27 @@ public class BvdfHouseBizImpl implements BvdfHouseBiz {
 			// 根据自然幢编号查询自然幢名称
 			BvdfBldParam bvdfBldParam = bvdfBldService.selectBvdfBldInfo(bldQueryParam);
 			String bldName = null;
+			String corpNo = null;
 			if (null != bvdfBldParam) {
 				bldName = bvdfBldParam.getBldName();
+				corpNo = bvdfBldParam.getCorpNo();
 			}
 			if (StringUtils.isEmpty(bldName)) {
 				bldName = "无";
 			}
+			if (StringUtils.isEmpty(corpNo)) {
+				corpNo = "无";
+			}
 			esHouseParam.setBldName(bldName);
+			String developName = null;
+			BvdfCorpParam corpQueryParam = new BvdfCorpParam();
+			corpQueryParam.setCorpId(corpNo);
+			// 查询开发企业名称
+			BvdfCorpParam bvdfCorpParam = bvdfCorpService.selectBvdfCorpInfo(corpQueryParam);
+			if (null != bvdfCorpParam) {
+				developName = bvdfCorpParam.getCorpName();
+			}
+			esHouseParam.setDevelopName(developName);
 			esHouseParam.setCellNo(bvdfHouse.getCellno());
 			// todo
 			esHouseParam.setCellName(null);
