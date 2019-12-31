@@ -22,6 +22,10 @@ public class EsHouseParam {
 	private String buyNames;
 	*/
 	/**
+	 * 小区名称
+	 */
+	private String regionName;
+	/**
 	 * 开发企业名称
 	 */
 	private String developName;

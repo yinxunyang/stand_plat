@@ -25,6 +25,10 @@ public class BvdfHouseParam {
 	 */
 	private String housetype;
 	/**
+	 * 小区名称
+	 */
+	private String regionName;
+	/**
 	 * 楼幢编号
 	 */
 	private String bldno;

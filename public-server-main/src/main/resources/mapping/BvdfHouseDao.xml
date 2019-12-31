@@ -179,8 +179,8 @@
 			<if test="null != param.houseType and '' != param.houseType">
 				AND t.houseType = #{param.houseType,jdbcType=VARCHAR}
 			</if>
-			<if test="null != param.cellName and '' != param.cellName">
-				AND t.cellName = #{param.cellName,jdbcType=VARCHAR}
+			<if test="null != param.cellNo and '' != param.cellNo">
+				AND t.cellNo = #{param.cellNo,jdbcType=VARCHAR}
 			</if>
 		</where>
 	</select>

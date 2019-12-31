@@ -13,6 +13,7 @@ import com.bestvike.dataCenter.param.BvdfBldParam;
 import com.bestvike.dataCenter.param.BvdfCellParam;
 import com.bestvike.dataCenter.param.BvdfCorpParam;
 import com.bestvike.dataCenter.param.BvdfHouseParam;
+import com.bestvike.dataCenter.param.BvdfRegionParam;
 import com.bestvike.dataCenter.service.BvdfBldService;
 import com.bestvike.dataCenter.service.BvdfCellService;
 import com.bestvike.dataCenter.service.BvdfCorpService;
@@ -141,20 +142,16 @@ public class BvdfHouseBizImpl implements BvdfHouseBiz {
 			bldQueryParam.setBldNo(bvdfHouse.getBldno());
 			// 根据自然幢编号查询自然幢名称
 			BvdfBldParam bvdfBldParam = bvdfBldService.selectBvdfBldInfo(bldQueryParam);
-			String bldName = null;
-			String corpNo = null;
+			String bldName = "无";
+			String corpNo = "无";
+			String regionNo = "无";
 			if (null != bvdfBldParam) {
 				bldName = bvdfBldParam.getBldName();
 				corpNo = bvdfBldParam.getCorpNo();
-			}
-			if (StringUtils.isEmpty(bldName)) {
-				bldName = "无";
-			}
-			if (StringUtils.isEmpty(corpNo)) {
-				corpNo = "无";
+				regionNo = bvdfBldParam.getRegionNo();
 			}
 			esHouseParam.setBldName(bldName);
-			String developName = null;
+			String developName = "无";
 			BvdfCorpParam corpQueryParam = new BvdfCorpParam();
 			corpQueryParam.setCorpId(corpNo);
 			// 查询开发企业名称
@@ -163,6 +160,14 @@ public class BvdfHouseBizImpl implements BvdfHouseBiz {
 				developName = bvdfCorpParam.getCorpName();
 			}
 			esHouseParam.setDevelopName(developName);
+			BvdfRegionParam regionQueryParam = new BvdfRegionParam();
+			regionQueryParam.setRegionNo(regionNo);
+			BvdfRegionParam bvdfRegionParam = bvdfRegionService.selectBvdfRegionInfo(regionQueryParam);
+			String regionName = "无";
+			if (null != bvdfRegionParam) {
+				regionName = bvdfRegionParam.getRegionName();
+			}
+			esHouseParam.setRegionName(regionName);
 			esHouseParam.setCellNo(bvdfHouse.getCellno());
 			BvdfCellParam cellQueryParam = new BvdfCellParam();
 			cellQueryParam.setBldNo(bvdfHouse.getBldno());
@@ -170,12 +175,9 @@ public class BvdfHouseBizImpl implements BvdfHouseBiz {
 			cellQueryParam.setHouseType(bvdfHouse.getHousetype());
 			// 查询单元名称
 			BvdfCellParam bvdfCellParam = bvdfCellService.selectBvdfCellInfo(cellQueryParam);
-			String cellName = null;
+			String cellName = "无";
 			if (null != bvdfCellParam) {
 				cellName = bvdfCellParam.getCellName();
-			}
-			if (StringUtils.isEmpty(cellName)) {
-				cellName = "无";
 			}
 			esHouseParam.setCellName(cellName);
 			esHouseParam.setFloorNo(bvdfHouse.getFloorno());
