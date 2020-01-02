@@ -72,6 +72,23 @@
 			</if>
 		</where>
 	</select>
+	<select id="selectBvrfisBldInfo" resultType="com.bestvike.bvrfis.param.BvrfisBldParam">
+		select t.bldNo,
+		t.bldName,
+		t.address,
+		t.totalArea,
+		t.startDate,
+		t.finishDate,
+		t.regionNo,
+		t.developNo,
+		t.divisionCode
+		from bvrfis_xjws.arc_bldinfo t
+		<where>
+			<if test="null != param.bldNo and '' != param.bldNo">
+				t.bldNo = #{param.bldNo,jdbcType=VARCHAR}
+			</if>
+		</where>
+	</select>
 	<select id="queryBvrfisHouseInfo" resultType="com.bestvike.bvrfis.param.BvrfisHouseParam">
 		select
 		t.sysGuid,

@@ -19,4 +19,12 @@ public interface BvrfisBldService {
 	 * @return:
 	 */
 	List<BvrfisBldParam> queryBvrfisBldInfo(BvrfisBldParam queryParam);
+	/**
+	 * @Author: yinxunyang
+	 * @Description: 查询bvrfis自然幢的数据
+	 * @Date: 2019/12/9 13:14
+	 * @param:
+	 * @return:
+	 */
+	BvrfisBldParam selectBvrfisBldInfo(BvrfisBldParam queryParam);
 }

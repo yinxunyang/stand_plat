@@ -40,4 +40,22 @@ public class BvrfisBldServiceImpl implements BvrfisBldService {
 		}
 		return bvrfisBldParamList;
 	}
+	/**
+	 * @Author: yinxunyang
+	 * @Description: 查询bvrfis自然幢的数据
+	 * @Date: 2019/12/10 13:15
+	 * @param:
+	 * @return:
+	 */
+	@Override
+	public BvrfisBldParam selectBvrfisBldInfo(BvrfisBldParam queryParam) throws MsgException {
+		BvrfisBldParam bvrfisBldParam;
+		try {
+			bvrfisBldParam = bvrfisHouseDao.selectBvrfisBldInfo(queryParam);
+		} catch (Exception e) {
+			log.error("查询bvrfis自然幢的数据失败" + e);
+			throw new MsgException(ReturnCode.sdp_select_fail, "查询bvrfis自然幢的数据失败");
+		}
+		return bvrfisBldParam;
+	}
 }

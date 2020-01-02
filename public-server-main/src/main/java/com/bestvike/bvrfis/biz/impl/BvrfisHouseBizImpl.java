@@ -2,13 +2,11 @@ package com.bestvike.bvrfis.biz.impl;
 
 import com.bestvike.bvrfis.biz.BvrfisHouseBiz;
 import com.bestvike.bvrfis.entity.BDataRelation;
-import com.bestvike.bvrfis.entity.BLogOper;
 import com.bestvike.bvrfis.entity.BmatchAnResultInfo;
 import com.bestvike.bvrfis.param.BDataRelationParam;
 import com.bestvike.bvrfis.param.BmatchAnResultParam;
 import com.bestvike.bvrfis.param.BvrfisBldParam;
 import com.bestvike.bvrfis.param.BvrfisHouseParam;
-import com.bestvike.bvrfis.param.BvrfisRegionParam;
 import com.bestvike.bvrfis.service.BDataRelationService;
 import com.bestvike.bvrfis.service.BLogOperService;
 import com.bestvike.bvrfis.service.BmatchAnResultService;
@@ -19,28 +17,23 @@ import com.bestvike.bvrfis.service.BvrfisService;
 import com.bestvike.commons.enums.DataCenterEnum;
 import com.bestvike.commons.enums.MatchTypeEnum;
 import com.bestvike.commons.enums.RelStateEnum;
-import com.bestvike.commons.enums.ReturnCode;
 import com.bestvike.commons.exception.MsgException;
 import com.bestvike.commons.utils.UtilTool;
 import com.bestvike.dataCenter.param.BvdfBldParam;
 import com.bestvike.dataCenter.service.BvdfBldService;
+import com.bestvike.elastic.param.EsHouseParam;
 import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.transport.TransportClient;
-import org.elasticsearch.common.settings.Settings;
-import org.elasticsearch.common.transport.TransportAddress;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.WrapperQueryBuilder;
 import org.elasticsearch.search.SearchHit;
-import org.elasticsearch.transport.client.PreBuiltTransportClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpSession;
 import java.math.BigDecimal;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -123,26 +116,22 @@ public class BvrfisHouseBizImpl implements BvrfisHouseBiz {
 			log.info("bvrfis没有需要跟elasticsearch匹配的房屋数据");
 			return;
 		}
-		List<BvrfisBldParam> bvrfisBldExists = new ArrayList<>();
-		/*bvrfisHouseParamList.forEach(bvrfisBldParam -> {
-			// 如果该条数据已经存在挂接关系，不再新增匹配结果表
-			BDataRelationParam bDataRelationParam = new BDataRelationParam();
-			bDataRelationParam.setWxBusiId(bvrfisBldParam.getBldNo());
-			BDataRelation bDataRelation = bDataRelationService.selectBDataRelation(bDataRelationParam);
-			if (null != bDataRelation) {
-				bvrfisBldExists.add(bvrfisBldParam);
-			} else {
-				// 添加小区名称
-				BvrfisRegionParam regionParam = new BvrfisRegionParam();
-				regionParam.setRegionNo(bvrfisBldParam.getRegionNo());
-				// 正常
-				regionParam.setState("0");
-				BvrfisRegionParam bvrfisRegionParam = bvrfisRegionService.selectBvrfisRegionInfo(regionParam);
-				if (null != bvrfisRegionParam) {
-					bvrfisBldParam.setRegionName(bvrfisRegionParam.getRegionName());
-				}
-			}
-		});*/
+		List<EsHouseParam> esHouseParamList = new ArrayList<>();
+		// 组织跟es匹配的数据
+		organizeEsHouseList(esHouseParamList, bvrfisHouseParamList);
+		bvrfisHouseParamList.forEach(bvrfisHouseParam -> {
+			// 添加
+//				// 添加小区名称
+//				BvrfisRegionParam regionParam = new BvrfisRegionParam();
+//				regionParam.setRegionNo(bvrfisBldParam.getRegionNo());
+//				// 正常
+//				regionParam.setState("0");
+//				BvrfisRegionParam bvrfisRegionParam = bvrfisRegionService.selectBvrfisRegionInfo(regionParam);
+//				if (null != bvrfisRegionParam) {
+//					bvrfisBldParam.setRegionName(bvrfisRegionParam.getRegionName());
+//				}
+
+		});
 /*		bvrfisBldParamList.removeAll(bvrfisBldExists);
 		// 新增操作日志
 		BLogOper bLogOper = new BLogOper();
@@ -172,6 +161,45 @@ public class BvrfisHouseBizImpl implements BvrfisHouseBiz {
 		}*/
 	}
 
+	/**
+	 * @Author: yinxunyang
+	 * @Description: 组织跟es匹配的数据
+	 * @Date: 2019/12/31 17:01
+	 * @param:
+	 * @return:
+	 */
+	private void organizeEsHouseList(List<EsHouseParam> esHouseParamList, List<BvrfisHouseParam> bvrfisHouseParamList) {
+		bvrfisHouseParamList.forEach(bvrfisHouseParam -> {
+			EsHouseParam esHouseParam = new EsHouseParam();
+			// todo 从小区名称
+			esHouseParam.setRegionName(null);
+			// todo 从开发企业名称
+			esHouseParam.setDevelopName(null);
+			esHouseParam.setDataCenterId(null);
+			esHouseParam.setHouseId(bvrfisHouseParam.getSysGuid());
+			esHouseParam.setHouseType(bvrfisHouseParam.getHouseProp());
+			esHouseParam.setBldNo(bvrfisHouseParam.getBldNo());
+			BvrfisBldParam bldQueryParam = new BvrfisBldParam();
+			bldQueryParam.setBldNo(bvrfisHouseParam.getBldNo());
+			// 查询楼幢名称
+			BvrfisBldParam bvrfisBldParam = bvrfisBldService.selectBvrfisBldInfo(bldQueryParam);
+			String bldName = "无";
+			if (null != bvrfisBldParam) {
+				bldName = bvrfisBldParam.getBldName();
+			}
+			esHouseParam.setBldName(bldName);
+			esHouseParam.setCellNo(bvrfisHouseParam.getCellNo());
+			// todo  查询单元名称
+			esHouseParam.setCellName(null);
+			esHouseParam.setFloorNo(bvrfisHouseParam.getFloorNo());
+			// todo 查询楼层名称
+			esHouseParam.setFloorName(null);
+			esHouseParam.setShowName(bvrfisHouseParam.getShowName());
+			esHouseParam.setRoomNo(bvrfisHouseParam.getRoomNo());
+			esHouseParam.setConstructArea(bvrfisHouseParam.getConstructArea());
+			esHouseParam.setHouseAddress(bvrfisHouseParam.getAddress());
+		});
+	}
 	/**
 	 * @Author: yinxunyang
 	 * @Description: 自然幢根据自然幢名称完全匹配
