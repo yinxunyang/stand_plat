@@ -6,11 +6,13 @@ import com.bestvike.bvrfis.entity.BmatchAnResultInfo;
 import com.bestvike.bvrfis.param.BDataRelationParam;
 import com.bestvike.bvrfis.param.BmatchAnResultParam;
 import com.bestvike.bvrfis.param.BvrfisBldParam;
+import com.bestvike.bvrfis.param.BvrfisCellParam;
 import com.bestvike.bvrfis.param.BvrfisHouseParam;
 import com.bestvike.bvrfis.service.BDataRelationService;
 import com.bestvike.bvrfis.service.BLogOperService;
 import com.bestvike.bvrfis.service.BmatchAnResultService;
 import com.bestvike.bvrfis.service.BvrfisBldService;
+import com.bestvike.bvrfis.service.BvrfisCellService;
 import com.bestvike.bvrfis.service.BvrfisHouseService;
 import com.bestvike.bvrfis.service.BvrfisRegionService;
 import com.bestvike.bvrfis.service.BvrfisService;
@@ -96,7 +98,8 @@ public class BvrfisHouseBizImpl implements BvrfisHouseBiz {
 	private BvrfisRegionService bvrfisRegionService;
 	@Autowired
 	private BvrfisHouseService bvrfisHouseService;
-
+	@Autowired
+	private BvrfisCellService bvrfisCellService;
 	/**
 	 * @Author: yinxunyang
 	 * @Description: 将bvrfis房屋跟es中的匹配
@@ -189,8 +192,17 @@ public class BvrfisHouseBizImpl implements BvrfisHouseBiz {
 			}
 			esHouseParam.setBldName(bldName);
 			esHouseParam.setCellNo(bvrfisHouseParam.getCellNo());
-			// todo  查询单元名称
-			esHouseParam.setCellName(null);
+			BvrfisCellParam cellQuery = new BvrfisCellParam();
+			cellQuery.setBldNo(bvrfisHouseParam.getBldNo());
+			cellQuery.setCellNo(bvrfisHouseParam.getCellNo());
+			cellQuery.setHouseProp(bvrfisHouseParam.getHouseProp());
+			// 查询单元名称
+			BvrfisCellParam bvrfisCellParam = bvrfisCellService.selectBvrfisCellInfo(cellQuery);
+			String cellName = "无";
+			if (null != bvrfisCellParam) {
+				cellName = bvrfisCellParam.getCellName();
+			}
+			esHouseParam.setCellName(cellName);
 			esHouseParam.setFloorNo(bvrfisHouseParam.getFloorNo());
 			// todo 查询楼层名称
 			esHouseParam.setFloorName(null);

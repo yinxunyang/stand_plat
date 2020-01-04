@@ -1,6 +1,7 @@
 package com.bestvike.bvrfis.dao;
 
 import com.bestvike.bvrfis.param.BvrfisBldParam;
+import com.bestvike.bvrfis.param.BvrfisCellParam;
 import com.bestvike.bvrfis.param.BvrfisCorpInfoParam;
 import com.bestvike.bvrfis.param.BvrfisHouseParam;
 import com.bestvike.bvrfis.param.BvrfisOwnerInfoParam;
@@ -72,6 +73,15 @@ public interface BvrfisHouseDao {
 	 * @return:
 	 */
 	BvrfisBldParam selectBvrfisBldInfo(@Param("param") BvrfisBldParam queryParam);
+
+	/**
+	 * @Author: yinxunyang
+	 * @Description: 查询bvrfis单元的数据
+	 * @Date: 2019/12/10 17:25
+	 * @param:
+	 * @return:
+	 */
+	BvrfisCellParam selectBvrfisCellInfo(@Param("param") BvrfisCellParam queryParam);
 
 	/**
 	 * @Author: yinxunyang
