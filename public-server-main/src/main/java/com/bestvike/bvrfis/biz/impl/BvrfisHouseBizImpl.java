@@ -25,6 +25,7 @@ import com.bestvike.bvrfis.service.BvrfisService;
 import com.bestvike.commons.enums.DataCenterEnum;
 import com.bestvike.commons.enums.MatchTypeEnum;
 import com.bestvike.commons.enums.RelStateEnum;
+import com.bestvike.commons.enums.ReturnCode;
 import com.bestvike.commons.exception.MsgException;
 import com.bestvike.commons.utils.UtilTool;
 import com.bestvike.dataCenter.param.BvdfBldParam;
@@ -35,15 +36,20 @@ import com.bestvike.elastic.param.EsHouseParam;
 import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.transport.TransportClient;
+import org.elasticsearch.common.settings.Settings;
+import org.elasticsearch.common.transport.TransportAddress;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.WrapperQueryBuilder;
 import org.elasticsearch.search.SearchHit;
+import org.elasticsearch.transport.client.PreBuiltTransportClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpSession;
 import java.math.BigDecimal;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -147,38 +153,18 @@ public class BvrfisHouseBizImpl implements BvrfisHouseBiz {
 		List<EsHouseParam> esHouseParamList = new ArrayList<>();
 		// 组织跟es匹配的数据
 		organizeEsHouseList(esHouseParamList, bvrfisHouseParamList);
-		bvrfisHouseParamList.forEach(bvrfisHouseParam -> {
-			// 添加
-//				// 添加小区名称
-//				BvrfisRegionParam regionParam = new BvrfisRegionParam();
-//				regionParam.setRegionNo(bvrfisBldParam.getRegionNo());
-//				// 正常
-//				regionParam.setState("0");
-//				BvrfisRegionParam bvrfisRegionParam = bvrfisRegionService.selectBvrfisRegionInfo(regionParam);
-//				if (null != bvrfisRegionParam) {
-//					bvrfisBldParam.setRegionName(bvrfisRegionParam.getRegionName());
-//				}
-
-		});
-/*		bvrfisBldParamList.removeAll(bvrfisBldExists);
-
-		// 自然幢根据自然幢名称完全匹配 使用初始的bldName
-		uniqueMatchBldByBldName(bvrfisBldParamList, httpSession, logId, "bldNameInit");
-		// 自然幢根据自然幢名称完全匹配 使用bldName xx数字
-		uniqueMatchBldByBldName(bvrfisBldParamList, httpSession, logId, "bldNameRepalceOne");
-		// 自然幢根据自然幢名称完全匹配 使用bldName xx号楼
-		uniqueMatchBldByBldName(bvrfisBldParamList, httpSession, logId, "bldNameRepalceTwo");
 		try (TransportClient client = new PreBuiltTransportClient(Settings.builder().put("cluster.name", esClusterName).build())
 				.addTransportAddress(new TransportAddress(InetAddress.getByName(esIP), Integer.parseInt(esPort)))) {
-
-			// 自然幢根据小区疑似匹配
-			unCertainBldByRegion(bvrfisBldParamList, client, httpSession, logId);
-			// 自然幢根据开发企业疑似匹配
-			unCertainBldByCorpNo(bvrfisBldParamList, client, httpSession, logId);
+			// 房屋根据自然幢疑似匹配
+			unCertainHouseByBld(esHouseParamList, client, httpSession, logId);
+			/*// 房屋根据小区疑似匹配
+			unCertainBldByCorpNo(bvrfisHouseParamList, client, httpSession, logId);
+			// 房屋根据开发企业疑似匹配
+			unCertainBldByCorpNo(bvrfisHouseParamList, client, httpSession, logId);*/
 		} catch (UnknownHostException e) {
 			log.error("创建elasticsearch客户端连接失败" + e);
 			throw new MsgException(ReturnCode.sdp_sys_error, "创建elasticsearch客户端连接失败");
-		}*/
+		}
 	}
 
 	/**
@@ -329,29 +315,28 @@ public class BvrfisHouseBizImpl implements BvrfisHouseBiz {
 
 	/**
 	 * @Author: yinxunyang
-	 * @Description: 自然幢根据小区疑似匹配
+	 * @Description: 房屋根据自然幢疑似匹配
 	 * @Date: 2019/12/19 19:15
 	 * @param:
 	 * @return:
 	 */
-	private void unCertainBldByRegion(List<BvrfisBldParam> bvrfisBldParamList, TransportClient client, HttpSession httpSession, String logId) {
-		// 匹配成功后需要从bvrfisBldParamList移除的List
-		List<BvrfisBldParam> paramListForDel = new ArrayList<>();
-		// 自然幢根据小区疑似匹配
-		String bldQueryJson = bvrfisService.organizeQueryEsByJson("elasticSearch/bld/unCertainBldByRegion.json");
-		// 遍历自然幢信息和elasticsearch
-		bvrfisBldParamList.forEach(bvrfisBldParam -> {
+	private void unCertainHouseByBld(List<EsHouseParam> esHouseParamList, TransportClient client, HttpSession httpSession, String logId) {
+		// 匹配成功后需要从esHouseParamList移除的List
+		List<EsHouseParam> paramListForDel = new ArrayList<>();
+		// 房屋根据自然幢疑似匹配
+		String houseQueryJson = bvrfisService.organizeQueryEsByJson("elasticSearch/bld/unCertainBldByRegion.json");
+		// 遍历房屋信息和elasticsearch
+		esHouseParamList.forEach(esHouseParam -> {
 			try {
-				// 查询bvdf的小区信息
+				// 查询bvdf的房屋信息
 				BDataRelationParam bDataRelationParam = new BDataRelationParam();
-				bDataRelationParam.setWxBusiId(bvrfisBldParam.getRegionNo());
+				bDataRelationParam.setWxBusiId(esHouseParam.getHouseId());
 				BDataRelation bDataRelation = bDataRelationService.selectBDataRelation(bDataRelationParam);
 				if (null == bDataRelation) {
 					return;
 				}
-				String bldQueryParam = bldQueryJson.replace("regionNoValue", bDataRelation.getWqBusiId())
-						.replace("bldNameValue", bvrfisBldParam.getBldName())
-						.replace("addressValue", bvrfisBldParam.getAddress());
+				String bldQueryParam = houseQueryJson.replace("regionNoValue", bDataRelation.getWqBusiId())
+						.replace("addressValue", esHouseParam.getHouseAddress());
 				// 查询的json串
 				log.info(bldQueryParam);
 				WrapperQueryBuilder wqb = QueryBuilders.wrapperQuery(bldQueryParam);
@@ -374,7 +359,7 @@ public class BvrfisHouseBizImpl implements BvrfisHouseBiz {
 					bmatchAnResultInfo.setMatchid(UtilTool.UUID());
 					bmatchAnResultInfo.setLogid(logId);
 					// 维修资金数据ID
-					bmatchAnResultInfo.setWxbusiid(bvrfisBldParam.getBldNo());
+					bmatchAnResultInfo.setWxbusiid(esHouseParam.getBldNo());
 					bmatchAnResultInfo.setCenterid(bvdfBldParam.getDataCenterId());
 					bmatchAnResultInfo.setWqbusiid(bvdfBldParam.getBldNo());
 					String score = Float.toString(hit.getScore());
@@ -400,13 +385,13 @@ public class BvrfisHouseBizImpl implements BvrfisHouseBiz {
 					bmatchAnResultInfo.setVersion(new BigDecimal(bvdfBldParam.getVersionnumber()));
 					// 先删除再新增匹配结果表，同事务
 					bvrfisService.delAndInsertBmatchAnResult(bmatchAnResultInfo);
-					paramListForDel.add(bvrfisBldParam);
+					paramListForDel.add(esHouseParam);
 				}
 			} catch (MsgException e) {
-				log.error(e + "bvrfisBldParam参数为：{}", bvrfisBldParam);
+				log.error(e + "esHouseParam参数为：{}", esHouseParam);
 			}
 		});
-		bvrfisBldParamList.removeAll(paramListForDel);
+		esHouseParamList.removeAll(paramListForDel);
 	}
 
 	/**
