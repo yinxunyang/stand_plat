@@ -32,6 +32,7 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -102,7 +103,7 @@ public class BvdfHouseBizImpl implements BvdfHouseBiz {
 	 * @return:
 	 */
 	@Override
-	//@Scheduled(cron = "${standplatConfig.houseToEsSchedule.cronTime}")
+	@Scheduled(cron = "${standplatConfig.houseToEsSchedule.cronTime}")
 	public void bvdfHouseToEs() {
 		Query query = new Query(Criteria.where("_id").is(RecordTimeEnum.BVDF_HOUSE_ID.getCode()));
 		BvdfToEsRecordTime bvdfToEsRecordTime = mongoTemplate.findOne(query, BvdfToEsRecordTime.class);
@@ -177,6 +178,9 @@ public class BvdfHouseBizImpl implements BvdfHouseBiz {
 					corpNo = bvdfBldParam.getCorpNo();
 					regionNo = bvdfBldParam.getRegionNo();
 				}
+				bvdfHouseParam.setBldno(bvdfHouse.getBldno());
+				bvdfHouseParam.setHouseid(bvdfHouse.getHouseid());
+				bvdfHouseParam.setHousetype(bvdfHouse.getHousetype());
 				bvdfHouseParam.setBldName(bldName);
 				String developName = "无";
 				BvdfCorpParam corpQueryParam = new BvdfCorpParam();
@@ -186,6 +190,7 @@ public class BvdfHouseBizImpl implements BvdfHouseBiz {
 				if (null != bvdfCorpParam) {
 					developName = bvdfCorpParam.getCorpName();
 				}
+				bvdfHouseParam.setDevelopNo(corpNo);
 				bvdfHouseParam.setDevelopName(developName);
 				BvdfRegionParam regionQueryParam = new BvdfRegionParam();
 				regionQueryParam.setRegionNo(regionNo);
@@ -194,6 +199,7 @@ public class BvdfHouseBizImpl implements BvdfHouseBiz {
 				if (null != bvdfRegionParam) {
 					regionName = bvdfRegionParam.getRegionName();
 				}
+				bvdfHouseParam.setRegionNo(regionNo);
 				bvdfHouseParam.setRegionName(regionName);
 				bvdfHouseParam.setCellno(bvdfHouse.getCellno());
 				BvdfCellParam cellQueryParam = new BvdfCellParam();
@@ -234,7 +240,9 @@ public class BvdfHouseBizImpl implements BvdfHouseBiz {
 		try {
 			doc = XContentFactory.jsonBuilder()
 					.startObject()
+					.field("regionNo", bvdfHouseParam.getRegionNo())
 					.field("regionName", bvdfHouseParam.getRegionName())
+					.field("developNo", bvdfHouseParam.getDevelopNo())
 					.field("developName", bvdfHouseParam.getDevelopName())
 					.field("dataCenterId", bvdfHouseParam.getDataCenterId())
 					.field("houseId", bvdfHouseParam.getHouseid())
