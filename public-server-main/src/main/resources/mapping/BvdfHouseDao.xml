@@ -235,6 +235,18 @@
 			<if test="null != param.dataCenterId and '' != param.dataCenterId">
 				t1.sysguid = #{param.dataCenterId,jdbcType=VARCHAR}
 			</if>
+			<if test="null != param.bldno and '' != param.bldno">
+				AND t1.naturalid = #{param.bldno,jdbcType=VARCHAR}
+			</if>
+			<if test="null != param.cellno and '' != param.cellno">
+				AND t1.cellno = #{param.cellno,jdbcType=VARCHAR}
+			</if>
+			<if test="null != param.floorno and '' != param.floorno">
+				AND t1.floorno = #{param.floorno,jdbcType=VARCHAR}
+			</if>
+			<if test="null != param.roomno and '' != param.roomno">
+				AND t1.roomno = #{param.roomno,jdbcType=VARCHAR}
+			</if>
 		</where>
 	</select>
 	<select id="countBvdfHouseInfo" resultType="java.lang.Integer">

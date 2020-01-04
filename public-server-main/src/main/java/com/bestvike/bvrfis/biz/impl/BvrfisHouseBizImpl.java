@@ -2,6 +2,7 @@ package com.bestvike.bvrfis.biz.impl;
 
 import com.bestvike.bvrfis.biz.BvrfisHouseBiz;
 import com.bestvike.bvrfis.entity.BDataRelation;
+import com.bestvike.bvrfis.entity.BLogOper;
 import com.bestvike.bvrfis.entity.BmatchAnResultInfo;
 import com.bestvike.bvrfis.param.BDataRelationParam;
 import com.bestvike.bvrfis.param.BmatchAnResultParam;
@@ -27,7 +28,9 @@ import com.bestvike.commons.enums.RelStateEnum;
 import com.bestvike.commons.exception.MsgException;
 import com.bestvike.commons.utils.UtilTool;
 import com.bestvike.dataCenter.param.BvdfBldParam;
+import com.bestvike.dataCenter.param.BvdfHouseParam;
 import com.bestvike.dataCenter.service.BvdfBldService;
+import com.bestvike.dataCenter.service.BvdfHouseService;
 import com.bestvike.elastic.param.EsHouseParam;
 import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.action.search.SearchResponse;
@@ -98,6 +101,8 @@ public class BvrfisHouseBizImpl implements BvrfisHouseBiz {
 	@Autowired
 	private BvdfBldService bvdfBldService;
 	@Autowired
+	private BvdfHouseService bvdfHouseService;
+	@Autowired
 	private BmatchAnResultService bmatchAnResultService;
 	@Autowired
 	private BvrfisRegionService bvrfisRegionService;
@@ -128,6 +133,17 @@ public class BvrfisHouseBizImpl implements BvrfisHouseBiz {
 			log.info("bvrfis没有需要跟elasticsearch匹配的房屋数据");
 			return;
 		}
+		// 新增操作日志
+		BLogOper bLogOper = new BLogOper();
+		String logId = UtilTool.UUID();
+		bLogOper.setLogid(logId);
+		// todo 待定
+		bLogOper.setInUser("无");
+		bLogOper.setInDate(UtilTool.nowTime());
+		bLogOper.setMatchtype(MatchTypeEnum.HOUSE.getCode());
+		bLogOperService.insertBLogOper(bLogOper);
+		// 房屋根据房屋名称完全匹配
+		uniqueMatchHouseByHouseName(bvrfisHouseParamList, httpSession, logId);
 		List<EsHouseParam> esHouseParamList = new ArrayList<>();
 		// 组织跟es匹配的数据
 		organizeEsHouseList(esHouseParamList, bvrfisHouseParamList);
@@ -145,15 +161,7 @@ public class BvrfisHouseBizImpl implements BvrfisHouseBiz {
 
 		});
 /*		bvrfisBldParamList.removeAll(bvrfisBldExists);
-		// 新增操作日志
-		BLogOper bLogOper = new BLogOper();
-		String logId = UtilTool.UUID();
-		bLogOper.setLogid(logId);
-		// todo 待定
-		bLogOper.setInUser("无");
-		bLogOper.setInDate(UtilTool.nowTime());
-		bLogOper.setMatchtype(MatchTypeEnum.BLD.getCode());
-		bLogOperService.insertBLogOper(bLogOper);
+
 		// 自然幢根据自然幢名称完全匹配 使用初始的bldName
 		uniqueMatchBldByBldName(bvrfisBldParamList, httpSession, logId, "bldNameInit");
 		// 自然幢根据自然幢名称完全匹配 使用bldName xx数字
@@ -251,53 +259,44 @@ public class BvrfisHouseBizImpl implements BvrfisHouseBiz {
 	}
 	/**
 	 * @Author: yinxunyang
-	 * @Description: 自然幢根据自然幢名称完全匹配
+	 * @Description: 房屋根据房屋名称完全匹配
 	 * @Date: 2019/12/19 19:15
 	 * @param:
 	 * @return:
 	 */
-	private void uniqueMatchBldByBldName(List<BvrfisBldParam> bvrfisBldParamList, HttpSession httpSession, String logId, String bldNameType) {
-		// 匹配成功后需要从bvrfisBldParamList移除的List
-		List<BvrfisBldParam> paramListForDel = new ArrayList<>();
-		// 遍历自然幢信息和elasticsearch
-		bvrfisBldParamList.forEach(bvrfisBldParam -> {
+	private void uniqueMatchHouseByHouseName(List<BvrfisHouseParam> bvrfisHouseParamList, HttpSession httpSession, String logId) {
+		// 匹配成功后需要从bvrfisHouseParamList移除的List
+		List<BvrfisHouseParam> paramListForDel = new ArrayList<>();
+		// 遍历房屋信息和elasticsearch
+		bvrfisHouseParamList.forEach(bvrfisHouseParam -> {
 			try {
-				// 查询bvdf的小区信息
+				// 查询bvdf的自然幢信息
 				BDataRelationParam bDataRelationParam = new BDataRelationParam();
-				bDataRelationParam.setWxBusiId(bvrfisBldParam.getRegionNo());
+				bDataRelationParam.setWxBusiId(bvrfisHouseParam.getBldNo());
 				BDataRelation bDataRelation = bDataRelationService.selectBDataRelation(bDataRelationParam);
 				if (null == bDataRelation) {
 					return;
 				}
-				String bvdfRegionId = bDataRelation.getWqBusiId();
-				// 根据小区编号和自然名称查询 bvdf数据
-				BvdfBldParam queryParam = new BvdfBldParam();
+				String bvdfBldId = bDataRelation.getWqBusiId();
+				// 根据自然幢编号和单元编号、楼层编号、室号查询 bvdf数据
+				BvdfHouseParam queryParam = new BvdfHouseParam();
 				queryParam.setState(DataCenterEnum.NORMAL_STATE.getCode());
-				queryParam.setRegionNo(bvdfRegionId);
-				String bldName = bvrfisBldParam.getBldName();
-				if ("bldNameRepalceOne".equals(bldNameType)) {
-					bldName = bldName.replace("号楼", "").replace("栋", "");
-				}
-				if ("bldNameRepalceTwo".equals(bldNameType)) {
-					bldName = bldName.replace("号楼", "").replace("栋", "") + "号楼";
-				}
-				queryParam.setBldName(bldName);
-				List<BvdfBldParam> bvdfBldParamList = bvdfBldService.queryBvdfBldInfo(queryParam);
-				// bvdfBldParamList返回唯一的数据，说明完全匹配
-				if (bvdfBldParamList.isEmpty() || bvdfBldParamList.size() != 1) {
-					return;
-				}
-				BvdfBldParam bvdfBldParam = bvdfBldParamList.get(0);
-				if (null == bvdfBldParam) {
+				queryParam.setBldno(bvdfBldId);
+				queryParam.setCellno(bvrfisHouseParam.getCellNo());
+				queryParam.setFloorno(bvrfisHouseParam.getFloorNo());
+				queryParam.setRoomno("0" + bvrfisHouseParam.getRoomNo());
+				BvdfHouseParam bvdfHouseParam = bvdfHouseService.selectBvdfHouseInfo(queryParam);
+				// bvdfHouseParam不为空，说明完全匹配
+				if (null == bvdfHouseParam) {
 					return;
 				}
 				BmatchAnResultInfo bmatchAnResultInfo = new BmatchAnResultInfo();
 				bmatchAnResultInfo.setMatchid(UtilTool.UUID());
 				bmatchAnResultInfo.setLogid(logId);
 				// 维修资金数据ID
-				bmatchAnResultInfo.setWxbusiid(bvrfisBldParam.getBldNo());
-				bmatchAnResultInfo.setCenterid(bvdfBldParam.getDataCenterId());
-				bmatchAnResultInfo.setWqbusiid(bvdfBldParam.getBldNo());
+				bmatchAnResultInfo.setWxbusiid(bvrfisHouseParam.getSysGuid());
+				bmatchAnResultInfo.setCenterid(bvdfHouseParam.getDataCenterId());
+				bmatchAnResultInfo.setWqbusiid(bvdfHouseParam.getHouseid());
 				// 该条数据匹配率 完全匹配是100
 				bmatchAnResultInfo.setPercent(new BigDecimal("100.00"));
 				// 匹配情况分析
@@ -307,7 +306,7 @@ public class BvrfisHouseBizImpl implements BvrfisHouseBiz {
 				// 匹配情况说明
 				bmatchAnResultInfo.setDescribe(null);
 				// 备注
-				bmatchAnResultInfo.setRemark("自然幢信息完全匹配");
+				bmatchAnResultInfo.setRemark("房屋信息完全匹配");
 				// 单位信息表
 				bmatchAnResultInfo.setMatchtype(MatchTypeEnum.BLD.getCode());
 				// todo 创建人 待确定
@@ -317,15 +316,15 @@ public class BvrfisHouseBizImpl implements BvrfisHouseBiz {
 				// 修改人
 				bmatchAnResultInfo.setEdituser(null);
 				bmatchAnResultInfo.setEditdate(null);
-				bmatchAnResultInfo.setVersion(new BigDecimal(bvdfBldParam.getVersionnumber()));
+				bmatchAnResultInfo.setVersion(new BigDecimal(bvdfHouseParam.getVersionnumber()));
 				// 先删除再新增匹配结果表，同事务
 				bvrfisService.delAndInsertBmatchAnResult(bmatchAnResultInfo);
-				paramListForDel.add(bvrfisBldParam);
+				paramListForDel.add(bvrfisHouseParam);
 			} catch (MsgException e) {
-				log.error(e + "bvrfisBldParam参数为：{}", bvrfisBldParam);
+				log.error(e + "bvrfisHouseParam参数为：{}", bvrfisHouseParam);
 			}
 		});
-		bvrfisBldParamList.removeAll(paramListForDel);
+		bvrfisHouseParamList.removeAll(paramListForDel);
 	}
 
 	/**
