@@ -18,7 +18,6 @@ import com.bestvike.dataCenter.service.BvdfCellService;
 import com.bestvike.dataCenter.service.BvdfCorpService;
 import com.bestvike.dataCenter.service.BvdfHouseService;
 import com.bestvike.dataCenter.service.BvdfRegionService;
-import com.bestvike.elastic.param.EsHouseParam;
 import com.bestvike.elastic.service.ElasticSearchService;
 import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.client.transport.TransportClient;
@@ -33,14 +32,12 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -128,16 +125,15 @@ public class BvdfHouseBizImpl implements BvdfHouseBiz {
 			log.info("没有bvdfHouseToEs的数据");
 			return;
 		}
-		List<EsHouseParam> esHouseParamList = new ArrayList<>();
 		// 组织es的数据 添加小区名称和开发企业名称等
-		organizeEsHouseParamList(bvdfHouseParamList, esHouseParamList);
+		organizeEsHouseParamList(bvdfHouseParamList);
 		try (TransportClient client = new PreBuiltTransportClient(Settings.builder().put("cluster.name", esClusterName).build())
 				.addTransportAddress(new TransportAddress(InetAddress.getByName(esIP), Integer.parseInt(esPort)))) {
-			esHouseParamList.forEach(esHouseParam -> {
+			bvdfHouseParamList.forEach(bvdfHouseParam -> {
 				// 拼装新增es的数据
-				XContentBuilder doc = organizeHouseToEsData(esHouseParam);
+				XContentBuilder doc = organizeHouseToEsData(bvdfHouseParam);
 				// 往elasticsearch迁移一条数据，elasticsearch主键相同会覆盖原数据，该处不用判断
-				elasticSearchService.insertElasticSearch(client, doc, houseindex, housetype, esHouseParam.getHouseId());
+				elasticSearchService.insertElasticSearch(client, doc, houseindex, housetype, bvdfHouseParam.getHouseid());
 			});
 		} catch (UnknownHostException e) {
 			log.error("创建elasticsearch客户端连接失败" + e);
@@ -165,15 +161,10 @@ public class BvdfHouseBizImpl implements BvdfHouseBiz {
 	 * @param:
 	 * @return:
 	 */
-	private void organizeEsHouseParamList(List<BvdfHouseParam> bvdfHouseParamList, List<EsHouseParam> esHouseParamList) {
+	private void organizeEsHouseParamList(List<BvdfHouseParam> bvdfHouseParamList) {
 		bvdfHouseParamList.stream().forEach(bvdfHouseParam -> {
 			try {
 				BvdfHouseParam bvdfHouse = bvdfHouseService.selectBvdfHouseInfo(bvdfHouseParam);
-				EsHouseParam esHouseParam = new EsHouseParam();
-				esHouseParam.setDataCenterId(bvdfHouse.getDataCenterId());
-				esHouseParam.setHouseId(bvdfHouse.getHouseid());
-				esHouseParam.setHouseType(bvdfHouse.getHousetype());
-				esHouseParam.setBldNo(bvdfHouse.getBldno());
 				BvdfBldParam bldQueryParam = new BvdfBldParam();
 				bldQueryParam.setBldNo(bvdfHouse.getBldno());
 				// 根据自然幢编号查询自然幢名称
@@ -186,7 +177,7 @@ public class BvdfHouseBizImpl implements BvdfHouseBiz {
 					corpNo = bvdfBldParam.getCorpNo();
 					regionNo = bvdfBldParam.getRegionNo();
 				}
-				esHouseParam.setBldName(bldName);
+				bvdfHouseParam.setBldName(bldName);
 				String developName = "无";
 				BvdfCorpParam corpQueryParam = new BvdfCorpParam();
 				corpQueryParam.setCorpId(corpNo);
@@ -195,7 +186,7 @@ public class BvdfHouseBizImpl implements BvdfHouseBiz {
 				if (null != bvdfCorpParam) {
 					developName = bvdfCorpParam.getCorpName();
 				}
-				esHouseParam.setDevelopName(developName);
+				bvdfHouseParam.setDevelopName(developName);
 				BvdfRegionParam regionQueryParam = new BvdfRegionParam();
 				regionQueryParam.setRegionNo(regionNo);
 				BvdfRegionParam bvdfRegionParam = bvdfRegionService.selectBvdfRegionInfo(regionQueryParam);
@@ -203,8 +194,8 @@ public class BvdfHouseBizImpl implements BvdfHouseBiz {
 				if (null != bvdfRegionParam) {
 					regionName = bvdfRegionParam.getRegionName();
 				}
-				esHouseParam.setRegionName(regionName);
-				esHouseParam.setCellNo(bvdfHouse.getCellno());
+				bvdfHouseParam.setRegionName(regionName);
+				bvdfHouseParam.setCellno(bvdfHouse.getCellno());
 				BvdfCellParam cellQueryParam = new BvdfCellParam();
 				cellQueryParam.setBldNo(bvdfHouse.getBldno());
 				cellQueryParam.setCellNo(bvdfHouse.getCellno());
@@ -215,17 +206,16 @@ public class BvdfHouseBizImpl implements BvdfHouseBiz {
 				if (null != bvdfCellParam) {
 					cellName = bvdfCellParam.getCellName();
 				}
-				esHouseParam.setCellName(cellName);
-				esHouseParam.setFloorNo(bvdfHouse.getFloorno());
-				esHouseParam.setFloorName(bvdfHouse.getFloorname());
-				esHouseParam.setShowName(bvdfHouse.getShowname());
-				esHouseParam.setRoomNo(bvdfHouse.getRoomno());
-				esHouseParam.setConstructArea(bvdfHouse.getConstructArea());
-				esHouseParam.setHouseAddress(bvdfHouse.getAddress());
-				esHouseParam.setVersionnumber(bvdfHouse.getVersionnumber());
+				bvdfHouseParam.setCellName(cellName);
+				bvdfHouseParam.setFloorno(bvdfHouse.getFloorno());
+				bvdfHouseParam.setFloorname(bvdfHouse.getFloorname());
+				bvdfHouseParam.setShowname(bvdfHouse.getShowname());
+				bvdfHouseParam.setRoomno(bvdfHouse.getRoomno());
+				bvdfHouseParam.setConstructArea(bvdfHouse.getConstructArea());
+				bvdfHouseParam.setAddress(bvdfHouse.getAddress());
+				bvdfHouseParam.setVersionnumber(bvdfHouse.getVersionnumber());
 				// 标准化处理跟es交互的数据
-				elasticSearchService.bvdfHouseParamFormat(esHouseParam);
-				esHouseParamList.add(esHouseParam);
+				elasticSearchService.bvdfHouseParamFormat(bvdfHouseParam);
 			} catch (Exception e) {
 				log.error("组织房屋信息推送es的数据失败,bvdfHouseParam为{}",bvdfHouseParam,e);
 			}
@@ -239,27 +229,27 @@ public class BvdfHouseBizImpl implements BvdfHouseBiz {
 	 * @param:
 	 * @return:
 	 */
-	private XContentBuilder organizeHouseToEsData(EsHouseParam esHouseParam) {
+	private XContentBuilder organizeHouseToEsData(BvdfHouseParam bvdfHouseParam) {
 		XContentBuilder doc;
 		try {
 			doc = XContentFactory.jsonBuilder()
 					.startObject()
-					.field("regionName", esHouseParam.getRegionName())
-					.field("developName", esHouseParam.getDevelopName())
-					.field("dataCenterId", esHouseParam.getDataCenterId())
-					.field("houseId", esHouseParam.getHouseId())
-					.field("houseType", esHouseParam.getHouseType())
-					.field("bldNo", esHouseParam.getBldNo())
-					.field("bldName", esHouseParam.getBldName())
-					.field("cellNo", esHouseParam.getCellNo())
-					.field("cellName", esHouseParam.getCellName())
-					.field("floorNo", esHouseParam.getFloorNo())
-					.field("floorName", esHouseParam.getFloorName())
-					.field("showName", esHouseParam.getShowName())
-					.field("roomNo", esHouseParam.getRoomNo())
-					.field("constructArea", esHouseParam.getConstructArea())
-					.field("houseAddress", esHouseParam.getHouseAddress())
-					.field("versionnumber", esHouseParam.getVersionnumber())
+					.field("regionName", bvdfHouseParam.getRegionName())
+					.field("developName", bvdfHouseParam.getDevelopName())
+					.field("dataCenterId", bvdfHouseParam.getDataCenterId())
+					.field("houseId", bvdfHouseParam.getHouseid())
+					.field("houseType", bvdfHouseParam.getHousetype())
+					.field("bldNo", bvdfHouseParam.getBldno())
+					.field("bldName", bvdfHouseParam.getBldName())
+					.field("cellNo", bvdfHouseParam.getCellno())
+					.field("cellName", bvdfHouseParam.getCellName())
+					.field("floorNo", bvdfHouseParam.getFloorno())
+					.field("floorName", bvdfHouseParam.getFloorname())
+					.field("showName", bvdfHouseParam.getShowname())
+					.field("roomNo", bvdfHouseParam.getRoomno())
+					.field("constructArea", bvdfHouseParam.getConstructArea())
+					.field("houseAddress", bvdfHouseParam.getAddress())
+					.field("versionnumber", bvdfHouseParam.getVersionnumber())
 					.endObject();
 		} catch (IOException e) {
 			log.error("拼装houseToElasticSearch的数据失败" + e);

@@ -29,13 +29,37 @@ public class BvrfisHouseParam {
 	 */
 	private String bldNo;
 	/**
+	 * 小区编号
+	 */
+	private String regionNo;
+	/**
+	 * 小区名称
+	 */
+	private String regionName;
+	/**
+	 * 开发企业名称
+	 */
+	private String developName;
+	/**
+	 * 楼幢名称
+	 */
+	private String bldName;
+	/**
 	 * 单元编号
 	 */
 	private String cellNo;
 	/**
+	 * 单元名称
+	 */
+	private String cellName;
+	/**
 	 * 楼层编号
 	 */
 	private String floorNo;
+	/**
+	 * 楼层名称
+	 */
+	private String floorName;
 	/**
 	 * 室号
 	 */

@@ -3,7 +3,7 @@ package com.bestvike.elastic.service.impl;
 import com.bestvike.commons.enums.EsStatusEnum;
 import com.bestvike.commons.enums.ReturnCode;
 import com.bestvike.commons.exception.MsgException;
-import com.bestvike.elastic.param.EsHouseParam;
+import com.bestvike.dataCenter.param.BvdfHouseParam;
 import com.bestvike.elastic.service.ElasticSearchService;
 import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.action.index.IndexResponse;
@@ -60,16 +60,16 @@ public class ElasticSearchServiceImpl implements ElasticSearchService {
 	 * @return:
 	 */
 	@Override
-	public void bvdfHouseParamFormat(EsHouseParam esHouseParam) {
+	public void bvdfHouseParamFormat(BvdfHouseParam bvdfHouseParam) {
 		// 将#替换成号
-		String bldName = esHouseParam.getBldName().replaceAll("#", "号");
-		esHouseParam.setBldName(numberToChinese(bldName));
-		String cellName = esHouseParam.getCellName();
-		esHouseParam.setCellName(numberToChinese(cellName));
-		String floorName = esHouseParam.getFloorName();
-		esHouseParam.setFloorName(numberToChinese(floorName));
-		String houseAddress = esHouseParam.getHouseAddress().replaceAll("#", "号");
-		esHouseParam.setHouseAddress(numberToChinese(houseAddress));
+		String bldName = bvdfHouseParam.getBldName().replaceAll("#", "号");
+		bvdfHouseParam.setBldName(numberToChinese(bldName));
+		String cellName = bvdfHouseParam.getCellName();
+		bvdfHouseParam.setCellName(numberToChinese(cellName));
+		String floorName = bvdfHouseParam.getFloorname();
+		bvdfHouseParam.setFloorname(numberToChinese(floorName));
+		String houseAddress = bvdfHouseParam.getAddress().replaceAll("#", "号");
+		bvdfHouseParam.setAddress(numberToChinese(houseAddress));
 	}
 
 	/**

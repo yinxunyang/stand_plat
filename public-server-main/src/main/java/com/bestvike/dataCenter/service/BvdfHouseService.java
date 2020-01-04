@@ -1,9 +1,6 @@
 package com.bestvike.dataCenter.service;
 
-import com.bestvike.commons.exception.MsgException;
 import com.bestvike.dataCenter.param.BvdfHouseParam;
-import com.bestvike.elastic.param.EsHouseParam;
-import org.elasticsearch.client.transport.TransportClient;
 
 import java.util.List;
 
@@ -14,9 +11,9 @@ public interface BvdfHouseService {
 	 * @Date: 2019/12/5 18:12
 	 * @param:
 	 * @return:
-	 */
+	 *//*
 	void insertCopyHouseAndEsByBatch(List<BvdfHouseParam> bvdfHouseParamListForAdd, List<BvdfHouseParam> bvdfHouseParamListForEdit,
-	                                 TransportClient client, List<EsHouseParam> esHouseParamList) throws MsgException;
+	                                 TransportClient client, List<EsHouseParam> esHouseParamList) throws MsgException;*/
 
 	/**
 	 * @Author: yinxunyang

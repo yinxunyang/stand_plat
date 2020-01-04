@@ -1,7 +1,7 @@
 package com.bestvike.elastic.service;
 
 import com.bestvike.commons.exception.MsgException;
-import com.bestvike.elastic.param.EsHouseParam;
+import com.bestvike.dataCenter.param.BvdfHouseParam;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 
@@ -27,5 +27,5 @@ public interface ElasticSearchService {
 	 * @param:
 	 * @return:
 	 */
-	void bvdfHouseParamFormat(EsHouseParam esHouseParam);
+	void bvdfHouseParamFormat(BvdfHouseParam bvdfHouseParam);
 }

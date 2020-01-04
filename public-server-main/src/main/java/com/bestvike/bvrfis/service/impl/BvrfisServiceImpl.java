@@ -2,17 +2,12 @@ package com.bestvike.bvrfis.service.impl;
 
 import com.bestvike.bvrfis.dao.BvrfisHouseDao;
 import com.bestvike.bvrfis.entity.BmatchAnResultInfo;
-import com.bestvike.bvrfis.param.BvrfisBldParam;
-import com.bestvike.bvrfis.param.BvrfisCorpInfoParam;
 import com.bestvike.bvrfis.param.BvrfisHouseParam;
-import com.bestvike.bvrfis.param.BvrfisOwnerInfoParam;
-import com.bestvike.bvrfis.param.BvrfisShareOwnerInfoParam;
 import com.bestvike.bvrfis.service.BmatchAnResultService;
 import com.bestvike.bvrfis.service.BvrfisHouseService;
 import com.bestvike.bvrfis.service.BvrfisService;
 import com.bestvike.commons.enums.ReturnCode;
 import com.bestvike.commons.exception.MsgException;
-import com.bestvike.elastic.param.EsHouseParam;
 import com.bestvike.elastic.service.ElasticSearchService;
 import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.client.transport.TransportClient;
@@ -24,17 +19,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @Author: yinxunyang
@@ -100,9 +91,9 @@ public class BvrfisServiceImpl implements BvrfisService {
 				// 新增房屋信息和迁移elasticsearch
 				try {
 					// 组织跟elasticSearch匹配的数据
-					EsHouseParam esHouseParam = organizeMatchEsParam(bvrfisHouseParam);
+					//EsHouseParam esHouseParam = organizeMatchEsParam(bvrfisHouseParam);
 					// 标准化处理跟es交互的数据
-					elasticSearchService.bvdfHouseParamFormat(esHouseParam);
+					//elasticSearchService.bvdfHouseParamFormat(esHouseParam);
 					// todo 替换es查询的值str.replace
 
 
@@ -124,7 +115,7 @@ public class BvrfisServiceImpl implements BvrfisService {
 	 * @param:
 	 * @return:
 	 */
-	private EsHouseParam organizeMatchEsParam(BvrfisHouseParam bvrfisHouseParam) {
+	/*private EsHouseParam organizeMatchEsParam(BvrfisHouseParam bvrfisHouseParam) {
 		EsHouseParam esHouseParam = new EsHouseParam();
 		// 楼幢名称
 		String bldName = null;
@@ -240,7 +231,7 @@ public class BvrfisServiceImpl implements BvrfisService {
 		esHouseParam.setHouseAddress(bvrfisHouseParam.getAddress());
 		return esHouseParam;
 	}
-
+*/
 	/**
 	 * @Author: yinxunyang
 	 * @Description: 根据json文件组织查询Es的语句
