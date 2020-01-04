@@ -157,7 +157,7 @@ public class BvrfisHouseBizImpl implements BvrfisHouseBiz {
 			// 房屋根据小区疑似匹配
 			unCertainHouseByRegion(bvrfisHouseParamList, client, httpSession, logId);
 			// 房屋根据开发企业疑似匹配
-			//unCertainBldByCorpNo(bvrfisHouseParamList, client, httpSession, logId);*/
+			unCertainHouseByDevelop(bvrfisHouseParamList, client, httpSession, logId);
 		} catch (UnknownHostException e) {
 			log.error("创建elasticsearch客户端连接失败" + e);
 			throw new MsgException(ReturnCode.sdp_sys_error, "创建elasticsearch客户端连接失败");
@@ -194,6 +194,7 @@ public class BvrfisHouseBizImpl implements BvrfisHouseBiz {
 			if (null != bvrfisCorpInfoParam) {
 				developName = bvrfisCorpInfoParam.getCorpName();
 			}
+			bvrfisHouseParam.setDevelopNo(developNo);
 			bvrfisHouseParam.setDevelopName(developName);
 			BvrfisRegionParam regionQuery = new BvrfisRegionParam();
 			regionQuery.setRegionNo(regionNo);
@@ -449,6 +450,91 @@ public class BvrfisHouseBizImpl implements BvrfisHouseBiz {
 					bmatchAnResultInfo.setDescribe(null);
 					// 备注
 					bmatchAnResultInfo.setRemark("房屋根据小区疑似匹配");
+					// 单位信息表
+					bmatchAnResultInfo.setMatchtype(MatchTypeEnum.HOUSE.getCode());
+					// todo 创建人 待确定
+					bmatchAnResultInfo.setInuser("无");
+					//bmatchAnResultInfo.setInuser(httpSession.getAttribute(GCC.SESSION_KEY_USERNAME).toString());
+					bmatchAnResultInfo.setIndate(UtilTool.nowTime());
+					// 修改人
+					bmatchAnResultInfo.setEdituser(null);
+					bmatchAnResultInfo.setEditdate(null);
+					bmatchAnResultInfo.setVersion(new BigDecimal(bvdfHouseParam.getVersionnumber()));
+					// 先删除再新增匹配结果表，同事务
+					bvrfisService.delAndInsertBmatchAnResult(bmatchAnResultInfo);
+					paramListForDel.add(bvrfisHouseParam);
+				}
+			} catch (MsgException e) {
+				log.error(e + "bvrfisHouseParam参数为：{}", bvrfisHouseParam);
+			}
+		});
+		bvrfisHouseParamList.removeAll(paramListForDel);
+	}
+	/**
+	 * @Author: yinxunyang
+	 * @Description: 房屋根据开发企业疑似匹配
+	 * @Date: 2019/12/19 19:15
+	 * @param:
+	 * @return:
+	 */
+	private void unCertainHouseByDevelop(List<BvrfisHouseParam> bvrfisHouseParamList, TransportClient client, HttpSession httpSession, String logId) {
+		// 匹配成功后需要从bvrfisHouseParamList移除的List
+		List<BvrfisHouseParam> paramListForDel = new ArrayList<>();
+		// 房屋根据开发企业疑似匹配
+		String houseQueryJson = bvrfisService.organizeQueryEsByJson("elasticSearch/house/unCertainHouseByDevelop.json");
+		// 遍历房屋信息和elasticsearch
+		bvrfisHouseParamList.forEach(bvrfisHouseParam -> {
+			try {
+				// 查询bvdf的开发企业信息
+				BDataRelationParam bDataRelationParam = new BDataRelationParam();
+				bDataRelationParam.setWxBusiId(bvrfisHouseParam.getDevelopNo());
+				BDataRelation bDataRelation = bDataRelationService.selectBDataRelation(bDataRelationParam);
+				if (null == bDataRelation) {
+					return;
+				}
+				String houseQueryParam = houseQueryJson.replace("developNoValue", bDataRelation.getWqBusiId())
+						.replace("cellNoValue", bvrfisHouseParam.getCellNo())
+						.replace("floorNoValue", bvrfisHouseParam.getFloorNo())
+						.replace("constructAreaValue", bvrfisHouseParam.getConstructArea())
+						.replace("houseTypeValue", bvrfisHouseParam.getHouseProp())
+						.replace("showNameValue", bvrfisHouseParam.getShowName())
+						.replace("houseAddressValue", bvrfisHouseParam.getAddress());
+				// 查询的json串
+				log.info(houseQueryParam);
+				WrapperQueryBuilder wqb = QueryBuilders.wrapperQuery(houseQueryParam);
+				SearchResponse searchResponse = client.prepareSearch(houseindex)
+						.setTypes(housetype).setSize(Integer.parseInt(unCertainSize)).setQuery(wqb).get();
+				SearchHit[] hits = searchResponse.getHits().getHits();
+				for (SearchHit hit : hits) {
+					// 返回内容
+					String bvdfHouseJson = hit.getSourceAsString();
+					BvdfHouseParam bvdfHouseParam = (BvdfHouseParam) UtilTool.jsonToObj(bvdfHouseJson, BvdfHouseParam.class);
+					// 完全匹配有匹配结果的话不再新增
+					BmatchAnResultParam bmatchAnResultParam = new BmatchAnResultParam();
+					bmatchAnResultParam.setWqbusiid(bvdfHouseParam.getHouseid());
+					bmatchAnResultParam.setPercent(new BigDecimal("100.00"));
+					BmatchAnResultInfo bmatchIsExists = bmatchAnResultService.selectBmatchAnResult(bmatchAnResultParam);
+					if (null != bmatchIsExists) {
+						return;
+					}
+					BmatchAnResultInfo bmatchAnResultInfo = new BmatchAnResultInfo();
+					bmatchAnResultInfo.setMatchid(UtilTool.UUID());
+					bmatchAnResultInfo.setLogid(logId);
+					// 维修资金数据ID
+					bmatchAnResultInfo.setWxbusiid(bvrfisHouseParam.getSysGuid());
+					bmatchAnResultInfo.setCenterid(bvdfHouseParam.getDataCenterId());
+					bmatchAnResultInfo.setWqbusiid(bvdfHouseParam.getHouseid());
+					String score = Float.toString(hit.getScore());
+					// 该条数据匹配率
+					bmatchAnResultInfo.setPercent(new BigDecimal(score));
+					// 匹配情况分析
+					bmatchAnResultInfo.setResult("匹配度低");
+					// 匹配状态 匹配成功
+					bmatchAnResultInfo.setRelstate(RelStateEnum.MATCH_SUCCESS.getCode());
+					// 匹配情况说明
+					bmatchAnResultInfo.setDescribe(null);
+					// 备注
+					bmatchAnResultInfo.setRemark("房屋根据开发企业疑似匹配");
 					// 单位信息表
 					bmatchAnResultInfo.setMatchtype(MatchTypeEnum.HOUSE.getCode());
 					// todo 创建人 待确定

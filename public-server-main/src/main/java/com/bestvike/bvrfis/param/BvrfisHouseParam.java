@@ -37,6 +37,10 @@ public class BvrfisHouseParam {
 	 */
 	private String regionName;
 	/**
+	 * 开发企业编号
+	 */
+	private String developNo;
+	/**
 	 * 开发企业名称
 	 */
 	private String developName;
