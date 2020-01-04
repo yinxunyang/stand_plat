@@ -324,32 +324,37 @@ public class BvrfisHouseBizImpl implements BvrfisHouseBiz {
 		// 匹配成功后需要从esHouseParamList移除的List
 		List<EsHouseParam> paramListForDel = new ArrayList<>();
 		// 房屋根据自然幢疑似匹配
-		String houseQueryJson = bvrfisService.organizeQueryEsByJson("elasticSearch/bld/unCertainBldByRegion.json");
+		String houseQueryJson = bvrfisService.organizeQueryEsByJson("elasticSearch/house/unCertainHouseByBld.json");
 		// 遍历房屋信息和elasticsearch
 		esHouseParamList.forEach(esHouseParam -> {
 			try {
-				// 查询bvdf的房屋信息
+				// 查询bvdf的小区信息
 				BDataRelationParam bDataRelationParam = new BDataRelationParam();
-				bDataRelationParam.setWxBusiId(esHouseParam.getHouseId());
+				bDataRelationParam.setWxBusiId(esHouseParam.getBldNo());
 				BDataRelation bDataRelation = bDataRelationService.selectBDataRelation(bDataRelationParam);
 				if (null == bDataRelation) {
 					return;
 				}
-				String bldQueryParam = houseQueryJson.replace("regionNoValue", bDataRelation.getWqBusiId())
-						.replace("addressValue", esHouseParam.getHouseAddress());
+				String houseQueryParam = houseQueryJson.replace("bldNoValue", bDataRelation.getWqBusiId())
+						.replace("cellNoValue", esHouseParam.getCellNo())
+						.replace("floorNoValue", esHouseParam.getFloorNo())
+						.replace("constructAreaValue", esHouseParam.getConstructArea())
+						.replace("houseTypeValue", esHouseParam.getHouseType())
+						.replace("showNameValue", esHouseParam.getShowName())
+						.replace("houseAddressValue", esHouseParam.getHouseAddress());
 				// 查询的json串
-				log.info(bldQueryParam);
-				WrapperQueryBuilder wqb = QueryBuilders.wrapperQuery(bldQueryParam);
+				log.info(houseQueryParam);
+				WrapperQueryBuilder wqb = QueryBuilders.wrapperQuery(houseQueryParam);
 				SearchResponse searchResponse = client.prepareSearch(houseindex)
 						.setTypes(housetype).setSize(Integer.parseInt(unCertainSize)).setQuery(wqb).get();
 				SearchHit[] hits = searchResponse.getHits().getHits();
 				for (SearchHit hit : hits) {
 					// 返回内容
-					String bvdfBldJson = hit.getSourceAsString();
-					BvdfBldParam bvdfBldParam = (BvdfBldParam) UtilTool.jsonToObj(bvdfBldJson, BvdfBldParam.class);
-					// 完全匹配有匹配结果的话不再新增bvdfbldNo
+					String bvdfHouseJson = hit.getSourceAsString();
+					BvdfHouseParam bvdfHouseParam = (BvdfHouseParam) UtilTool.jsonToObj(bvdfHouseJson, BvdfHouseParam.class);
+					// 完全匹配有匹配结果的话不再新增
 					BmatchAnResultParam bmatchAnResultParam = new BmatchAnResultParam();
-					bmatchAnResultParam.setWqbusiid(bvdfBldParam.getBldNo());
+					bmatchAnResultParam.setWqbusiid(bvdfHouseParam.getHouseid());
 					bmatchAnResultParam.setPercent(new BigDecimal("100.00"));
 					BmatchAnResultInfo bmatchIsExists = bmatchAnResultService.selectBmatchAnResult(bmatchAnResultParam);
 					if (null != bmatchIsExists) {
@@ -359,9 +364,9 @@ public class BvrfisHouseBizImpl implements BvrfisHouseBiz {
 					bmatchAnResultInfo.setMatchid(UtilTool.UUID());
 					bmatchAnResultInfo.setLogid(logId);
 					// 维修资金数据ID
-					bmatchAnResultInfo.setWxbusiid(esHouseParam.getBldNo());
-					bmatchAnResultInfo.setCenterid(bvdfBldParam.getDataCenterId());
-					bmatchAnResultInfo.setWqbusiid(bvdfBldParam.getBldNo());
+					bmatchAnResultInfo.setWxbusiid(esHouseParam.getHouseId());
+					bmatchAnResultInfo.setCenterid(bvdfHouseParam.getDataCenterId());
+					bmatchAnResultInfo.setWqbusiid(bvdfHouseParam.getHouseid());
 					String score = Float.toString(hit.getScore());
 					// 该条数据匹配率
 					bmatchAnResultInfo.setPercent(new BigDecimal(score));
@@ -372,9 +377,9 @@ public class BvrfisHouseBizImpl implements BvrfisHouseBiz {
 					// 匹配情况说明
 					bmatchAnResultInfo.setDescribe(null);
 					// 备注
-					bmatchAnResultInfo.setRemark("自然幢根据小区疑似匹配");
+					bmatchAnResultInfo.setRemark("房屋根据自然幢疑似匹配");
 					// 单位信息表
-					bmatchAnResultInfo.setMatchtype(MatchTypeEnum.BLD.getCode());
+					bmatchAnResultInfo.setMatchtype(MatchTypeEnum.HOUSE.getCode());
 					// todo 创建人 待确定
 					bmatchAnResultInfo.setInuser("无");
 					//bmatchAnResultInfo.setInuser(httpSession.getAttribute(GCC.SESSION_KEY_USERNAME).toString());
@@ -382,7 +387,7 @@ public class BvrfisHouseBizImpl implements BvrfisHouseBiz {
 					// 修改人
 					bmatchAnResultInfo.setEdituser(null);
 					bmatchAnResultInfo.setEditdate(null);
-					bmatchAnResultInfo.setVersion(new BigDecimal(bvdfBldParam.getVersionnumber()));
+					bmatchAnResultInfo.setVersion(new BigDecimal(bvdfHouseParam.getVersionnumber()));
 					// 先删除再新增匹配结果表，同事务
 					bvrfisService.delAndInsertBmatchAnResult(bmatchAnResultInfo);
 					paramListForDel.add(esHouseParam);

@@ -1,0 +1,60 @@
+{
+  "function_score": {
+    "query": {
+      "term": {
+        "bldNo": "bldNoValue"
+      }
+    },
+    "functions": [
+      {
+        "weight": 5,
+        "filter": {
+          "term": {
+            "cellNo": "cellNoValue"
+          }
+        }
+      },
+      {
+        "weight": 5,
+        "filter": {
+          "term": {
+            "floorNo": "floorNoValue"
+          }
+        }
+      },
+      {
+        "weight": 5,
+        "filter": {
+          "term": {
+            "constructArea": "constructAreaValue"
+          }
+        }
+      },
+      {
+        "weight": 5,
+        "filter": {
+          "term": {
+            "houseType": "houseTypeValue"
+          }
+        }
+      },
+      {
+        "weight": 5,
+        "filter": {
+          "match": {
+            "showName": "showNameValue"
+          }
+        }
+      },
+      {
+        "weight": 5,
+        "filter": {
+          "term": {
+            "houseAddress": "houseAddressValue"
+          }
+        }
+      }
+    ],
+    "boost_mode": "sum"
+  }
+}
