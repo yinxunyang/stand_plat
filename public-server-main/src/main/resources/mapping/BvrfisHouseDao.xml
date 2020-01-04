@@ -27,6 +27,9 @@
 			<if test="null != param.datacenterid and '' != param.datacenterid">
 				AND t.datacenterid IS NULL
 			</if>
+			<if test="null != param.corpNo and '' != param.corpNo">
+				AND t.corpNo = #{param.corpNo,jdbcType=VARCHAR}
+			</if>
 		</where>
 	</select>
 	<select id="queryBvrfisRegionInfo" resultType="com.bestvike.bvrfis.param.BvrfisRegionParam">

@@ -40,4 +40,22 @@ public class BvrfisCorpServiceImpl implements BvrfisCorpService {
 		}
 		return bvrfisCorpInfoParamList;
 	}
+	/**
+	 * @Author: yinxunyang
+	 * @Description: 查询bvrfis开发企业的数据
+	 * @Date: 2019/12/10 13:15
+	 * @param:
+	 * @return:
+	 */
+	@Override
+	public BvrfisCorpInfoParam selectBvrfisCorpInfo(BvrfisCorpInfoParam queryParam) throws MsgException {
+		BvrfisCorpInfoParam bvrfisCorpInfoParam;
+		try {
+			bvrfisCorpInfoParam = bvrfisHouseDao.selectBvrfisCorpInfo(queryParam);
+		} catch (Exception e) {
+			log.error("查询bvrfis开发企业的数据失败" + e);
+			throw new MsgException(ReturnCode.sdp_select_fail, "查询bvrfis开发企业的数据失败");
+		}
+		return bvrfisCorpInfoParam;
+	}
 }

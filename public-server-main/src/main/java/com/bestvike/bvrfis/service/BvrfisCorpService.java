@@ -19,4 +19,12 @@ public interface BvrfisCorpService {
 	 * @return:
 	 */
 	List<BvrfisCorpInfoParam> queryBvrfisCorpInfo(BvrfisCorpInfoParam queryParam);
+	/**
+	 * @Author: yinxunyang
+	 * @Description: 查询bvrfis开发企业的数据
+	 * @Date: 2019/12/9 13:14
+	 * @param:
+	 * @return:
+	 */
+	BvrfisCorpInfoParam selectBvrfisCorpInfo(BvrfisCorpInfoParam queryParam);
 }

@@ -7,6 +7,7 @@ import com.bestvike.bvrfis.param.BDataRelationParam;
 import com.bestvike.bvrfis.param.BmatchAnResultParam;
 import com.bestvike.bvrfis.param.BvrfisBldParam;
 import com.bestvike.bvrfis.param.BvrfisCellParam;
+import com.bestvike.bvrfis.param.BvrfisCorpInfoParam;
 import com.bestvike.bvrfis.param.BvrfisFloorParam;
 import com.bestvike.bvrfis.param.BvrfisHouseParam;
 import com.bestvike.bvrfis.service.BDataRelationService;
@@ -14,6 +15,7 @@ import com.bestvike.bvrfis.service.BLogOperService;
 import com.bestvike.bvrfis.service.BmatchAnResultService;
 import com.bestvike.bvrfis.service.BvrfisBldService;
 import com.bestvike.bvrfis.service.BvrfisCellService;
+import com.bestvike.bvrfis.service.BvrfisCorpService;
 import com.bestvike.bvrfis.service.BvrfisFloorService;
 import com.bestvike.bvrfis.service.BvrfisHouseService;
 import com.bestvike.bvrfis.service.BvrfisRegionService;
@@ -104,6 +106,8 @@ public class BvrfisHouseBizImpl implements BvrfisHouseBiz {
 	private BvrfisCellService bvrfisCellService;
 	@Autowired
 	private BvrfisFloorService bvrfisFloorService;
+	@Autowired
+	private BvrfisCorpService bvrfisCorpService;
 	/**
 	 * @Author: yinxunyang
 	 * @Description: 将bvrfis房屋跟es中的匹配
@@ -180,8 +184,6 @@ public class BvrfisHouseBizImpl implements BvrfisHouseBiz {
 			EsHouseParam esHouseParam = new EsHouseParam();
 			// todo 从小区名称
 			esHouseParam.setRegionName(null);
-			// todo 从开发企业名称
-			esHouseParam.setDevelopName(null);
 			esHouseParam.setDataCenterId(null);
 			esHouseParam.setHouseId(bvrfisHouseParam.getSysGuid());
 			esHouseParam.setHouseType(bvrfisHouseParam.getHouseProp());
@@ -191,10 +193,21 @@ public class BvrfisHouseBizImpl implements BvrfisHouseBiz {
 			// 查询楼幢名称
 			BvrfisBldParam bvrfisBldParam = bvrfisBldService.selectBvrfisBldInfo(bldQueryParam);
 			String bldName = "无";
+			String developNo = "无";
 			if (null != bvrfisBldParam) {
 				bldName = bvrfisBldParam.getBldName();
+				developNo = bvrfisBldParam.getDevelopNo();
 			}
 			esHouseParam.setBldName(bldName);
+			BvrfisCorpInfoParam corpInfoQuery = new BvrfisCorpInfoParam();
+			corpInfoQuery.setCorpNo(developNo);
+			// 从开发企业名称
+			BvrfisCorpInfoParam bvrfisCorpInfoParam = bvrfisCorpService.selectBvrfisCorpInfo(corpInfoQuery);
+			String developName = "无";
+			if (null != bvrfisCorpInfoParam) {
+				developName = bvrfisCorpInfoParam.getCorpName();
+			}
+			esHouseParam.setDevelopName(developName);
 			esHouseParam.setCellNo(bvrfisHouseParam.getCellNo());
 			BvrfisCellParam cellQuery = new BvrfisCellParam();
 			cellQuery.setBldNo(bvrfisHouseParam.getBldNo());
