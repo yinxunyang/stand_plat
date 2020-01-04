@@ -10,6 +10,7 @@ import com.bestvike.bvrfis.param.BvrfisCellParam;
 import com.bestvike.bvrfis.param.BvrfisCorpInfoParam;
 import com.bestvike.bvrfis.param.BvrfisFloorParam;
 import com.bestvike.bvrfis.param.BvrfisHouseParam;
+import com.bestvike.bvrfis.param.BvrfisRegionParam;
 import com.bestvike.bvrfis.service.BDataRelationService;
 import com.bestvike.bvrfis.service.BLogOperService;
 import com.bestvike.bvrfis.service.BmatchAnResultService;
@@ -182,8 +183,6 @@ public class BvrfisHouseBizImpl implements BvrfisHouseBiz {
 	private void organizeEsHouseList(List<EsHouseParam> esHouseParamList, List<BvrfisHouseParam> bvrfisHouseParamList) {
 		bvrfisHouseParamList.forEach(bvrfisHouseParam -> {
 			EsHouseParam esHouseParam = new EsHouseParam();
-			// todo 从小区名称
-			esHouseParam.setRegionName(null);
 			esHouseParam.setDataCenterId(null);
 			esHouseParam.setHouseId(bvrfisHouseParam.getSysGuid());
 			esHouseParam.setHouseType(bvrfisHouseParam.getHouseProp());
@@ -194,20 +193,31 @@ public class BvrfisHouseBizImpl implements BvrfisHouseBiz {
 			BvrfisBldParam bvrfisBldParam = bvrfisBldService.selectBvrfisBldInfo(bldQueryParam);
 			String bldName = "无";
 			String developNo = "无";
+			String regionNo = "无";
 			if (null != bvrfisBldParam) {
 				bldName = bvrfisBldParam.getBldName();
 				developNo = bvrfisBldParam.getDevelopNo();
+				regionNo = bvrfisBldParam.getRegionNo();
 			}
 			esHouseParam.setBldName(bldName);
 			BvrfisCorpInfoParam corpInfoQuery = new BvrfisCorpInfoParam();
 			corpInfoQuery.setCorpNo(developNo);
-			// 从开发企业名称
+			// 查询开发企业名称
 			BvrfisCorpInfoParam bvrfisCorpInfoParam = bvrfisCorpService.selectBvrfisCorpInfo(corpInfoQuery);
 			String developName = "无";
 			if (null != bvrfisCorpInfoParam) {
 				developName = bvrfisCorpInfoParam.getCorpName();
 			}
 			esHouseParam.setDevelopName(developName);
+			BvrfisRegionParam regionQuery = new BvrfisRegionParam();
+			regionQuery.setRegionNo(regionNo);
+			// 查询小区名称
+			BvrfisRegionParam bvrfisRegionParam = bvrfisRegionService.selectBvrfisRegionInfo(regionQuery);
+			String regionName = "无";
+			if (null != bvrfisRegionParam) {
+				regionName = bvrfisRegionParam.getRegionName();
+			}
+			esHouseParam.setRegionName(regionName);
 			esHouseParam.setCellNo(bvrfisHouseParam.getCellNo());
 			BvrfisCellParam cellQuery = new BvrfisCellParam();
 			cellQuery.setBldNo(bvrfisHouseParam.getBldNo());
@@ -236,6 +246,7 @@ public class BvrfisHouseBizImpl implements BvrfisHouseBiz {
 			esHouseParam.setRoomNo(bvrfisHouseParam.getRoomNo());
 			esHouseParam.setConstructArea(bvrfisHouseParam.getConstructArea());
 			esHouseParam.setHouseAddress(bvrfisHouseParam.getAddress());
+			esHouseParamList.add(esHouseParam);
 		});
 	}
 	/**
