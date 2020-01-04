@@ -105,6 +105,22 @@
 			</if>
 		</where>
 	</select>
+	<select id="selectBvrfisFloorInfo" resultType="com.bestvike.bvrfis.param.BvrfisFloorParam">
+		select t.floorNo,
+		t.floorName
+		from bvrfis_xjws.arc_floorinfo t
+		<where>
+			<if test="null != param.bldNo and '' != param.bldNo">
+				t.bldNo = #{param.bldNo,jdbcType=VARCHAR}
+			</if>
+			<if test="null != param.floorNo and '' != param.floorNo">
+				AND t.floorNo = #{param.floorNo,jdbcType=VARCHAR}
+			</if>
+			<if test="null != param.houseProp and '' != param.houseProp">
+				AND t.houseProp = #{param.houseProp,jdbcType=VARCHAR}
+			</if>
+		</where>
+	</select>
 	<select id="queryBvrfisHouseInfo" resultType="com.bestvike.bvrfis.param.BvrfisHouseParam">
 		select
 		t.sysGuid,

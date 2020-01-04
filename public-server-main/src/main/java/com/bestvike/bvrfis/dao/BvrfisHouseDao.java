@@ -3,6 +3,7 @@ package com.bestvike.bvrfis.dao;
 import com.bestvike.bvrfis.param.BvrfisBldParam;
 import com.bestvike.bvrfis.param.BvrfisCellParam;
 import com.bestvike.bvrfis.param.BvrfisCorpInfoParam;
+import com.bestvike.bvrfis.param.BvrfisFloorParam;
 import com.bestvike.bvrfis.param.BvrfisHouseParam;
 import com.bestvike.bvrfis.param.BvrfisOwnerInfoParam;
 import com.bestvike.bvrfis.param.BvrfisRegionParam;
@@ -82,6 +83,15 @@ public interface BvrfisHouseDao {
 	 * @return:
 	 */
 	BvrfisCellParam selectBvrfisCellInfo(@Param("param") BvrfisCellParam queryParam);
+
+	/**
+	 * @Author: yinxunyang
+	 * @Description: 查询bvrfis楼层的数据
+	 * @Date: 2019/12/10 17:25
+	 * @param:
+	 * @return:
+	 */
+	BvrfisFloorParam selectBvrfisFloorInfo(@Param("param") BvrfisFloorParam queryParam);
 
 	/**
 	 * @Author: yinxunyang
