@@ -7,11 +7,9 @@ import com.bestvike.commons.enums.ReturnCode;
 import com.bestvike.commons.exception.MsgException;
 import com.bestvike.commons.utils.UtilTool;
 import com.bestvike.dataCenter.biz.BvdfCorpBiz;
-import com.bestvike.dataCenter.dao.BvdfHouseDao;
 import com.bestvike.dataCenter.entity.BvdfToEsRecordTime;
 import com.bestvike.dataCenter.param.BvdfCorpParam;
 import com.bestvike.dataCenter.service.BvdfCorpService;
-import com.bestvike.dataCenter.service.BvdfHouseService;
 import com.bestvike.elastic.service.ElasticSearchService;
 import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.client.transport.TransportClient;
@@ -71,10 +69,6 @@ public class BvdfCorpBizImpl implements BvdfCorpBiz {
 	 */
 	@Value("${esConfig.corptype}")
 	private String corptype;
-	@Autowired
-	private BvdfHouseService bvdfHouseService;
-	@Autowired
-	private BvdfHouseDao bvdfHouseDao;
 	@Autowired
 	private ElasticSearchService elasticSearchService;
 	@Autowired

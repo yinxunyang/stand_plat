@@ -38,7 +38,6 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Service
@@ -93,7 +92,6 @@ public class BvdfHouseBizImpl implements BvdfHouseBiz {
 	private BvdfHouseService bvdfHouseService;
 	@Autowired
 	private BvdfCellService bvdfCellService;
-	private static final DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
 	/**
 	 * @Author: yinxunyang

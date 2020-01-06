@@ -1,14 +1,10 @@
 package com.bestvike.bvrfis.service.impl;
 
-import com.bestvike.bvrfis.dao.BvrfisHouseDao;
 import com.bestvike.bvrfis.entity.BmatchAnResultInfo;
 import com.bestvike.bvrfis.service.BmatchAnResultService;
-import com.bestvike.bvrfis.service.BvrfisHouseService;
 import com.bestvike.bvrfis.service.BvrfisService;
-import com.bestvike.elastic.service.ElasticSearchService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,42 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Slf4j
 public class BvrfisServiceImpl implements BvrfisService {
-
-	/**
-	 * 房屋信息表(arc_houseinfo)最大查询条数,防止内存溢出
-	 */
-	private static final Integer HOUSE_MAX_NUM = 20000;
-	/**
-	 * es集群的名称
-	 */
-	@Value("${esConfig.esClusterName}")
-	private String esClusterName;
-	/**
-	 * es的IP
-	 */
-	@Value("${esConfig.esIP}")
-	private String esIP;
-	/**
-	 * es的esPort
-	 */
-	@Value("${esConfig.esPort}")
-	private String esPort;
-	/**
-	 * es开发企业的索引
-	 */
-	@Value("${esConfig.corpindex}")
-	private String corpindex;
-	/**
-	 * es开发企业的映射
-	 */
-	@Value("${esConfig.corptype}")
-	private String corptype;
-	@Autowired
-	private BvrfisHouseService bvrfisHouseService;
-	@Autowired
-	private BvrfisHouseDao bvrfisHouseDao;
-	@Autowired
-	private ElasticSearchService elasticSearchService;
 	@Autowired
 	private BmatchAnResultService bmatchAnResultService;
 

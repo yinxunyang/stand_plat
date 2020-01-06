@@ -51,6 +51,5 @@ public class BDataRelationBizImpl implements BDataRelationBiz {
 		bDataRelation.setEditUser(null);
 		bDataRelation.setEditDate(null);
 		bDataRelationService.insertBDataRelation(bDataRelation);
-		int i = 0;
 	}
 }

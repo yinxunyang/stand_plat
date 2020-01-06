@@ -29,7 +29,6 @@ import com.bestvike.commons.enums.ReturnCode;
 import com.bestvike.commons.exception.MsgException;
 import com.bestvike.commons.utils.UtilTool;
 import com.bestvike.dataCenter.param.BvdfHouseParam;
-import com.bestvike.dataCenter.service.BvdfBldService;
 import com.bestvike.dataCenter.service.BvdfHouseService;
 import com.bestvike.elastic.service.ElasticSearchService;
 import lombok.extern.slf4j.Slf4j;
@@ -103,8 +102,6 @@ public class BvrfisHouseBizImpl implements BvrfisHouseBiz {
 	private BLogOperService bLogOperService;
 	@Autowired
 	private BDataRelationService bDataRelationService;
-	@Autowired
-	private BvdfBldService bvdfBldService;
 	@Autowired
 	private BvdfHouseService bvdfHouseService;
 	@Autowired

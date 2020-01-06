@@ -5,11 +5,10 @@ import com.bestvike.commons.enums.MatchTypeEnum;
 import com.bestvike.commons.enums.RecordTimeEnum;
 import com.bestvike.commons.enums.ReturnCode;
 import com.bestvike.commons.exception.MsgException;
+import com.bestvike.commons.utils.UtilTool;
 import com.bestvike.dataCenter.biz.BvdfRegionBiz;
-import com.bestvike.dataCenter.dao.BvdfHouseDao;
 import com.bestvike.dataCenter.entity.BvdfToEsRecordTime;
 import com.bestvike.dataCenter.param.BvdfRegionParam;
-import com.bestvike.dataCenter.service.BvdfHouseService;
 import com.bestvike.dataCenter.service.BvdfRegionService;
 import com.bestvike.elastic.service.ElasticSearchService;
 import lombok.extern.slf4j.Slf4j;
@@ -30,8 +29,6 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Service
@@ -73,16 +70,11 @@ public class BvdfRegionBizImpl implements BvdfRegionBiz {
 	@Value("${esConfig.regiontype}")
 	private String regiontype;
 	@Autowired
-	private BvdfHouseService bvdfHouseService;
-	@Autowired
-	private BvdfHouseDao bvdfHouseDao;
-	@Autowired
 	private ElasticSearchService elasticSearchService;
 	@Autowired
 	private BvdfRegionService bvdfRegionService;
 	@Autowired
 	private MongoTemplate mongoTemplate;
-	private static final DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
 	/**
 	 * @Author: yinxunyang
@@ -106,7 +98,8 @@ public class BvdfRegionBizImpl implements BvdfRegionBiz {
 			scopeBeginTime = bvdfToEsRecordTime.getLastExcuteTime();
 		}
 		queryParam.setScopeBeginTime(scopeBeginTime);
-		String scopeEndTime = df.format(LocalDateTime.now());
+		String scopeEndTime = UtilTool.nowTime();
+		;
 		queryParam.setScopeEndTime(scopeEndTime);
 		List<BvdfRegionParam> bvdfRegionParamList = bvdfRegionService.queryBvdfRegionInfo(queryParam);
 		if (bvdfRegionParamList.isEmpty()) {
