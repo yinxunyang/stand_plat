@@ -10,6 +10,7 @@ import com.bestvike.dataCenter.biz.BvdfRegionBiz;
 import com.bestvike.dataCenter.entity.BvdfToEsRecordTime;
 import com.bestvike.dataCenter.param.BvdfRegionParam;
 import com.bestvike.dataCenter.service.BvdfRegionService;
+import com.bestvike.dataCenter.service.MongoDBService;
 import com.bestvike.elastic.service.ElasticSearchService;
 import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.client.transport.TransportClient;
@@ -20,10 +21,6 @@ import org.elasticsearch.common.xcontent.XContentFactory;
 import org.elasticsearch.transport.client.PreBuiltTransportClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -74,7 +71,7 @@ public class BvdfRegionBizImpl implements BvdfRegionBiz {
 	@Autowired
 	private BvdfRegionService bvdfRegionService;
 	@Autowired
-	private MongoTemplate mongoTemplate;
+	private MongoDBService mongoDBService;
 
 	/**
 	 * @Author: yinxunyang
@@ -90,8 +87,8 @@ public class BvdfRegionBizImpl implements BvdfRegionBiz {
 		// 状态正
 		queryParam.setState(DataCenterEnum.NORMAL_STATE.getCode());
 		queryParam.setAppcode(DataCenterEnum.BVDF_APP_CODE_CAPITAL.getCode());
-		Query query = new Query(Criteria.where("_id").is(RecordTimeEnum.BVDF_REGION_ID.getCode()));
-		BvdfToEsRecordTime bvdfToEsRecordTime = mongoTemplate.findOne(query, BvdfToEsRecordTime.class);
+		// 查询时间记录表
+		BvdfToEsRecordTime bvdfToEsRecordTime = mongoDBService.queryBvdfToEsRecordTimeById(RecordTimeEnum.BVDF_REGION_ID);
 		String scopeBeginTime = null;
 		if (null != bvdfToEsRecordTime) {
 			// 开始时间取上一次执行的最后时间
@@ -118,18 +115,11 @@ public class BvdfRegionBizImpl implements BvdfRegionBiz {
 			log.error("创建elasticsearch客户端连接失败" + e);
 			throw new MsgException(ReturnCode.sdp_sys_error, "创建elasticsearch客户端连接失败");
 		}
-		// bvdfToEsRecordTime为空时新增一条数据
+		// bvdfToEsRecordTime为空时新增时间记录表
 		if (null == bvdfToEsRecordTime) {
-			BvdfToEsRecordTime bvdfToEsForAdd = new BvdfToEsRecordTime();
-			bvdfToEsForAdd.setId(RecordTimeEnum.BVDF_REGION_ID.getCode());
-			bvdfToEsForAdd.setLastExcuteTime(scopeEndTime);
-			bvdfToEsRecordTime.setMatchType(MatchTypeEnum.REGION.getCode());
-			bvdfToEsRecordTime.setDescribe(MatchTypeEnum.REGION.getDesc());
-			mongoTemplate.insert(bvdfToEsForAdd);
+			mongoDBService.insertBvdfToEsRecordTime(RecordTimeEnum.BVDF_REGION_ID, MatchTypeEnum.REGION, scopeEndTime);
 		} else {
-			Query queryupdate = new Query(Criteria.where("id").is(RecordTimeEnum.BVDF_REGION_ID.getCode()));
-			Update update = new Update().set(RecordTimeEnum.LAST_EXCUTE_TIME.getCode(), scopeEndTime);
-			mongoTemplate.updateFirst(queryupdate, update, BvdfToEsRecordTime.class);
+			mongoDBService.updateBvdfToEsRecordTime(RecordTimeEnum.BVDF_REGION_ID, MatchTypeEnum.REGION, scopeEndTime);
 		}
 
 	}

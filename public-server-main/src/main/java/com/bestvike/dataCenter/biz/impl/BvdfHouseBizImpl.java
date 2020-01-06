@@ -18,6 +18,7 @@ import com.bestvike.dataCenter.service.BvdfCellService;
 import com.bestvike.dataCenter.service.BvdfCorpService;
 import com.bestvike.dataCenter.service.BvdfHouseService;
 import com.bestvike.dataCenter.service.BvdfRegionService;
+import com.bestvike.dataCenter.service.MongoDBService;
 import com.bestvike.elastic.service.ElasticSearchService;
 import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.client.transport.TransportClient;
@@ -28,11 +29,6 @@ import org.elasticsearch.common.xcontent.XContentFactory;
 import org.elasticsearch.transport.client.PreBuiltTransportClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.data.mongodb.core.query.Update;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -83,7 +79,7 @@ public class BvdfHouseBizImpl implements BvdfHouseBiz {
 	@Autowired
 	private BvdfBldService bvdfBldService;
 	@Autowired
-	private MongoTemplate mongoTemplate;
+	private MongoDBService mongoDBService;
 	@Autowired
 	private BvdfRegionService bvdfRegionService;
 	@Autowired
@@ -103,8 +99,8 @@ public class BvdfHouseBizImpl implements BvdfHouseBiz {
 	@Override
 	//@Scheduled(cron = "${standplatConfig.houseToEsSchedule.cronTime}")
 	public void bvdfHouseToEs() {
-		Query query = new Query(Criteria.where("_id").is(RecordTimeEnum.BVDF_HOUSE_ID.getCode()));
-		BvdfToEsRecordTime bvdfToEsRecordTime = mongoTemplate.findOne(query, BvdfToEsRecordTime.class);
+		// 查询时间记录表
+		BvdfToEsRecordTime bvdfToEsRecordTime = mongoDBService.queryBvdfToEsRecordTimeById(RecordTimeEnum.BVDF_HOUSE_ID);
 		String scopeBeginTime = "1970-01-01 08:00:00";
 		if (null != bvdfToEsRecordTime) {
 			// 开始时间取上一次执行的最后时间
@@ -138,18 +134,11 @@ public class BvdfHouseBizImpl implements BvdfHouseBiz {
 			log.error("创建elasticsearch客户端连接失败" + e);
 			throw new MsgException(ReturnCode.sdp_sys_error, "创建elasticsearch客户端连接失败");
 		}
-		// bvdfToEsRecordTime为空时新增一条数据
+		// bvdfToEsRecordTime为空时新增时间记录表
 		if (null == bvdfToEsRecordTime) {
-			BvdfToEsRecordTime bvdfToEsForAdd = new BvdfToEsRecordTime();
-			bvdfToEsForAdd.setId(RecordTimeEnum.BVDF_HOUSE_ID.getCode());
-			bvdfToEsForAdd.setLastExcuteTime(queryParam.getScopeEndTime());
-			bvdfToEsForAdd.setMatchType(MatchTypeEnum.HOUSE.getCode());
-			bvdfToEsForAdd.setDescribe(MatchTypeEnum.HOUSE.getDesc());
-			mongoTemplate.insert(bvdfToEsForAdd);
+			mongoDBService.insertBvdfToEsRecordTime(RecordTimeEnum.BVDF_HOUSE_ID, MatchTypeEnum.HOUSE, scopeEndTime);
 		} else {
-			Query queryupdate = new Query(Criteria.where("id").is(RecordTimeEnum.BVDF_HOUSE_ID.getCode()));
-			Update update = new Update().set(RecordTimeEnum.LAST_EXCUTE_TIME.getCode(), queryParam.getScopeEndTime());
-			mongoTemplate.updateFirst(queryupdate, update, BvdfToEsRecordTime.class);
+			mongoDBService.updateBvdfToEsRecordTime(RecordTimeEnum.BVDF_HOUSE_ID, MatchTypeEnum.HOUSE, scopeEndTime);
 		}
 	}
 
