@@ -37,4 +37,13 @@ public interface ElasticSearchService {
 	 * @return:
 	 */
 	String organizeQueryEsByJson(String jsonPath);
+
+	/**
+	 * @Author: yinxunyang
+	 * @Description: 创建es的客户端
+	 * @Date: 2020/1/6 16:55
+	 * @param:
+	 * @return:
+	 */
+	TransportClient createEsClient();
 }

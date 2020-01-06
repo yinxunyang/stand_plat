@@ -8,13 +8,19 @@ import com.bestvike.elastic.service.ElasticSearchService;
 import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.client.transport.TransportClient;
+import org.elasticsearch.common.settings.Settings;
+import org.elasticsearch.common.transport.TransportAddress;
 import org.elasticsearch.common.xcontent.XContentBuilder;
+import org.elasticsearch.transport.client.PreBuiltTransportClient;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 
 /**
  * @Author: yinxunyang
@@ -24,7 +30,21 @@ import java.io.InputStreamReader;
 @Slf4j
 @Service
 public class ElasticSearchServiceImpl implements ElasticSearchService {
-
+	/**
+	 * es集群的名称
+	 */
+	@Value("${esConfig.esClusterName}")
+	private String esClusterName;
+	/**
+	 * es的IP
+	 */
+	@Value("${esConfig.esIP}")
+	private String esIP;
+	/**
+	 * es的esPort
+	 */
+	@Value("${esConfig.esPort}")
+	private String esPort;
 	/**
 	 * @Author: yinxunyang
 	 * @Description: 往elasticsearch迁移一条数据
@@ -114,5 +134,23 @@ public class ElasticSearchServiceImpl implements ElasticSearchService {
 			log.error("根据json文件组织查询Es的语句异常" + e);
 		}
 		return sb.toString();
+	}
+
+	/**
+	 * @Author: yinxunyang
+	 * @Description: 创建es的客户端
+	 * @Date: 2020/1/6 16:57
+	 * @param:
+	 * @return:
+	 */
+	@Override
+	public TransportClient createEsClient() {
+		try (TransportClient client = new PreBuiltTransportClient(Settings.builder().put("cluster.name", esClusterName).build())
+				.addTransportAddress(new TransportAddress(InetAddress.getByName(esIP), Integer.parseInt(esPort)))) {
+			return client;
+		} catch (UnknownHostException e) {
+			log.error("创建elasticsearch客户端连接失败", e);
+			throw new MsgException(ReturnCode.sdp_sys_error, "创建elasticsearch客户端连接失败");
+		}
 	}
 }
