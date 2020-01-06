@@ -21,39 +21,18 @@ import com.bestvike.dataCenter.service.BvdfRegionService;
 import com.bestvike.dataCenter.service.MongoDBService;
 import com.bestvike.elastic.service.ElasticSearchService;
 import lombok.extern.slf4j.Slf4j;
-import org.elasticsearch.client.transport.TransportClient;
-import org.elasticsearch.common.settings.Settings;
-import org.elasticsearch.common.transport.TransportAddress;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.common.xcontent.XContentFactory;
-import org.elasticsearch.transport.client.PreBuiltTransportClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.List;
 
 @Service
 @Slf4j
 public class BvdfHouseBizImpl implements BvdfHouseBiz {
-	/**
-	 * es集群的名称
-	 */
-	@Value("${esConfig.esClusterName}")
-	private String esClusterName;
-	/**
-	 * es的IP
-	 */
-	@Value("${esConfig.esIP}")
-	private String esIP;
-	/**
-	 * es的esPort
-	 */
-	@Value("${esConfig.esPort}")
-	private String esPort;
 	/**
 	 * 房屋信息表(arc_houseinfo)最大查询条数,防止内存溢出
 	 */
@@ -122,18 +101,13 @@ public class BvdfHouseBizImpl implements BvdfHouseBiz {
 		}
 		// 组织es的数据 添加小区名称和开发企业名称等
 		organizeEsHouseParamList(bvdfHouseParamList);
-		try (TransportClient client = new PreBuiltTransportClient(Settings.builder().put("cluster.name", esClusterName).build())
-				.addTransportAddress(new TransportAddress(InetAddress.getByName(esIP), Integer.parseInt(esPort)))) {
-			bvdfHouseParamList.forEach(bvdfHouseParam -> {
-				// 拼装新增es的数据
-				XContentBuilder doc = organizeHouseToEsData(bvdfHouseParam);
-				// 往elasticsearch迁移一条数据，elasticsearch主键相同会覆盖原数据，该处不用判断
-				elasticSearchService.insertElasticSearch(client, doc, houseindex, housetype, bvdfHouseParam.getHouseid());
-			});
-		} catch (UnknownHostException e) {
-			log.error("创建elasticsearch客户端连接失败" + e);
-			throw new MsgException(ReturnCode.sdp_sys_error, "创建elasticsearch客户端连接失败");
-		}
+		// 遍历
+		bvdfHouseParamList.forEach(bvdfHouseParam -> {
+			// 拼装新增es的数据
+			XContentBuilder doc = organizeHouseToEsData(bvdfHouseParam);
+			// 往elasticsearch迁移一条数据，elasticsearch主键相同会覆盖原数据，该处不用判断
+			elasticSearchService.insertElasticSearch(elasticSearchService.createEsClient(), doc, houseindex, housetype, bvdfHouseParam.getHouseid());
+		});
 		// bvdfToEsRecordTime为空时新增时间记录表
 		if (null == bvdfToEsRecordTime) {
 			mongoDBService.insertBvdfToEsRecordTime(RecordTimeEnum.BVDF_HOUSE_ID, MatchTypeEnum.HOUSE, scopeEndTime);
