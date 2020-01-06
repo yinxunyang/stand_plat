@@ -1,7 +1,5 @@
 package com.bestvike.bvrfis.biz;
 
-import com.bestvike.commons.exception.MsgException;
-
 /**
  * @Author: yinxunyang
  * @Description: 维修资金挂接关系表的biz
@@ -16,5 +14,5 @@ public interface BDataRelationBiz {
 	 * @param:
 	 * @return:
 	 */
-	void generateRelation(String matchType, String matchId) throws MsgException;
+	void generateRelation(String matchType, String matchId) ;
 }

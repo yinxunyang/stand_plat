@@ -30,7 +30,7 @@ public class BvrfisBldServiceImpl implements BvrfisBldService {
 	 * @return:
 	 */
 	@Override
-	public List<BvrfisBldParam> queryBvrfisBldInfo(BvrfisBldParam queryParam) throws MsgException {
+	public List<BvrfisBldParam> queryBvrfisBldInfo(BvrfisBldParam queryParam)  {
 		List<BvrfisBldParam> bvrfisBldParamList;
 		try {
 			bvrfisBldParamList = bvrfisHouseDao.queryBvrfisBldInfo(queryParam);
@@ -48,7 +48,7 @@ public class BvrfisBldServiceImpl implements BvrfisBldService {
 	 * @return:
 	 */
 	@Override
-	public BvrfisBldParam selectBvrfisBldInfo(BvrfisBldParam queryParam) throws MsgException {
+	public BvrfisBldParam selectBvrfisBldInfo(BvrfisBldParam queryParam)  {
 		BvrfisBldParam bvrfisBldParam;
 		try {
 			bvrfisBldParam = bvrfisHouseDao.selectBvrfisBldInfo(queryParam);

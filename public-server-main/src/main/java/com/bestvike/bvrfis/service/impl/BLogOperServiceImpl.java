@@ -30,7 +30,7 @@ public class BLogOperServiceImpl implements BLogOperService {
 	 */
 	@Override
 	@Transactional(rollbackFor = Exception.class)
-	public void insertBLogOper(BLogOper bLogOper) throws MsgException {
+	public void insertBLogOper(BLogOper bLogOper) {
 		if (null != bLogOper) {
 			// 操作日志表
 			int inNum = bLogOperDao.insertBLogOper(bLogOper);

@@ -126,7 +126,7 @@ public class BvrfisHouseBizImpl implements BvrfisHouseBiz {
 	 * @return:
 	 */
 	@Override
-	public void bvrfisHouseMatchEs(HttpSession httpSession) throws MsgException {
+	public void bvrfisHouseMatchEs(HttpSession httpSession)  {
 		BvrfisHouseParam queryParam = new BvrfisHouseParam();
 		// 0正常
 		queryParam.setState("0");

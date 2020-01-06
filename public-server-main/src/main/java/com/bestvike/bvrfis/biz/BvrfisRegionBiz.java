@@ -1,7 +1,5 @@
 package com.bestvike.bvrfis.biz;
 
-import com.bestvike.commons.exception.MsgException;
-
 import javax.servlet.http.HttpSession;
 
 /**
@@ -18,5 +16,5 @@ public interface BvrfisRegionBiz {
 	 * @param:
 	 * @return:
 	 */
-	void bvrfisRegionMatchEs(HttpSession httpSession) throws MsgException;
+	void bvrfisRegionMatchEs(HttpSession httpSession) ;
 }

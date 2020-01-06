@@ -2,7 +2,6 @@ package com.bestvike.dataCenter.service;
 
 import com.bestvike.commons.enums.MatchTypeEnum;
 import com.bestvike.commons.enums.RecordTimeEnum;
-import com.bestvike.commons.exception.MsgException;
 import com.bestvike.dataCenter.entity.BvdfToEsRecordTime;
 
 /**
@@ -18,7 +17,7 @@ public interface MongoDBService {
 	 * @param:
 	 * @return:
 	 */
-	BvdfToEsRecordTime queryBvdfToEsRecordTimeById(RecordTimeEnum recordTimeEnum) throws MsgException;
+	BvdfToEsRecordTime queryBvdfToEsRecordTimeById(RecordTimeEnum recordTimeEnum);
 
 	/**
 	 * @Author: yinxunyang
@@ -27,7 +26,7 @@ public interface MongoDBService {
 	 * @param:
 	 * @return:
 	 */
-	void insertBvdfToEsRecordTime(RecordTimeEnum recordTimeEnum, MatchTypeEnum matchTypeEnum, String scopeEndTime) throws MsgException;
+	void insertBvdfToEsRecordTime(RecordTimeEnum recordTimeEnum, MatchTypeEnum matchTypeEnum, String scopeEndTime);
 
 	/**
 	 * @Author: yinxunyang
@@ -36,5 +35,5 @@ public interface MongoDBService {
 	 * @param:
 	 * @return:
 	 */
-	void updateBvdfToEsRecordTime(RecordTimeEnum recordTimeEnum, MatchTypeEnum matchTypeEnum, String scopeEndTime) throws MsgException;
+	void updateBvdfToEsRecordTime(RecordTimeEnum recordTimeEnum, MatchTypeEnum matchTypeEnum, String scopeEndTime);
 }

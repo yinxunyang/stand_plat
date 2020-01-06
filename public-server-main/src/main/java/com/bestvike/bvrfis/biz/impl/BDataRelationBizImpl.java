@@ -5,7 +5,6 @@ import com.bestvike.bvrfis.entity.BDataRelation;
 import com.bestvike.bvrfis.entity.BmatchAnResultInfo;
 import com.bestvike.bvrfis.service.BDataRelationService;
 import com.bestvike.bvrfis.service.BmatchAnResultService;
-import com.bestvike.commons.exception.MsgException;
 import com.bestvike.commons.utils.UtilTool;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +31,7 @@ public class BDataRelationBizImpl implements BDataRelationBiz {
 	 * @return:
 	 */
 	@Override
-	public void generateRelation(String matchType, String matchId) throws MsgException {
+	public void generateRelation(String matchType, String matchId) {
 		// 查询b_matchAnResult
 		BmatchAnResultInfo bmatchAnResultInfo = bmatchAnResultService.selectBmatchAnResultById(matchId);
 		BDataRelation bDataRelation = new BDataRelation();

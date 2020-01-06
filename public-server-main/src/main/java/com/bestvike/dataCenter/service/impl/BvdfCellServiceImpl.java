@@ -23,7 +23,7 @@ public class BvdfCellServiceImpl implements BvdfCellService {
 	 * @return:
 	 */
 	@Override
-	public BvdfCellParam selectBvdfCellInfo(BvdfCellParam queryParam) throws MsgException {
+	public BvdfCellParam selectBvdfCellInfo(BvdfCellParam queryParam)  {
 		BvdfCellParam bvdfCellParam;
 		try {
 			bvdfCellParam = bvdfHouseDao.selectBvdfCellInfo(queryParam);

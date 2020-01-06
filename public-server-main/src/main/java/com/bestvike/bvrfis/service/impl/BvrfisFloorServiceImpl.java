@@ -29,7 +29,7 @@ public class BvrfisFloorServiceImpl implements BvrfisFloorService {
 	 * @return:
 	 */
 	@Override
-	public BvrfisFloorParam selectBvrfisFloorInfo(BvrfisFloorParam queryParam) throws MsgException {
+	public BvrfisFloorParam selectBvrfisFloorInfo(BvrfisFloorParam queryParam)  {
 		BvrfisFloorParam bvrfisFloorParam;
 		try {
 			bvrfisFloorParam = bvrfisHouseDao.selectBvrfisFloorInfo(queryParam);

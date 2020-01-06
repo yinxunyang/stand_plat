@@ -30,7 +30,7 @@ public class BvrfisRegionServiceImpl implements BvrfisRegionService {
 	 * @return:
 	 */
 	@Override
-	public List<BvrfisRegionParam> queryBvrfisRegionInfo(BvrfisRegionParam queryParam) throws MsgException {
+	public List<BvrfisRegionParam> queryBvrfisRegionInfo(BvrfisRegionParam queryParam)  {
 		List<BvrfisRegionParam> bvrfisRegionParamList;
 		try {
 			bvrfisRegionParamList = bvrfisHouseDao.queryBvrfisRegionInfo(queryParam);
@@ -48,7 +48,7 @@ public class BvrfisRegionServiceImpl implements BvrfisRegionService {
 	 * @return:
 	 */
 	@Override
-	public BvrfisRegionParam selectBvrfisRegionInfo(BvrfisRegionParam queryParam) throws MsgException {
+	public BvrfisRegionParam selectBvrfisRegionInfo(BvrfisRegionParam queryParam)  {
 		BvrfisRegionParam bvrfisRegionParam;
 		try {
 			bvrfisRegionParam = bvrfisHouseDao.selectBvrfisRegionInfo(queryParam);

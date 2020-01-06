@@ -53,7 +53,7 @@ public class ElasticSearchServiceImpl implements ElasticSearchService {
 	 * @return:
 	 */
 	@Override
-	public void insertElasticSearch(XContentBuilder doc, String index, String type, String id) throws MsgException {
+	public void insertElasticSearch(XContentBuilder doc, String index, String type, String id) {
 		// es的返回状态
 		String esStatus;
 		IndexResponse response;

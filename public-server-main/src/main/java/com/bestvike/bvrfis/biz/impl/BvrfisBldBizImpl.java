@@ -106,7 +106,7 @@ public class BvrfisBldBizImpl implements BvrfisBldBiz {
 	 * @return:
 	 */
 	@Override
-	public void bvrfisBldMatchEs(HttpSession httpSession) throws MsgException {
+	public void bvrfisBldMatchEs(HttpSession httpSession) {
 		BvrfisBldParam queryParam = new BvrfisBldParam();
 		// 0正常
 		queryParam.setState("0");

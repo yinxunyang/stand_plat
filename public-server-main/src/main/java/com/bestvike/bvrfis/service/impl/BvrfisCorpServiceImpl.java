@@ -30,7 +30,7 @@ public class BvrfisCorpServiceImpl implements BvrfisCorpService {
 	 * @return:
 	 */
 	@Override
-	public List<BvrfisCorpInfoParam> queryBvrfisCorpInfo(BvrfisCorpInfoParam queryParam) throws MsgException {
+	public List<BvrfisCorpInfoParam> queryBvrfisCorpInfo(BvrfisCorpInfoParam queryParam)  {
 		List<BvrfisCorpInfoParam> bvrfisCorpInfoParamList;
 		try {
 			bvrfisCorpInfoParamList = bvrfisHouseDao.queryBvrfisCorpInfo(queryParam);
@@ -48,7 +48,7 @@ public class BvrfisCorpServiceImpl implements BvrfisCorpService {
 	 * @return:
 	 */
 	@Override
-	public BvrfisCorpInfoParam selectBvrfisCorpInfo(BvrfisCorpInfoParam queryParam) throws MsgException {
+	public BvrfisCorpInfoParam selectBvrfisCorpInfo(BvrfisCorpInfoParam queryParam)  {
 		BvrfisCorpInfoParam bvrfisCorpInfoParam;
 		try {
 			bvrfisCorpInfoParam = bvrfisHouseDao.selectBvrfisCorpInfo(queryParam);

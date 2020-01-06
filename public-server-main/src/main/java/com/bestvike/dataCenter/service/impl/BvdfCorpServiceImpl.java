@@ -25,7 +25,7 @@ public class BvdfCorpServiceImpl implements BvdfCorpService {
 	 * @return:
 	 */
 	@Override
-	public List<BvdfCorpParam> queryBvdfCorpInfo(BvdfCorpParam queryParam) throws MsgException {
+	public List<BvdfCorpParam> queryBvdfCorpInfo(BvdfCorpParam queryParam) {
 		List<BvdfCorpParam> bvdfCorpParamList;
 		try {
 			bvdfCorpParamList = bvdfHouseDao.queryBvdfCorpInfo(queryParam);
@@ -43,7 +43,7 @@ public class BvdfCorpServiceImpl implements BvdfCorpService {
 	 * @return:
 	 */
 	@Override
-	public BvdfCorpParam selectBvdfCorpInfo(BvdfCorpParam queryParam) throws MsgException {
+	public BvdfCorpParam selectBvdfCorpInfo(BvdfCorpParam queryParam) {
 		BvdfCorpParam bvdfCorpParam;
 		try {
 			bvdfCorpParam = bvdfHouseDao.selectBvdfCorpInfo(queryParam);

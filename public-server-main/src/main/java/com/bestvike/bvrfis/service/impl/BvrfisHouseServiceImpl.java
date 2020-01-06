@@ -31,7 +31,7 @@ public class BvrfisHouseServiceImpl implements BvrfisHouseService {
 	 * @return:
 	 */
 	@Override
-	public List<BvrfisHouseParam> queryBvrfisHouseInfo(BvrfisHouseParam queryParam) throws MsgException {
+	public List<BvrfisHouseParam> queryBvrfisHouseInfo(BvrfisHouseParam queryParam)  {
 		List<BvrfisHouseParam> bvrfisHouseParamList;
 		try {
 			bvrfisHouseParamList = bvrfisHouseDao.queryBvrfisHouseInfo(queryParam);

@@ -29,7 +29,7 @@ public class BvrfisCellServiceImpl implements BvrfisCellService {
 	 * @return:
 	 */
 	@Override
-	public BvrfisCellParam selectBvrfisCellInfo(BvrfisCellParam queryParam) throws MsgException {
+	public BvrfisCellParam selectBvrfisCellInfo(BvrfisCellParam queryParam)  {
 		BvrfisCellParam bvrfisCellParam;
 		try {
 			bvrfisCellParam = bvrfisHouseDao.selectBvrfisCellInfo(queryParam);

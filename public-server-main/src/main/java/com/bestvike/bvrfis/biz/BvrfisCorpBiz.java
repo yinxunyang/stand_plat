@@ -1,7 +1,5 @@
 package com.bestvike.bvrfis.biz;
 
-import com.bestvike.commons.exception.MsgException;
-
 import javax.servlet.http.HttpSession;
 
 /**
@@ -18,5 +16,5 @@ public interface BvrfisCorpBiz {
 	 * @param:
 	 * @return:
 	 */
-	void bvrfisCorpMatchEs(HttpSession httpSession) throws MsgException;
+	void bvrfisCorpMatchEs(HttpSession httpSession) ;
 }

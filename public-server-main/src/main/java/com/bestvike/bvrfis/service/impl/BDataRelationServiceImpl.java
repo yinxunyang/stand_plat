@@ -32,7 +32,7 @@ public class BDataRelationServiceImpl implements BDataRelationService {
 	 */
 	@Override
 	@Transactional(rollbackFor = Exception.class)
-	public void insertBDataRelation(BDataRelation bDataRelation) throws MsgException {
+	public void insertBDataRelation(BDataRelation bDataRelation) {
 		if (null != bDataRelation) {
 			// 批量匹配分析表
 			int inNum = bDataRelationDao.insertBDataRelation(bDataRelation);

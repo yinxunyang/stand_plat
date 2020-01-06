@@ -98,7 +98,7 @@ public class BvrfisRegionBizImpl implements BvrfisRegionBiz {
 	 * @return:
 	 */
 	@Override
-	public void bvrfisRegionMatchEs(HttpSession httpSession) throws MsgException {
+	public void bvrfisRegionMatchEs(HttpSession httpSession)  {
 		BvrfisRegionParam queryParam = new BvrfisRegionParam();
 		// 0正常
 		queryParam.setState("0");

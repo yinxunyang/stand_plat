@@ -1,6 +1,5 @@
 package com.bestvike.elastic.service;
 
-import com.bestvike.commons.exception.MsgException;
 import com.bestvike.dataCenter.param.BvdfHouseParam;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 
@@ -17,7 +16,7 @@ public interface ElasticSearchService {
 	 * @param:
 	 * @return:
 	 */
-	void insertElasticSearch(XContentBuilder doc, String index, String type, String id) throws MsgException;
+	void insertElasticSearch(XContentBuilder doc, String index, String type, String id);
 
 	/**
 	 * @Author: yinxunyang

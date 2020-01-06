@@ -24,7 +24,7 @@ public class BvdfHouseServiceImpl implements BvdfHouseService {
 	 * @return:
 	 */
 	@Override
-	public List<BvdfHouseParam> queryBvdfHouseInfo(BvdfHouseParam queryParam) throws MsgException {
+	public List<BvdfHouseParam> queryBvdfHouseInfo(BvdfHouseParam queryParam) {
 		List<BvdfHouseParam> bvdfHouseParamList;
 		try {
 			bvdfHouseParamList = bvdfHouseDao.queryBvdfHouseInfo(queryParam);
@@ -42,7 +42,7 @@ public class BvdfHouseServiceImpl implements BvdfHouseService {
 	 * @return:
 	 */
 	@Override
-	public BvdfHouseParam selectBvdfHouseInfo(BvdfHouseParam queryParam) throws MsgException {
+	public BvdfHouseParam selectBvdfHouseInfo(BvdfHouseParam queryParam)  {
 		BvdfHouseParam bvdfHouseParam;
 		try {
 			bvdfHouseParam = bvdfHouseDao.selectBvdfHouseInfo(queryParam);

@@ -33,7 +33,7 @@ public class BmatchAnResultServiceImpl implements BmatchAnResultService {
 	 */
 	@Override
 	@Transactional(rollbackFor = Exception.class)
-	public void insertBmatchAnResultByBatch(List<BmatchAnResultInfo> bmatchAnResultInfoList) throws MsgException {
+	public void insertBmatchAnResultByBatch(List<BmatchAnResultInfo> bmatchAnResultInfoList){
 		if (!bmatchAnResultInfoList.isEmpty()) {
 			// 批量匹配分析表
 			int inNum = bmatchAnResultDao.insertBmatchAnResultByBatch(bmatchAnResultInfoList);
@@ -51,7 +51,7 @@ public class BmatchAnResultServiceImpl implements BmatchAnResultService {
 	 */
 	@Override
 	@Transactional(rollbackFor = Exception.class)
-	public void insertBmatchAnResult(BmatchAnResultInfo bmatchAnResultInfo) throws MsgException {
+	public void insertBmatchAnResult(BmatchAnResultInfo bmatchAnResultInfo) {
 		if (null != bmatchAnResultInfo) {
 			// 批量匹配分析表
 			int inNum = bmatchAnResultDao.insertBmatchAnResult(bmatchAnResultInfo);

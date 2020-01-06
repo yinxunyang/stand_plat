@@ -33,7 +33,7 @@ public class MongoDBServiceImpl implements MongoDBService {
 	 * @return:
 	 */
 	@Override
-	public BvdfToEsRecordTime queryBvdfToEsRecordTimeById(RecordTimeEnum recordTimeEnum) throws MsgException {
+	public BvdfToEsRecordTime queryBvdfToEsRecordTimeById(RecordTimeEnum recordTimeEnum) {
 		BvdfToEsRecordTime bvdfToEsRecordTime;
 		try {
 			Query query = new Query(Criteria.where("_id").is(recordTimeEnum.getCode()));

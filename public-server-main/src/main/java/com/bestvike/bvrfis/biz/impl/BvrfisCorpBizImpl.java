@@ -95,7 +95,7 @@ public class BvrfisCorpBizImpl implements BvrfisCorpBiz {
 	 * @return:
 	 */
 	@Override
-	public void bvrfisCorpMatchEs(HttpSession httpSession) throws MsgException {
+	public void bvrfisCorpMatchEs(HttpSession httpSession) {
 		BvrfisCorpInfoParam queryParam = new BvrfisCorpInfoParam();
 		// 0正常
 		queryParam.setState("0");
