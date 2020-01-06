@@ -14,7 +14,6 @@ import com.bestvike.dataCenter.service.BvdfCorpService;
 import com.bestvike.dataCenter.service.MongoDBService;
 import com.bestvike.elastic.service.ElasticSearchService;
 import lombok.extern.slf4j.Slf4j;
-import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.common.xcontent.XContentFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +21,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
 import java.util.List;
 
 @Service
@@ -77,13 +75,12 @@ public class BvdfCorpBizImpl implements BvdfCorpBiz {
 				log.info("没有bvdfCorpToEs的数据");
 				return;
 			}
-			TransportClient client = elasticSearchService.createEsClient();
 			// 遍历
 			bvdfCorpParamList.forEach(bvdfCorpParam -> {
 				// 拼装新增es的数据
 				XContentBuilder doc = organizeCorpToEsData(bvdfCorpParam);
 				// 往elasticsearch迁移一条数据，elasticsearch主键相同会覆盖原数据，该处不用判断
-				elasticSearchService.insertElasticSearch(client, doc, corpindex, corptype, bvdfCorpParam.getCorpId());
+				elasticSearchService.insertElasticSearch(elasticSearchService.createEsClient(), doc, corpindex, corptype, bvdfCorpParam.getCorpId());
 			});
 			// bvdfToEsRecordTime为空时新增时间记录表
 			if (null == bvdfToEsRecordTime) {
@@ -115,7 +112,7 @@ public class BvdfCorpBizImpl implements BvdfCorpBiz {
 					.field("certificateNo", bvdfCorpParam.getCertificateNo())
 					.field("versionnumber", bvdfCorpParam.getVersionnumber())
 					.endObject();
-		} catch (IOException e) {
+		} catch (Exception e) {
 			log.error("拼装corpToElasticSearch的数据失败" + e);
 			throw new MsgException(ReturnCode.fail, "拼装corpToElasticSearch的数据失败");
 		}
