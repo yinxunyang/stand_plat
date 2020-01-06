@@ -86,7 +86,7 @@ public class BvdfCorpBizImpl implements BvdfCorpBiz {
 	//@Scheduled(cron = "${standplatConfig.corpToEsSchedule.cronTime}")
 	public void bvdfCorpToEs() {
 		BvdfCorpParam queryParam = new BvdfCorpParam();
-		// 状态正
+		// 状态正常
 		queryParam.setState(DataCenterEnum.NORMAL_STATE.getCode());
 		queryParam.setAppcode(DataCenterEnum.BVDF_APP_CODE_CAPITAL.getCode());
 		Query query = new Query(Criteria.where("_id").is(RecordTimeEnum.BVDF_CORP_ID.getCode()));
@@ -99,6 +99,7 @@ public class BvdfCorpBizImpl implements BvdfCorpBiz {
 		queryParam.setScopeBeginTime(scopeBeginTime);
 		String scopeEndTime = UtilTool.nowTime();
 		queryParam.setScopeEndTime(scopeEndTime);
+		// 根据时间范围查询bvdf开发企业信息
 		List<BvdfCorpParam> bvdfCorpParamList = bvdfCorpService.queryBvdfCorpInfo(queryParam);
 		if(bvdfCorpParamList.isEmpty()){
 			log.info("没有bvdfCorpToEs的数据");
@@ -116,7 +117,7 @@ public class BvdfCorpBizImpl implements BvdfCorpBiz {
 			log.error("创建elasticsearch客户端连接失败" + e);
 			throw new MsgException(ReturnCode.sdp_sys_error, "创建elasticsearch客户端连接失败");
 		}
-		// bvdfToEsRecordTime为空时新增一条数据
+		// bvdfToEsRecordTime为空时新增时间记录表
 		if (null == bvdfToEsRecordTime) {
 			BvdfToEsRecordTime bvdfToEsForAdd = new BvdfToEsRecordTime();
 			bvdfToEsForAdd.setId(RecordTimeEnum.BVDF_CORP_ID.getCode());
@@ -127,6 +128,7 @@ public class BvdfCorpBizImpl implements BvdfCorpBiz {
 		} else {
 			Query queryupdate = new Query(Criteria.where("id").is(RecordTimeEnum.BVDF_CORP_ID.getCode()));
 			Update update = new Update().set(RecordTimeEnum.LAST_EXCUTE_TIME.getCode(), scopeEndTime);
+			// 更新时间记录表
 			mongoTemplate.updateFirst(queryupdate, update, BvdfToEsRecordTime.class);
 		}
 
