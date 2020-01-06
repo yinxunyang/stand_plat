@@ -11,6 +11,7 @@ import com.bestvike.dataCenter.biz.BvdfCorpBiz;
 import com.bestvike.dataCenter.entity.BvdfToEsRecordTime;
 import com.bestvike.dataCenter.param.BvdfCorpParam;
 import com.bestvike.dataCenter.service.BvdfCorpService;
+import com.bestvike.dataCenter.service.MongoDBService;
 import com.bestvike.elastic.service.ElasticSearchService;
 import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.client.transport.TransportClient;
@@ -21,10 +22,6 @@ import org.elasticsearch.common.xcontent.XContentFactory;
 import org.elasticsearch.transport.client.PreBuiltTransportClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -66,7 +63,7 @@ public class BvdfCorpBizImpl implements BvdfCorpBiz {
 	@Autowired
 	private BvdfCorpService bvdfCorpService;
 	@Autowired
-	private MongoTemplate mongoTemplate;
+	private MongoDBService mongoDBService;
 	/**
 	 * @Author: yinxunyang
 	 * @Description: 将bvdf开发公司信息迁移至elasticsearch
@@ -83,8 +80,8 @@ public class BvdfCorpBizImpl implements BvdfCorpBiz {
 		queryParam.setAppcode(DataCenterEnum.BVDF_APP_CODE_CAPITAL.getCode());
 		// 开发企业
 		queryParam.setCorpType(CorpTypeEnum.HOUSE_DEVELOPER.getCode());
-		Query query = new Query(Criteria.where("_id").is(RecordTimeEnum.BVDF_CORP_ID.getCode()));
-		BvdfToEsRecordTime bvdfToEsRecordTime = mongoTemplate.findOne(query, BvdfToEsRecordTime.class);
+		// 查询时间记录表
+		BvdfToEsRecordTime bvdfToEsRecordTime = mongoDBService.queryBvdfToEsRecordTimeById(RecordTimeEnum.BVDF_CORP_ID);
 		String scopeBeginTime = null;
 		if (null != bvdfToEsRecordTime) {
 			// 开始时间取上一次执行的最后时间
@@ -113,17 +110,9 @@ public class BvdfCorpBizImpl implements BvdfCorpBiz {
 		}
 		// bvdfToEsRecordTime为空时新增时间记录表
 		if (null == bvdfToEsRecordTime) {
-			BvdfToEsRecordTime bvdfToEsForAdd = new BvdfToEsRecordTime();
-			bvdfToEsForAdd.setId(RecordTimeEnum.BVDF_CORP_ID.getCode());
-			bvdfToEsForAdd.setLastExcuteTime(scopeEndTime);
-			bvdfToEsRecordTime.setMatchType(MatchTypeEnum.DEVELOP.getCode());
-			bvdfToEsRecordTime.setDescribe(MatchTypeEnum.DEVELOP.getDesc());
-			mongoTemplate.insert(bvdfToEsForAdd);
+			mongoDBService.insertBvdfToEsRecordTime(RecordTimeEnum.BVDF_CORP_ID, MatchTypeEnum.DEVELOP, scopeEndTime);
 		} else {
-			Query queryupdate = new Query(Criteria.where("id").is(RecordTimeEnum.BVDF_CORP_ID.getCode()));
-			Update update = new Update().set(RecordTimeEnum.LAST_EXCUTE_TIME.getCode(), scopeEndTime);
-			// 更新时间记录表
-			mongoTemplate.updateFirst(queryupdate, update, BvdfToEsRecordTime.class);
+			mongoDBService.updateBvdfToEsRecordTime(RecordTimeEnum.BVDF_CORP_ID, MatchTypeEnum.DEVELOP, scopeEndTime);
 		}
 
 	}
