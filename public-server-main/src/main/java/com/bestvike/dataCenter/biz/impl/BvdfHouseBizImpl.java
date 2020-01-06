@@ -101,7 +101,7 @@ public class BvdfHouseBizImpl implements BvdfHouseBiz {
 	 * @return:
 	 */
 	@Override
-	@Scheduled(cron = "${standplatConfig.houseToEsSchedule.cronTime}")
+	//@Scheduled(cron = "${standplatConfig.houseToEsSchedule.cronTime}")
 	public void bvdfHouseToEs() {
 		Query query = new Query(Criteria.where("_id").is(RecordTimeEnum.BVDF_HOUSE_ID.getCode()));
 		BvdfToEsRecordTime bvdfToEsRecordTime = mongoTemplate.findOne(query, BvdfToEsRecordTime.class);

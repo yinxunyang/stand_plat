@@ -21,6 +21,10 @@ public class BvdfCorpParam {
 	 */
 	private String corpId;
 	/**
+	 * 企业类型
+	 */
+	private String corpType;
+	/**
 	 * 企业名称
 	 */
 	private String corpName;

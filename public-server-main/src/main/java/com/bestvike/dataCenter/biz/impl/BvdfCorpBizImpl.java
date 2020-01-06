@@ -1,5 +1,6 @@
 package com.bestvike.dataCenter.biz.impl;
 
+import com.bestvike.commons.enums.CorpTypeEnum;
 import com.bestvike.commons.enums.DataCenterEnum;
 import com.bestvike.commons.enums.MatchTypeEnum;
 import com.bestvike.commons.enums.RecordTimeEnum;
@@ -24,6 +25,7 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -50,16 +52,6 @@ public class BvdfCorpBizImpl implements BvdfCorpBiz {
 	@Value("${esConfig.esPort}")
 	private String esPort;
 	/**
-	 * 房屋信息表(arc_houseinfo)最大查询条数,防止内存溢出
-	 */
-	@Value("${standplatConfig.bvdfToEsSchedule.houseMaxNum}")
-	private String houseMaxNum;
-	/**
-	 * 批量新增、修改bvdf表的数量
-	 */
-	@Value("${standplatConfig.bvdfToEsSchedule.bvdfBatchNum}")
-	private String bvdfBatchNum;
-	/**
 	 * es开发企业的索引
 	 */
 	@Value("${esConfig.corpindex}")
@@ -83,12 +75,14 @@ public class BvdfCorpBizImpl implements BvdfCorpBiz {
 	 * @return:
 	 */
 	@Override
-	//@Scheduled(cron = "${standplatConfig.corpToEsSchedule.cronTime}")
+	@Scheduled(cron = "${standplatConfig.corpToEsSchedule.cronTime}")
 	public void bvdfCorpToEs() {
 		BvdfCorpParam queryParam = new BvdfCorpParam();
 		// 状态正常
 		queryParam.setState(DataCenterEnum.NORMAL_STATE.getCode());
 		queryParam.setAppcode(DataCenterEnum.BVDF_APP_CODE_CAPITAL.getCode());
+		// 开发企业
+		queryParam.setCorpType(CorpTypeEnum.HOUSE_DEVELOPER.getCode());
 		Query query = new Query(Criteria.where("_id").is(RecordTimeEnum.BVDF_CORP_ID.getCode()));
 		BvdfToEsRecordTime bvdfToEsRecordTime = mongoTemplate.findOne(query, BvdfToEsRecordTime.class);
 		String scopeBeginTime = null;

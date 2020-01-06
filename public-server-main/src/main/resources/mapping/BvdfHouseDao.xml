@@ -11,6 +11,9 @@
 			<if test="null != param.appcode and '' != param.appcode">
 				AND t.appcode = #{param.appcode,jdbcType=VARCHAR}
 			</if>
+			<if test="null != param.corpType and '' != param.corpType">
+				AND t.corpType = #{param.corpType,jdbcType=VARCHAR}
+			</if>
 			<if test="null != param.scopeBeginTime and '' != param.scopeBeginTime">
 				<![CDATA[
 				AND to_date(t.modifydate,'yyyy-mm-dd hh24:mi:ss') >= to_date(#{param.scopeBeginTime},'yyyy-mm-dd hh24:mi:ss')
