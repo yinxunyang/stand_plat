@@ -22,6 +22,7 @@ import com.bestvike.commons.exception.MsgException;
 import com.bestvike.commons.utils.UtilTool;
 import com.bestvike.dataCenter.param.BvdfBldParam;
 import com.bestvike.dataCenter.service.BvdfBldService;
+import com.bestvike.elastic.service.ElasticSearchService;
 import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.transport.TransportClient;
@@ -94,6 +95,8 @@ public class BvrfisBldBizImpl implements BvrfisBldBiz {
 	private BmatchAnResultService bmatchAnResultService;
 	@Autowired
 	private BvrfisRegionService bvrfisRegionService;
+	@Autowired
+	private ElasticSearchService elasticSearchService;
 
 	/**
 	 * @Author: yinxunyang
@@ -252,7 +255,7 @@ public class BvrfisBldBizImpl implements BvrfisBldBiz {
 		// 匹配成功后需要从bvrfisBldParamList移除的List
 		List<BvrfisBldParam> paramListForDel = new ArrayList<>();
 		// 自然幢根据小区疑似匹配
-		String bldQueryJson = bvrfisService.organizeQueryEsByJson("elasticSearch/bld/unCertainBldByRegion.json");
+		String bldQueryJson = elasticSearchService.organizeQueryEsByJson("elasticSearch/bld/unCertainBldByRegion.json");
 		// 遍历自然幢信息和elasticsearch
 		bvrfisBldParamList.forEach(bvrfisBldParam -> {
 			try {
@@ -331,7 +334,7 @@ public class BvrfisBldBizImpl implements BvrfisBldBiz {
 	 */
 	private void unCertainBldByCorpNo(List<BvrfisBldParam> bvrfisBldParamList, TransportClient client, HttpSession httpSession, String logId) {
 		// 自然幢根据小区疑似匹配
-		String bldQueryJson = bvrfisService.organizeQueryEsByJson("elasticSearch/bld/unCertainBldByCorp.json");
+		String bldQueryJson = elasticSearchService.organizeQueryEsByJson("elasticSearch/bld/unCertainBldByCorp.json");
 		// 遍历自然幢信息和elasticsearch
 		bvrfisBldParamList.forEach(bvrfisBldParam -> {
 			try {

@@ -9,7 +9,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.xcontent.XContentBuilder;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
+
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 
 /**
  * @Author: yinxunyang
@@ -84,5 +89,30 @@ public class ElasticSearchServiceImpl implements ElasticSearchService {
 			str = str.replace((char) ('0' + i), "零一二三四五六七八九".charAt(i));
 		}
 		return str;
+	}
+
+	/**
+	 * @Author: yinxunyang
+	 * @Description: 根据json文件组织查询Es的语句
+	 * @Date: 2019/12/24 15:16
+	 * @param:
+	 * @return:
+	 */
+	@Override
+	public String organizeQueryEsByJson(String jsonPath) {
+		StringBuilder sb = new StringBuilder();
+		try {
+			ClassPathResource classPathResource = new ClassPathResource(jsonPath);
+			InputStream inputStream = classPathResource.getInputStream();
+			BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));
+
+			String line;
+			while ((line = br.readLine()) != null) {
+				sb.append(line);
+			}
+		} catch (Exception e) {
+			log.error("根据json文件组织查询Es的语句异常" + e);
+		}
+		return sb.toString();
 	}
 }

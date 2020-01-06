@@ -18,6 +18,7 @@ import com.bestvike.commons.exception.MsgException;
 import com.bestvike.commons.utils.UtilTool;
 import com.bestvike.dataCenter.param.BvdfRegionParam;
 import com.bestvike.dataCenter.service.BvdfRegionService;
+import com.bestvike.elastic.service.ElasticSearchService;
 import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.transport.TransportClient;
@@ -87,7 +88,8 @@ public class BvrfisRegionBizImpl implements BvrfisRegionBiz {
 	private BvrfisService bvrfisService;
 	@Autowired
 	private BLogOperService bLogOperService;
-
+	@Autowired
+	private ElasticSearchService elasticSearchService;
 	/**
 	 * @Author: yinxunyang
 	 * @Description: 将bvrfis小区信息跟es中的匹配
@@ -206,7 +208,7 @@ public class BvrfisRegionBizImpl implements BvrfisRegionBiz {
 	 */
 	private void unCertainMatchCorp(List<BvrfisRegionParam> bvrfisRegionParamList, TransportClient client, HttpSession httpSession, String logId) {
 		// 完全匹配开发企业信息
-		String corpQueryEs = bvrfisService.organizeQueryEsByJson("elasticSearch/region/unCertainRegion.json");
+		String corpQueryEs = elasticSearchService.organizeQueryEsByJson("elasticSearch/region/unCertainRegion.json");
 		// 匹配成功后需要从bvrfisRegionParamList移除的List
 		List<BvrfisRegionParam> paramListForDel = new ArrayList<>();
 		// 遍历开发企业信息和elasticsearch

@@ -17,6 +17,7 @@ import com.bestvike.commons.exception.MsgException;
 import com.bestvike.commons.utils.StringUtils;
 import com.bestvike.commons.utils.UtilTool;
 import com.bestvike.dataCenter.param.BvdfCorpParam;
+import com.bestvike.elastic.service.ElasticSearchService;
 import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.transport.TransportClient;
@@ -83,6 +84,8 @@ public class BvrfisCorpBizImpl implements BvrfisCorpBiz {
 	private BLogOperService bLogOperService;
 	@Autowired
 	private BDataRelationService bDataRelationService;
+	@Autowired
+	private ElasticSearchService elasticSearchService;
 
 	/**
 	 * @Author: yinxunyang
@@ -147,7 +150,7 @@ public class BvrfisCorpBizImpl implements BvrfisCorpBiz {
 	 */
 	private void uniqueMatchCorp(List<BvrfisCorpInfoParam> bvrfisCorpInfoParamList, TransportClient client, HttpSession httpSession, String logId) {
 		// 完全匹配开发企业信息
-		String corpQueryEs = bvrfisService.organizeQueryEsByJson("elasticSearch/uniqueMatchCorpQuery.json");
+		String corpQueryEs = elasticSearchService.organizeQueryEsByJson("elasticSearch/uniqueMatchCorpQuery.json");
 		// 匹配成功后需要从bvrfisCorpInfoParamList移除的List
 		List<BvrfisCorpInfoParam> paramListForDelByCertNo = new ArrayList<>();
 		// 遍历开发企业信息和elasticsearch
@@ -219,7 +222,7 @@ public class BvrfisCorpBizImpl implements BvrfisCorpBiz {
 	 */
 	private void uniqueMatchCorpByCorpName(List<BvrfisCorpInfoParam> bvrfisCorpInfoParamList, TransportClient client, HttpSession httpSession, String logId) {
 		// 完全匹配开发企业信息
-		String corpQueryEs = bvrfisService.organizeQueryEsByJson("elasticSearch/uniqueMatchbyCorpName.json");
+		String corpQueryEs = elasticSearchService.organizeQueryEsByJson("elasticSearch/uniqueMatchbyCorpName.json");
 		// 匹配成功后需要从bvrfisCorpInfoParamList移除的List
 		List<BvrfisCorpInfoParam> paramListForDelByCorpName = new ArrayList<>();
 		// 遍历开发企业信息和elasticsearch
@@ -285,7 +288,7 @@ public class BvrfisCorpBizImpl implements BvrfisCorpBiz {
 	 */
 	private void unCertainCorpByCorpName(List<BvrfisCorpInfoParam> bvrfisCorpInfoParamList, TransportClient client, HttpSession httpSession, String logId) {
 		// 完全匹配开发企业信息
-		String corpQueryEs = bvrfisService.organizeQueryEsByJson("elasticSearch/unCertainbyCorpName.json");
+		String corpQueryEs = elasticSearchService.organizeQueryEsByJson("elasticSearch/unCertainbyCorpName.json");
 		// 遍历开发企业信息和elasticsearch
 		bvrfisCorpInfoParamList.forEach(bvrfisCorpInfoParam -> {
 			try {

@@ -31,6 +31,7 @@ import com.bestvike.commons.utils.UtilTool;
 import com.bestvike.dataCenter.param.BvdfHouseParam;
 import com.bestvike.dataCenter.service.BvdfBldService;
 import com.bestvike.dataCenter.service.BvdfHouseService;
+import com.bestvike.elastic.service.ElasticSearchService;
 import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.transport.TransportClient;
@@ -118,6 +119,8 @@ public class BvrfisHouseBizImpl implements BvrfisHouseBiz {
 	private BvrfisFloorService bvrfisFloorService;
 	@Autowired
 	private BvrfisCorpService bvrfisCorpService;
+	@Autowired
+	private ElasticSearchService elasticSearchService;
 	/**
 	 * @Author: yinxunyang
 	 * @Description: 将bvrfis房屋跟es中的匹配
@@ -311,7 +314,7 @@ public class BvrfisHouseBizImpl implements BvrfisHouseBiz {
 		// 匹配成功后需要从bvrfisHouseParamList移除的List
 		List<BvrfisHouseParam> paramListForDel = new ArrayList<>();
 		// 房屋根据自然幢疑似匹配
-		String houseQueryJson = bvrfisService.organizeQueryEsByJson("elasticSearch/house/unCertainHouseByBld.json");
+		String houseQueryJson = elasticSearchService.organizeQueryEsByJson("elasticSearch/house/unCertainHouseByBld.json");
 		// 遍历房屋信息和elasticsearch
 		bvrfisHouseParamList.forEach(bvrfisHouseParam -> {
 			try {
@@ -396,7 +399,7 @@ public class BvrfisHouseBizImpl implements BvrfisHouseBiz {
 		// 匹配成功后需要从bvrfisHouseParamList移除的List
 		List<BvrfisHouseParam> paramListForDel = new ArrayList<>();
 		// 房屋根据小区疑似匹配
-		String houseQueryJson = bvrfisService.organizeQueryEsByJson("elasticSearch/house/unCertainHouseByRegion.json");
+		String houseQueryJson = elasticSearchService.organizeQueryEsByJson("elasticSearch/house/unCertainHouseByRegion.json");
 		// 遍历房屋信息和elasticsearch
 		bvrfisHouseParamList.forEach(bvrfisHouseParam -> {
 			try {
@@ -481,7 +484,7 @@ public class BvrfisHouseBizImpl implements BvrfisHouseBiz {
 		// 匹配成功后需要从bvrfisHouseParamList移除的List
 		List<BvrfisHouseParam> paramListForDel = new ArrayList<>();
 		// 房屋根据开发企业疑似匹配
-		String houseQueryJson = bvrfisService.organizeQueryEsByJson("elasticSearch/house/unCertainHouseByDevelop.json");
+		String houseQueryJson = elasticSearchService.organizeQueryEsByJson("elasticSearch/house/unCertainHouseByDevelop.json");
 		// 遍历房屋信息和elasticsearch
 		bvrfisHouseParamList.forEach(bvrfisHouseParam -> {
 			try {

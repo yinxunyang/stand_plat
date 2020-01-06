@@ -28,4 +28,13 @@ public interface ElasticSearchService {
 	 * @return:
 	 */
 	void bvdfHouseParamFormat(BvdfHouseParam bvdfHouseParam);
+
+	/**
+	 * @Author: yinxunyang
+	 * @Description: 根据json文件组织查询Es的语句
+	 * @Date: 2019/12/24 15:15
+	 * @param:
+	 * @return:
+	 */
+	String organizeQueryEsByJson(String jsonPath);
 }
