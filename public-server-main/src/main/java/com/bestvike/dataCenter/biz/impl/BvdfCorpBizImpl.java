@@ -74,47 +74,50 @@ public class BvdfCorpBizImpl implements BvdfCorpBiz {
 	@Override
 	@Scheduled(cron = "${standplatConfig.corpToEsSchedule.cronTime}")
 	public void bvdfCorpToEs() {
-		BvdfCorpParam queryParam = new BvdfCorpParam();
-		// 状态正常
-		queryParam.setState(DataCenterEnum.NORMAL_STATE.getCode());
-		queryParam.setAppcode(DataCenterEnum.BVDF_APP_CODE_CAPITAL.getCode());
-		// 开发企业
-		queryParam.setCorpType(CorpTypeEnum.HOUSE_DEVELOPER.getCode());
-		// 查询时间记录表
-		BvdfToEsRecordTime bvdfToEsRecordTime = mongoDBService.queryBvdfToEsRecordTimeById(RecordTimeEnum.BVDF_CORP_ID);
-		String scopeBeginTime = null;
-		if (null != bvdfToEsRecordTime) {
-			// 开始时间取上一次执行的最后时间
-			scopeBeginTime = bvdfToEsRecordTime.getLastExcuteTime();
+		try {
+			BvdfCorpParam queryParam = new BvdfCorpParam();
+			// 状态正常
+			queryParam.setState(DataCenterEnum.NORMAL_STATE.getCode());
+			queryParam.setAppcode(DataCenterEnum.BVDF_APP_CODE_CAPITAL.getCode());
+			// 开发企业
+			queryParam.setCorpType(CorpTypeEnum.HOUSE_DEVELOPER.getCode());
+			// 查询时间记录表
+			BvdfToEsRecordTime bvdfToEsRecordTime = mongoDBService.queryBvdfToEsRecordTimeById(RecordTimeEnum.BVDF_CORP_ID);
+			String scopeBeginTime = null;
+			if (null != bvdfToEsRecordTime) {
+				// 开始时间取上一次执行的最后时间
+				scopeBeginTime = bvdfToEsRecordTime.getLastExcuteTime();
+			}
+			queryParam.setScopeBeginTime(scopeBeginTime);
+			String scopeEndTime = UtilTool.nowTime();
+			queryParam.setScopeEndTime(scopeEndTime);
+			// 根据时间范围查询bvdf开发企业信息
+			List<BvdfCorpParam> bvdfCorpParamList = bvdfCorpService.queryBvdfCorpInfo(queryParam);
+			if (bvdfCorpParamList.isEmpty()) {
+				log.info("没有bvdfCorpToEs的数据");
+				return;
+			}
+			try (TransportClient client = new PreBuiltTransportClient(Settings.builder().put("cluster.name", esClusterName).build())
+					.addTransportAddress(new TransportAddress(InetAddress.getByName(esIP), Integer.parseInt(esPort)))) {
+				bvdfCorpParamList.forEach(bvdfCorpParam -> {
+					// 拼装新增es的数据
+					XContentBuilder doc = organizeCorpToEsData(bvdfCorpParam);
+					// 往elasticsearch迁移一条数据，elasticsearch主键相同会覆盖原数据，该处不用判断
+					elasticSearchService.insertElasticSearch(client, doc, corpindex, corptype, bvdfCorpParam.getCorpId());
+				});
+			} catch (UnknownHostException e) {
+				log.error("创建elasticsearch客户端连接失败" + e);
+				throw new MsgException(ReturnCode.sdp_sys_error, "创建elasticsearch客户端连接失败");
+			}
+			// bvdfToEsRecordTime为空时新增时间记录表
+			if (null == bvdfToEsRecordTime) {
+				mongoDBService.insertBvdfToEsRecordTime(RecordTimeEnum.BVDF_CORP_ID, MatchTypeEnum.DEVELOP, scopeEndTime);
+			} else {
+				mongoDBService.updateBvdfToEsRecordTime(RecordTimeEnum.BVDF_CORP_ID, MatchTypeEnum.DEVELOP, scopeEndTime);
+			}
+		} catch (Exception e) {
+			log.error("bvdfCorpToEs定时任务失败", e);
 		}
-		queryParam.setScopeBeginTime(scopeBeginTime);
-		String scopeEndTime = UtilTool.nowTime();
-		queryParam.setScopeEndTime(scopeEndTime);
-		// 根据时间范围查询bvdf开发企业信息
-		List<BvdfCorpParam> bvdfCorpParamList = bvdfCorpService.queryBvdfCorpInfo(queryParam);
-		if(bvdfCorpParamList.isEmpty()){
-			log.info("没有bvdfCorpToEs的数据");
-			return;
-		}
-		try (TransportClient client = new PreBuiltTransportClient(Settings.builder().put("cluster.name", esClusterName).build())
-				.addTransportAddress(new TransportAddress(InetAddress.getByName(esIP), Integer.parseInt(esPort)))) {
-			bvdfCorpParamList.forEach(bvdfCorpParam -> {
-				// 拼装新增es的数据
-				XContentBuilder doc = organizeCorpToEsData(bvdfCorpParam);
-				// 往elasticsearch迁移一条数据，elasticsearch主键相同会覆盖原数据，该处不用判断
-				elasticSearchService.insertElasticSearch(client, doc, corpindex, corptype, bvdfCorpParam.getCorpId());
-			});
-		} catch (UnknownHostException e) {
-			log.error("创建elasticsearch客户端连接失败" + e);
-			throw new MsgException(ReturnCode.sdp_sys_error, "创建elasticsearch客户端连接失败");
-		}
-		// bvdfToEsRecordTime为空时新增时间记录表
-		if (null == bvdfToEsRecordTime) {
-			mongoDBService.insertBvdfToEsRecordTime(RecordTimeEnum.BVDF_CORP_ID, MatchTypeEnum.DEVELOP, scopeEndTime);
-		} else {
-			mongoDBService.updateBvdfToEsRecordTime(RecordTimeEnum.BVDF_CORP_ID, MatchTypeEnum.DEVELOP, scopeEndTime);
-		}
-
 	}
 
 	/**
