@@ -86,7 +86,7 @@ public class BvdfRegionBizImpl implements BvdfRegionBiz {
 			// 拼装新增es的数据
 			XContentBuilder doc = organizeRegionToEsData(bvdfRegionParam);
 			// 往elasticsearch迁移一条数据，elasticsearch主键相同会覆盖原数据，该处不用判断
-			elasticSearchService.insertElasticSearch(elasticSearchService.createEsClient(), doc, regionindex, regiontype, bvdfRegionParam.getRegionNo());
+			elasticSearchService.insertElasticSearch(doc, regionindex, regiontype, bvdfRegionParam.getRegionNo());
 		});
 		// bvdfToEsRecordTime为空时新增时间记录表
 		if (null == bvdfToEsRecordTime) {

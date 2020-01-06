@@ -106,7 +106,7 @@ public class BvdfHouseBizImpl implements BvdfHouseBiz {
 			// 拼装新增es的数据
 			XContentBuilder doc = organizeHouseToEsData(bvdfHouseParam);
 			// 往elasticsearch迁移一条数据，elasticsearch主键相同会覆盖原数据，该处不用判断
-			elasticSearchService.insertElasticSearch(elasticSearchService.createEsClient(), doc, houseindex, housetype, bvdfHouseParam.getHouseid());
+			elasticSearchService.insertElasticSearch(doc, houseindex, housetype, bvdfHouseParam.getHouseid());
 		});
 		// bvdfToEsRecordTime为空时新增时间记录表
 		if (null == bvdfToEsRecordTime) {

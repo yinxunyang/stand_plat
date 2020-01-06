@@ -109,7 +109,7 @@ public class BvdfBldBizImpl implements BvdfBldBiz {
 			// 拼装新增es的数据
 			XContentBuilder doc = organizeBldToEsData(bvdfBldParam);
 			// 往elasticsearch迁移一条数据，elasticsearch主键相同会覆盖原数据，该处不用判断
-			elasticSearchService.insertElasticSearch(elasticSearchService.createEsClient(), doc, bldindex, bldtype, bvdfBldParam.getBldNo());
+			elasticSearchService.insertElasticSearch(doc, bldindex, bldtype, bvdfBldParam.getBldNo());
 		});
 		// bvdfToEsRecordTime为空时新增时间记录表
 		if (null == bvdfToEsRecordTime) {

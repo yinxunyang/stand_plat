@@ -53,13 +53,13 @@ public class ElasticSearchServiceImpl implements ElasticSearchService {
 	 * @return:
 	 */
 	@Override
-	public void insertElasticSearch(TransportClient client, XContentBuilder doc, String index, String type, String id) throws MsgException {
+	public void insertElasticSearch(XContentBuilder doc, String index, String type, String id) throws MsgException {
 		// es的返回状态
 		String esStatus;
 		IndexResponse response;
 		try {
 			// 往es新增数据及获取返回报文
-			response = client.prepareIndex(index, type, id).setSource(doc).get();
+			response = createEsClient().prepareIndex(index, type, id).setSource(doc).get();
 			esStatus = response.status().toString();
 			log.info("esStatus状态为：{}", esStatus);
 		} catch (Exception e) {
@@ -143,8 +143,7 @@ public class ElasticSearchServiceImpl implements ElasticSearchService {
 	 * @param:
 	 * @return:
 	 */
-	@Override
-	public TransportClient createEsClient() {
+	private TransportClient createEsClient() {
 		try (TransportClient client = new PreBuiltTransportClient(Settings.builder().put("cluster.name", esClusterName).build())
 				.addTransportAddress(new TransportAddress(InetAddress.getByName(esIP), Integer.parseInt(esPort)))) {
 			return client;

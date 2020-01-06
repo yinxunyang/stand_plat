@@ -80,7 +80,7 @@ public class BvdfCorpBizImpl implements BvdfCorpBiz {
 				// 拼装新增es的数据
 				XContentBuilder doc = organizeCorpToEsData(bvdfCorpParam);
 				// 往elasticsearch迁移一条数据，elasticsearch主键相同会覆盖原数据，该处不用判断
-				elasticSearchService.insertElasticSearch(elasticSearchService.createEsClient(), doc, corpindex, corptype, bvdfCorpParam.getCorpId());
+				elasticSearchService.insertElasticSearch(doc, corpindex, corptype, bvdfCorpParam.getCorpId());
 			});
 			// bvdfToEsRecordTime为空时新增时间记录表
 			if (null == bvdfToEsRecordTime) {

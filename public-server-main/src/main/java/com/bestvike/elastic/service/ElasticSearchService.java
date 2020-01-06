@@ -2,7 +2,6 @@ package com.bestvike.elastic.service;
 
 import com.bestvike.commons.exception.MsgException;
 import com.bestvike.dataCenter.param.BvdfHouseParam;
-import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 
 /**
@@ -18,7 +17,7 @@ public interface ElasticSearchService {
 	 * @param:
 	 * @return:
 	 */
-	void insertElasticSearch(TransportClient client, XContentBuilder doc, String index, String type, String id) throws MsgException;
+	void insertElasticSearch(XContentBuilder doc, String index, String type, String id) throws MsgException;
 
 	/**
 	 * @Author: yinxunyang
@@ -37,13 +36,4 @@ public interface ElasticSearchService {
 	 * @return:
 	 */
 	String organizeQueryEsByJson(String jsonPath);
-
-	/**
-	 * @Author: yinxunyang
-	 * @Description: 创建es的客户端
-	 * @Date: 2020/1/6 16:55
-	 * @param:
-	 * @return:
-	 */
-	TransportClient createEsClient();
 }
