@@ -102,6 +102,7 @@ public class BvrfisRegionBizImpl implements BvrfisRegionBiz {
 		BvrfisRegionParam queryParam = new BvrfisRegionParam();
 		// 0正常
 		queryParam.setState("0");
+		queryParam.setDataCenterId("isNUll");
 		List<BvrfisRegionParam> bvrfisRegionParamList = bvrfisRegionService.queryBvrfisRegionInfo(queryParam);
 		if (bvrfisRegionParamList.isEmpty()) {
 			log.info("bvrfis没有需要跟elasticsearch匹配的小区数据");

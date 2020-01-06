@@ -13,6 +13,10 @@ import lombok.Setter;
 @Setter
 public class BvrfisRegionParam {
 	/**
+	 * 数据中心Id
+	 */
+	private String dataCenterId;
+	/**
 	 * 主键
 	 */
 	private String corpNo;
