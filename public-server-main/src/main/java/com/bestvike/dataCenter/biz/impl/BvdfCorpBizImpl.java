@@ -75,13 +75,8 @@ public class BvdfCorpBizImpl implements BvdfCorpBiz {
 				log.info("没有bvdfCorpToEs的数据");
 				return;
 			}
-			// 遍历
-			bvdfCorpParamList.forEach(bvdfCorpParam -> {
-				// 拼装新增es的数据
-				XContentBuilder doc = organizeCorpToEsData(bvdfCorpParam);
-				// 往elasticsearch迁移一条数据，elasticsearch主键相同会覆盖原数据，该处不用判断
-				elasticSearchService.insertElasticSearch(doc, corpindex, corptype, bvdfCorpParam.getCorpId());
-			});
+			// 往elasticsearch迁移数据
+			bvdfCorpToElasticSearch(bvdfCorpParamList);
 			// bvdfToEsRecordTime为空时新增时间记录表
 			if (null == bvdfToEsRecordTime) {
 				mongoDBService.insertBvdfToEsRecordTime(RecordTimeEnum.BVDF_CORP_ID, MatchTypeEnum.DEVELOP, scopeEndTime);
@@ -93,6 +88,26 @@ public class BvdfCorpBizImpl implements BvdfCorpBiz {
 		}
 	}
 
+	/**
+	 * @Author: yinxunyang
+	 * @Description: 往elasticsearch迁移数据
+	 * @Date: 2020/1/7 9:13
+	 * @param:
+	 * @return:
+	 */
+	private void bvdfCorpToElasticSearch(List<BvdfCorpParam> bvdfCorpParamList) {
+		// 遍历
+		bvdfCorpParamList.forEach(bvdfCorpParam -> {
+			try {
+				// 拼装新增es的数据
+				XContentBuilder doc = organizeCorpToEsData(bvdfCorpParam);
+				// 往elasticsearch迁移一条数据，elasticsearch主键相同会覆盖原数据，该处不用判断
+				elasticSearchService.insertElasticSearch(doc, corpindex, corptype, bvdfCorpParam.getCorpId());
+			} catch (Exception e) {
+				log.error("bvdfCorpToEs迁移数据失败，参数为{}", bvdfCorpParam);
+			}
+		});
+	}
 	/**
 	 * @Author: yinxunyang
 	 * @Description: 拼装corpToElasticSearch的数据
