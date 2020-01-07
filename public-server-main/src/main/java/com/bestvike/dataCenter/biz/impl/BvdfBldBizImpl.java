@@ -1,5 +1,6 @@
 package com.bestvike.dataCenter.biz.impl;
 
+import com.bestvike.commons.enums.CorpTypeEnum;
 import com.bestvike.commons.enums.DataCenterEnum;
 import com.bestvike.commons.enums.MatchTypeEnum;
 import com.bestvike.commons.enums.RecordTimeEnum;
@@ -70,52 +71,58 @@ public class BvdfBldBizImpl implements BvdfBldBiz {
 	@Override
 	//@Scheduled(cron = "${standplatConfig.bldToEsSchedule.cronTime}")
 	public void bvdfBldToEs() {
-		// 查询时间记录表
-		BvdfToEsRecordTime bvdfToEsRecordTime = mongoDBService.queryBvdfToEsRecordTimeById(RecordTimeEnum.BVDF_BLD_ID);
-		String scopeBeginTime = null;
-		if (null != bvdfToEsRecordTime) {
-			// 开始时间取上一次执行的最后时间
-			scopeBeginTime = bvdfToEsRecordTime.getLastExcuteTime();
-		}
-		BvdfBldParam queryParam = new BvdfBldParam();
-		// 状态正常
-		queryParam.setState(DataCenterEnum.NORMAL_STATE.getCode());
-		queryParam.setScopeBeginTime(scopeBeginTime);
-		String scopeEndTime = UtilTool.nowTime();
-		queryParam.setScopeEndTime(scopeEndTime);
-		List<BvdfBldParam> bvdfBldParamList = bvdfBldService.queryBvdfBldInfo(queryParam);
-		if (bvdfBldParamList.isEmpty()) {
-			log.info("没有bvdfBldToEs的数据");
-			return;
-		}
-		// 添加小区名称和开发企业名称
-		bvdfBldParamList.forEach(bvdfBldParam -> {
-			BvdfRegionParam regionParam = new BvdfRegionParam();
-			regionParam.setRegionNo(bvdfBldParam.getRegionNo());
-			regionParam.setState(DataCenterEnum.NORMAL_STATE.getCode());
-			BvdfRegionParam bvdfRegionParam = bvdfRegionService.selectBvdfRegionInfo(regionParam);
-			if (null != bvdfRegionParam) {
-				bvdfBldParam.setRegionName(bvdfRegionParam.getRegionName());
+		try {
+			// 查询时间记录表
+			BvdfToEsRecordTime bvdfToEsRecordTime = mongoDBService.queryBvdfToEsRecordTimeById(RecordTimeEnum.BVDF_BLD_ID);
+			String scopeBeginTime = null;
+			if (null != bvdfToEsRecordTime) {
+				// 开始时间取上一次执行的最后时间
+				scopeBeginTime = bvdfToEsRecordTime.getLastExcuteTime();
 			}
-			BvdfCorpParam corpParam = new BvdfCorpParam();
-			corpParam.setCorpId(bvdfBldParam.getCorpNo());
-			corpParam.setState(DataCenterEnum.NORMAL_STATE.getCode());
-			BvdfCorpParam bvdfCorpParam = bvdfCorpService.selectBvdfCorpInfo(corpParam);
-			if (null != bvdfCorpParam) {
-				bvdfBldParam.setCorpName(bvdfCorpParam.getCorpName());
+			BvdfBldParam queryParam = new BvdfBldParam();
+			// 状态正常
+			queryParam.setState(DataCenterEnum.NORMAL_STATE.getCode());
+			queryParam.setScopeBeginTime(scopeBeginTime);
+			String scopeEndTime = UtilTool.nowTime();
+			queryParam.setScopeEndTime(scopeEndTime);
+			List<BvdfBldParam> bvdfBldParamList = bvdfBldService.queryBvdfBldInfo(queryParam);
+			if (bvdfBldParamList.isEmpty()) {
+				log.info("没有bvdfBldToEs的数据");
+				return;
 			}
-		});
-		bvdfBldParamList.forEach(bvdfBldParam -> {
-			// 拼装新增es的数据
-			XContentBuilder doc = organizeBldToEsData(bvdfBldParam);
-			// 往elasticsearch迁移一条数据，elasticsearch主键相同会覆盖原数据，该处不用判断
-			elasticSearchService.insertElasticSearch(doc, bldindex, bldtype, bvdfBldParam.getBldNo());
-		});
-		// bvdfToEsRecordTime为空时新增时间记录表
-		if (null == bvdfToEsRecordTime) {
-			mongoDBService.insertBvdfToEsRecordTime(RecordTimeEnum.BVDF_BLD_ID, MatchTypeEnum.BLD, scopeEndTime);
-		} else {
-			mongoDBService.updateBvdfToEsRecordTime(RecordTimeEnum.BVDF_BLD_ID, MatchTypeEnum.BLD, scopeEndTime);
+			// 添加小区名称和开发企业名称
+			bvdfBldParamList.forEach(bvdfBldParam -> {
+				BvdfRegionParam regionParam = new BvdfRegionParam();
+				regionParam.setRegionNo(bvdfBldParam.getRegionNo());
+				regionParam.setState(DataCenterEnum.NORMAL_STATE.getCode());
+				BvdfRegionParam bvdfRegionParam = bvdfRegionService.selectBvdfRegionInfo(regionParam);
+				if (null != bvdfRegionParam) {
+					bvdfBldParam.setRegionName(bvdfRegionParam.getRegionName());
+				}
+				BvdfCorpParam corpParam = new BvdfCorpParam();
+				corpParam.setCorpId(bvdfBldParam.getCorpNo());
+				corpParam.setState(DataCenterEnum.NORMAL_STATE.getCode());
+				// 查询开发企业
+				corpParam.setCorpType(CorpTypeEnum.HOUSE_DEVELOPER.getCode());
+				BvdfCorpParam bvdfCorpParam = bvdfCorpService.selectBvdfCorpInfo(corpParam);
+				if (null != bvdfCorpParam) {
+					bvdfBldParam.setCorpName(bvdfCorpParam.getCorpName());
+				}
+			});
+			bvdfBldParamList.forEach(bvdfBldParam -> {
+				// 拼装新增es的数据
+				XContentBuilder doc = organizeBldToEsData(bvdfBldParam);
+				// 往elasticsearch迁移一条数据，elasticsearch主键相同会覆盖原数据，该处不用判断
+				elasticSearchService.insertElasticSearch(doc, bldindex, bldtype, bvdfBldParam.getBldNo());
+			});
+			// bvdfToEsRecordTime为空时新增时间记录表
+			if (null == bvdfToEsRecordTime) {
+				mongoDBService.insertBvdfToEsRecordTime(RecordTimeEnum.BVDF_BLD_ID, MatchTypeEnum.BLD, scopeEndTime);
+			} else {
+				mongoDBService.updateBvdfToEsRecordTime(RecordTimeEnum.BVDF_BLD_ID, MatchTypeEnum.BLD, scopeEndTime);
+			}
+		} catch (Exception e) {
+			log.error("bvdfBldToEs定时任务失败", e);
 		}
 	}
 

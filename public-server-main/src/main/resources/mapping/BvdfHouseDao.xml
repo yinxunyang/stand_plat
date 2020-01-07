@@ -39,6 +39,9 @@
 			<if test="null != param.corpId and '' != param.corpId">
 				AND t.corpid = #{param.corpId,jdbcType=VARCHAR}
 			</if>
+			<if test="null != param.corpType and '' != param.corpType">
+				AND t.corpType = #{param.corpType,jdbcType=VARCHAR}
+			</if>
 		</where>
 	</select>
 	<select id="queryBvdfRegionInfo" resultType="com.bestvike.dataCenter.param.BvdfRegionParam">

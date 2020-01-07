@@ -78,41 +78,45 @@ public class BvdfHouseBizImpl implements BvdfHouseBiz {
 	@Override
 	//@Scheduled(cron = "${standplatConfig.houseToEsSchedule.cronTime}")
 	public void bvdfHouseToEs() {
-		// 查询时间记录表
-		BvdfToEsRecordTime bvdfToEsRecordTime = mongoDBService.queryBvdfToEsRecordTimeById(RecordTimeEnum.BVDF_HOUSE_ID);
-		String scopeBeginTime = "1970-01-01 08:00:00";
-		if (null != bvdfToEsRecordTime) {
-			// 开始时间取上一次执行的最后时间
-			scopeBeginTime = bvdfToEsRecordTime.getLastExcuteTime();
-		}
-		BvdfHouseParam queryParam = new BvdfHouseParam();
-		// 状态正常
-		queryParam.setState(DataCenterEnum.NORMAL_STATE.getCode());
-		queryParam.setAppcode(DataCenterEnum.BVDF_APP_CODE_LOWER.getCode());
-		queryParam.setScopeBeginTime(scopeBeginTime);
-		// 最多查询2万条
-		queryParam.setHouseMaxNum(Integer.parseInt(houseMaxNum));
-		String scopeEndTime = UtilTool.nowTime();
-		queryParam.setScopeEndTime(scopeEndTime);
-		List<BvdfHouseParam> bvdfHouseParamList = bvdfHouseService.queryBvdfHouseInfo(queryParam);
-		if (bvdfHouseParamList.isEmpty()) {
-			log.info("没有bvdfHouseToEs的数据");
-			return;
-		}
-		// 组织es的数据 添加小区名称和开发企业名称等
-		organizeEsHouseParamList(bvdfHouseParamList);
-		// 遍历
-		bvdfHouseParamList.forEach(bvdfHouseParam -> {
-			// 拼装新增es的数据
-			XContentBuilder doc = organizeHouseToEsData(bvdfHouseParam);
-			// 往elasticsearch迁移一条数据，elasticsearch主键相同会覆盖原数据，该处不用判断
-			elasticSearchService.insertElasticSearch(doc, houseindex, housetype, bvdfHouseParam.getHouseid());
-		});
-		// bvdfToEsRecordTime为空时新增时间记录表
-		if (null == bvdfToEsRecordTime) {
-			mongoDBService.insertBvdfToEsRecordTime(RecordTimeEnum.BVDF_HOUSE_ID, MatchTypeEnum.HOUSE, scopeEndTime);
-		} else {
-			mongoDBService.updateBvdfToEsRecordTime(RecordTimeEnum.BVDF_HOUSE_ID, MatchTypeEnum.HOUSE, scopeEndTime);
+		try {
+			// 查询时间记录表
+			BvdfToEsRecordTime bvdfToEsRecordTime = mongoDBService.queryBvdfToEsRecordTimeById(RecordTimeEnum.BVDF_HOUSE_ID);
+			String scopeBeginTime = null;
+			if (null != bvdfToEsRecordTime) {
+				// 开始时间取上一次执行的最后时间
+				scopeBeginTime = bvdfToEsRecordTime.getLastExcuteTime();
+			}
+			BvdfHouseParam queryParam = new BvdfHouseParam();
+			// 状态正常
+			queryParam.setState(DataCenterEnum.NORMAL_STATE.getCode());
+			queryParam.setAppcode(DataCenterEnum.BVDF_APP_CODE_LOWER.getCode());
+			queryParam.setScopeBeginTime(scopeBeginTime);
+			// 最多查询2万条
+			queryParam.setHouseMaxNum(Integer.parseInt(houseMaxNum));
+			String scopeEndTime = UtilTool.nowTime();
+			queryParam.setScopeEndTime(scopeEndTime);
+			List<BvdfHouseParam> bvdfHouseParamList = bvdfHouseService.queryBvdfHouseInfo(queryParam);
+			if (bvdfHouseParamList.isEmpty()) {
+				log.info("没有bvdfHouseToEs的数据");
+				return;
+			}
+			// 组织es的数据 添加小区名称和开发企业名称等
+			organizeEsHouseParamList(bvdfHouseParamList);
+			// 遍历
+			bvdfHouseParamList.forEach(bvdfHouseParam -> {
+				// 拼装新增es的数据
+				XContentBuilder doc = organizeHouseToEsData(bvdfHouseParam);
+				// 往elasticsearch迁移一条数据，elasticsearch主键相同会覆盖原数据，该处不用判断
+				elasticSearchService.insertElasticSearch(doc, houseindex, housetype, bvdfHouseParam.getHouseid());
+			});
+			// bvdfToEsRecordTime为空时新增时间记录表
+			if (null == bvdfToEsRecordTime) {
+				mongoDBService.insertBvdfToEsRecordTime(RecordTimeEnum.BVDF_HOUSE_ID, MatchTypeEnum.HOUSE, scopeEndTime);
+			} else {
+				mongoDBService.updateBvdfToEsRecordTime(RecordTimeEnum.BVDF_HOUSE_ID, MatchTypeEnum.HOUSE, scopeEndTime);
+			}
+		} catch (Exception e) {
+			log.error("bvdfHouseToEs定时任务失败", e);
 		}
 	}
 

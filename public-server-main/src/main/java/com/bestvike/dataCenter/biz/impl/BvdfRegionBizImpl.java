@@ -26,16 +26,6 @@ import java.util.List;
 @Slf4j
 public class BvdfRegionBizImpl implements BvdfRegionBiz {
 	/**
-	 * 房屋信息表(arc_houseinfo)最大查询条数,防止内存溢出
-	 */
-	@Value("${standplatConfig.bvdfToEsSchedule.houseMaxNum}")
-	private String houseMaxNum;
-	/**
-	 * 批量新增、修改bvdf表的数量
-	 */
-	@Value("${standplatConfig.bvdfToEsSchedule.bvdfBatchNum}")
-	private String bvdfBatchNum;
-	/**
 	 * es开发企业的索引
 	 */
 	@Value("${esConfig.regionindex}")
@@ -62,37 +52,41 @@ public class BvdfRegionBizImpl implements BvdfRegionBiz {
 	@Override
 	//@Scheduled(cron = "${standplatConfig.corpToEsSchedule.cronTime}")
 	public void bvdfRegionToEs() {
-		BvdfRegionParam queryParam = new BvdfRegionParam();
-		// 状态正
-		queryParam.setState(DataCenterEnum.NORMAL_STATE.getCode());
-		queryParam.setAppcode(DataCenterEnum.BVDF_APP_CODE_CAPITAL.getCode());
-		// 查询时间记录表
-		BvdfToEsRecordTime bvdfToEsRecordTime = mongoDBService.queryBvdfToEsRecordTimeById(RecordTimeEnum.BVDF_REGION_ID);
-		String scopeBeginTime = null;
-		if (null != bvdfToEsRecordTime) {
-			// 开始时间取上一次执行的最后时间
-			scopeBeginTime = bvdfToEsRecordTime.getLastExcuteTime();
-		}
-		queryParam.setScopeBeginTime(scopeBeginTime);
-		String scopeEndTime = UtilTool.nowTime();
-		queryParam.setScopeEndTime(scopeEndTime);
-		List<BvdfRegionParam> bvdfRegionParamList = bvdfRegionService.queryBvdfRegionInfo(queryParam);
-		if (bvdfRegionParamList.isEmpty()) {
-			log.info("没有bvdfRegionToEs的数据");
-			return;
-		}
-		// 遍历
-		bvdfRegionParamList.forEach(bvdfRegionParam -> {
-			// 拼装新增es的数据
-			XContentBuilder doc = organizeRegionToEsData(bvdfRegionParam);
-			// 往elasticsearch迁移一条数据，elasticsearch主键相同会覆盖原数据，该处不用判断
-			elasticSearchService.insertElasticSearch(doc, regionindex, regiontype, bvdfRegionParam.getRegionNo());
-		});
-		// bvdfToEsRecordTime为空时新增时间记录表
-		if (null == bvdfToEsRecordTime) {
-			mongoDBService.insertBvdfToEsRecordTime(RecordTimeEnum.BVDF_REGION_ID, MatchTypeEnum.REGION, scopeEndTime);
-		} else {
-			mongoDBService.updateBvdfToEsRecordTime(RecordTimeEnum.BVDF_REGION_ID, MatchTypeEnum.REGION, scopeEndTime);
+		try {
+			BvdfRegionParam queryParam = new BvdfRegionParam();
+			// 状态正
+			queryParam.setState(DataCenterEnum.NORMAL_STATE.getCode());
+			queryParam.setAppcode(DataCenterEnum.BVDF_APP_CODE_CAPITAL.getCode());
+			// 查询时间记录表
+			BvdfToEsRecordTime bvdfToEsRecordTime = mongoDBService.queryBvdfToEsRecordTimeById(RecordTimeEnum.BVDF_REGION_ID);
+			String scopeBeginTime = null;
+			if (null != bvdfToEsRecordTime) {
+				// 开始时间取上一次执行的最后时间
+				scopeBeginTime = bvdfToEsRecordTime.getLastExcuteTime();
+			}
+			queryParam.setScopeBeginTime(scopeBeginTime);
+			String scopeEndTime = UtilTool.nowTime();
+			queryParam.setScopeEndTime(scopeEndTime);
+			List<BvdfRegionParam> bvdfRegionParamList = bvdfRegionService.queryBvdfRegionInfo(queryParam);
+			if (bvdfRegionParamList.isEmpty()) {
+				log.info("没有bvdfRegionToEs的数据");
+				return;
+			}
+			// 遍历
+			bvdfRegionParamList.forEach(bvdfRegionParam -> {
+				// 拼装新增es的数据
+				XContentBuilder doc = organizeRegionToEsData(bvdfRegionParam);
+				// 往elasticsearch迁移一条数据，elasticsearch主键相同会覆盖原数据，该处不用判断
+				elasticSearchService.insertElasticSearch(doc, regionindex, regiontype, bvdfRegionParam.getRegionNo());
+			});
+			// bvdfToEsRecordTime为空时新增时间记录表
+			if (null == bvdfToEsRecordTime) {
+				mongoDBService.insertBvdfToEsRecordTime(RecordTimeEnum.BVDF_REGION_ID, MatchTypeEnum.REGION, scopeEndTime);
+			} else {
+				mongoDBService.updateBvdfToEsRecordTime(RecordTimeEnum.BVDF_REGION_ID, MatchTypeEnum.REGION, scopeEndTime);
+			}
+		} catch (Exception e) {
+			log.error("bvdfRegionToEs定时任务失败", e);
 		}
 
 	}
@@ -121,7 +115,7 @@ public class BvdfRegionBizImpl implements BvdfRegionBiz {
 					.field("floorArea", bvdfRegionParam.getFloorArea())
 					.endObject();
 		} catch (IOException e) {
-			log.error("拼装regionToElasticSearch的数据失败" + e);
+			log.error("拼装regionToElasticSearch的数据失败", e);
 			throw new MsgException(ReturnCode.fail, "拼装regionToElasticSearch的数据失败");
 		}
 		return doc;

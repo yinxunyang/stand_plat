@@ -29,7 +29,7 @@ public class BvdfRegionServiceImpl implements BvdfRegionService {
 		try {
 			bvdfRegionParamList = bvdfHouseDao.queryBvdfRegionInfo(queryParam);
 		} catch (Exception e) {
-			log.error("查询bvdf小区的数据失败" + e);
+			log.error("查询bvdf小区的数据失败", e);
 			throw new MsgException(ReturnCode.sdp_select_fail, "查询bvdf小区的数据失败");
 		}
 		return bvdfRegionParamList;
